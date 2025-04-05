@@ -19,59 +19,166 @@
             <div class="main-content">
                 <section class="section">
                     <div class="section-header">
-                        <h1><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?></h1>
+                        <h1><?= !empty($this->lang->line('label_client')) ? $this->lang->line('label_client') : 'Quản lý Khách hàng hiện hữu'; ?></h1>
                         <div class="section-header-breadcrumb">
-                            <?php if (check_permissions("clients", "create")) { ?>
-                                <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-user"><?= !empty($this->lang->line('label_add_client')) ? $this->lang->line('label_add_client') : 'Add Client'; ?></i>
-                            <?php } ?>
+                            
                         </div>
-
                     </div>
+
                     <div class="section-body">
                         <div class="row">
-                            <div class="modal-edit-user"></div>
-                            <div class='col-md-12'>
-                                <div class="card">
-                                    <div class="card-body">
-                                        
-                                        <table class='table-striped' id='users_list' data-toggle="table" data-url="<?= base_url('clients/get_users_list') ?>" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-show-columns="true" data-show-refresh="true" data-trim-on-search="false" data-sort-name="first_name" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
-                      "fileName": "users-list",
-                      "ignoreColumn": ["state"] 
-                    }' data-query-params="queryParams">
+                        <div class='col-md-12'>
+                        <div class="card">
+                        <div class="card-body">
+                            <form id="search-form" method="GET" action="<?= base_url('clients/search') ?>">
+                                <div class="row">
+                                        <!-- Mã khách hàng -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="customer_code">Mã khách hàng</label>
+                                                <input type="text" class="form-control" id="customer_code" name="customer_code" placeholder="Nhập mã khách hàng">
+                                            </div>
+                                        </div>
+
+                                        <!-- Tên khách hàng -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="customer_name">Tên khách hàng</label>
+                                                <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Nhập tên khách hàng">
+                                            </div>
+                                        </div>
+
+                                        <!-- Số điện thoại -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="phone">Số điện thoại</label>
+                                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại">
+                                            </div>
+                                        </div>
+
+                                        <!-- Số CMT/hộ chiếu -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="identity">Số CMT/Hộ chiếu</label>
+                                                <input type="text" class="form-control" id="identity" name="identity" placeholder="Nhập số CMT/Hộ chiếu">
+                                            </div>
+                                        </div>
+
+                                        <!-- Khối -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="block">Khối</label>
+                                                <select class="form-control" id="block" name="block">
+                                                    <option value="">Chọn khối</option>
+                                                    <option value="1">Khối 1</option>
+                                                    <option value="2">Khối 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Tần suất giao dịch -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="frequency">Tần suất giao dịch</label>
+                                                <select class="form-control" id="frequency" name="frequency">
+                                                    <option value="">Chọn tần suất</option>
+                                                    <option value="low">Thấp</option>
+                                                    <option value="medium">Trung bình</option>
+                                                    <option value="high">Cao</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Đơn vị -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="unit">Đơn vị</label>
+                                                <select class="form-control" id="unit" name="unit">
+                                                    <option value="">Chọn đơn vị</option>
+                                                    <option value="unit1">Đơn vị 1</option>
+                                                    <option value="unit2">Đơn vị 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- RM quản lý -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="rm_manager">RM quản lý</label>
+                                                <select class="form-control" id="rm_manager" name="rm_manager">
+                                                    <option value="">Chọn RM quản lý</option>
+                                                    <option value="rm1">RM 1</option>
+                                                    <option value="rm2">RM 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                    <div class="col-md-12 d-flex justify-content-between align-items-center">
+                                    <!-- Nút Tìm kiếm và Xóa -->
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                        <button type="reset" class="btn btn-secondary">Xóa</button>
+                                    </div>
+
+                                    <!-- Nút Thêm -->
+                                    <div>
+                                        <?php if (check_permissions("clients", "create")) { ?>
+                                            <i class="btn btn-primary btn-rounded no-shadow" id="" style="margin-right: 10px;">
+                                                <?= !empty($this->lang->line('label_add_client_2')) ? $this->lang->line('label_add_client_2') : 'Add Client'; ?>
+                                            </i>
+                                        <?php } ?>
+                                        <?php if (check_permissions("clients", "create")) { ?>
+                                            <button class="btn btn-primary btn-rounded no-shadow" id="modal-add-user">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                    </div>
+                                </form>
+
+                                <!-- Bảng kết quả tìm kiếm -->
+                                <div class="table-responsive mt-4">
+                                <table class='table-striped' id='clients_list' data-toggle="table" data-url="<?= base_url('clients/get_clients_list') ?>" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true" data-show-refresh="true" data-sort-name="MaKH" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
+                                "fileName": "clients-list",
+                                        "ignoreColumn": ["state"] 
+                                    }' 
+                                    data-query-params="queryParams">            
                                             <thead>
                                                 <tr>
-                                                    <th data-field="id" data-visible="false" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
+                                                    <th data-field="stt" data-sortable="false">STT</th>
+                                                    <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
 
-                                                    <th data-field="first_name" data-sortable="true"><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?></th>
+                                                    <th data-field="TenKH" data-sortable="true"><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></th>
 
-                                                    <th data-field="company" data-sortable="true"><?= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Company'; ?></th>
+                                                    <th data-field="Khoi" data-sortable="true"><?= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Khối'; ?></th>
 
-                                                    <th data-field="phone" data-visible="false" data-sortable="true"><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone'; ?></th>
+                                                    <th data-field="CASA" data-sortable="true">CASA hiện tại</th>
 
-                                                    <th data-field="assigned" data-sortable="false"><?= !empty($this->lang->line('label_assigned')) ? $this->lang->line('label_assigned') : 'Assigned'; ?></th>
-                                                    <?php //if ($this->ion_auth->is_admin()) { 
-                                                    ?>
-                                                    <th data-field="active" data-sortable="false"><?= !empty($this->lang->line('label_status')) ? $this->lang->line('label_status') : 'Status'; ?></th>
-                                                    <?php //} 
-                                                    ?>
-                                                    <?php //if ($this->ion_auth->is_admin()) { 
-                                                    ?>
+                                                    <th data-field="TK" data-sortable="false">Tiết kiệm hiện tại</th>
+                                                    <th data-field="TD" data-sortable="false">Tín dụng hiện tại</th>
+                                                    <th data-field="SDT" data-sortable="true">Số điện thoại</th>
+
+                                                    <th data-field="CNquanly" data-sortable="false">Sector</th>
+                                                    <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
+                                                    <th data-field="MaDV" data-sortable="false">Mã đơn vị mở code</th>
+                                                    <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>
                                                     <?php if (check_permissions("clients", "delete")) { ?>
                                                         <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?></th>
                                                         <?php //} 
                                                         ?>
                                                     <?php }
                                                     ?>
-                                                </tr>
+                                                </tr>   
                                             </thead>
                                         </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
-            </div>
 
             <?php
             $user_permissions = $client_permissions_data = "";
@@ -151,192 +258,167 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Form tạo KHHH -->
             <?php if (check_permissions("clients", "create")) { ?>
                 <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="modal-title" class="d-none"><?= !empty($this->lang->line('label_add_client')) ? $this->lang->line('label_add_client') : 'Add Client'; ?></div>
-                        <div id="modal-footer-add-title" class="d-none"><?= !empty($this->lang->line('label_add')) ? $this->lang->line('label_add') : 'Add'; ?></div>
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_email')) ? $this->lang->line('label_email') : 'Email'; ?> <?= !empty($this->lang->line('label_if_user_already_exits_in_other_workspace_than_select_email')) ? $this->lang->line('label_if_user_already_exits_in_other_workspace_than_select_email') : '(If User Already Exits In Other Workspace Than Select Email)'; ?></label>
-                            <div class="input-group">
-                                <input type="hidden" name="group_id" value="3">
-                                <?= form_input(['name' => 'email', 'class' => 'demo-default', 'id' => 'email']) ?>
+                        <div id="modal-title" class="d-none">Thêm khách hàng đơn lẻ</div>
+                        <div id="modal-footer-add-title" class="d-none"><?= !empty($this->lang->line('label_add')) ? $this->lang->line('label_add') : 'Lưu'; ?></div>
+                    </div>
+                    <div class="row" >
+                        <!-- Tên khách hàng -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'client_name', 'placeholder' => 'Nhập tên khách hàng', 'class' => 'form-control']) ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6" id="first_name">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'first_name', 'placeholder' => !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name', 'class' => 'form-control']) ?>
+                        <!-- Ngày sinh -->
+                        <div class="col-md-3" id="date_of_birth">
+                            <div class="form-group">
+                                <label>Ngày sinh</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'date_of_birth', 'type' => 'date', 'placeholder' => 'Nhập ngày sinh', 'class' => 'form-control']) ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6" id="last_name">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'last_name', 'placeholder' => !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name', 'class' => 'form-control']) ?>
-
+                        <!-- Email -->
+                        <div class="col-md-5">
+                            <div class="form-group">
+                            <label><?= !empty($this->lang->line('label_email')) ? $this->lang->line('label_email') : 'Email' ?></label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'client_name', 'placeholder' => 'Nhập email', 'class' => 'form-control']) ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-md-6" id="company">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Company'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'company', 'placeholder' => !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Company', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6" id="phone">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'phone', 'type' => 'number', 'placeholder' => !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
 
 
-                    <div class="col-md-6" id="date_of_birth">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Birth'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'date_of_birth', 'type' => 'text', 'placeholder' => 'Date of Birth', 'class' => 'form-control datepicker']) ?>
+                        <!-- Quốc tịch -->
+                        <div class="col-md-3">
+                            <div class="form-group" id="country">
+                                <label>Quốc tịch</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'nationality', 'placeholder' => 'Nhập quốc tịch', 'class' => 'form-control']) ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- Số CMT/Hộ chiếu -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Số CMT/Hộ chiếu</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'identity', 'placeholder' => 'Nhập số CMT/Hộ chiếu', 'class' => 'form-control']) ?>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Ngày cấp -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Ngày cấp</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'issue_date', 'type' => 'date', 'class' => 'form-control']) ?>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Nơi cấp -->
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Nơi cấp</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'issue_place', 'placeholder' => 'Nơi cấp', 'class' => 'form-control']) ?>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="col-md-6" id="date_of_joining">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_date_of_joining')) ? $this->lang->line('label_date_of_joining') : 'Date of Joining'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'date_of_joining', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Joining', 'class' => 'form-control datepicker']) ?>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6" id="gender">
-                        <div class="form-group">
-                            <label class="form-control-label col-md-12"><?= !empty($this->lang->line('label_gender')) ? $this->lang->line('label_gender') : 'Gender'; ?></label>
+                        <!-- Số điện thoại -->
+                        <div class="col-md-4" id="phone">
+                            <div class="form-group">
+                                <label><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Số điện thoại'; ?></label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => 'phone', 'placeholder' => !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone', 'class' => 'form-control']) ?>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- Địa chỉ-->
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                <label>Địa chỉ</label>
+                                    <div class="input-group">
+                                        <?= form_input(['name' => '', 'placeholder' => 'Nhập địa chỉ', 'class' => 'form-control']) ?>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <input id="male" name="gender" type="radio" class="" value="0" <?php echo $this->form_validation->set_radio('gender', 0); ?> />
-                            <label for="male" class=""><?= !empty($this->lang->line('label_male')) ? $this->lang->line('label_male') : 'Male'; ?></label>
-                            <input id="female" name="gender" type="radio" class="" value="1" <?php echo $this->form_validation->set_radio('gender', 1); ?> />
-                            <label for="female" class=""><?= !empty($this->lang->line('label_female')) ? $this->lang->line('label_female') : 'Female'; ?></label>
+                        <!-- Nghề nghiệp -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Nghề nghiệp</label>
+                                <div class="input-group">
+                                    <?= form_input(['name' => '', 'placeholder' => 'Nhập nghề nghiệp', 'class' => 'form-control']) ?>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- Thu nhập-->
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                <label>Thu nhập</label>
+                                    <div class="input-group">
+                                        <?= form_input(['name' => '', 'placeholder' => 'Nhập thu nhập TB hàng tháng', 'class' => 'form-control']) ?>
+                                    </div>
+                                </div>
+                            </div>
 
+                        <!-- Khối khách hàng -->
+                        <div class="form-group col-md-4">
+                            <label for="customer_block">Khối khách hàng</label>
+                            <?= form_dropdown('customer_block', ['Khách hàng cá nhân', 'Khách hàng doanh nghiệp'], null, ['class' => 'form-control']) ?>
                         </div>
-                    </div>
+                        <!-- Trạng thái -->
+                        <div class="form-group col-md-3">
+                            <label for="status">Trạng thái</label>
+                            <?= form_dropdown('status', ['Active', 'Inactive'], null, ['class' => 'form-control']) ?>
+                        </div>
+                        <!-- Tần suất giao dịch -->
+                        <div class="form-group col-md-5">
+                            <label for="transaction_frequency">Tần suất giao dịch</label>
+                            <?= form_dropdown('tansuat', ['Chưa phân nhóm', 'Không hoạt động', 'Giao dịch ít'], null, ['class' => 'form-control']) ?>
+                        </div>
 
-                    <div class="col-md-6" id="designation">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'designation', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation', 'class' => 'form-control']) ?>
-                            </div>
+                        <!-- Mã Khách hàng -->
+                        <div class="form-group col-md-4">
+                            <label for="">Mã khách hàng</label>
+                            <?= form_input(['name' => '', 'value' => '$generated_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                         </div>
-                    </div>
+                        <!-- RM quản lý -->
+                        <div class="form-group col-md-4">
+                            <label for="rm_manager">RM quản lý</label>
+                            <?= form_input(['name' => '', 'value' => '$user_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                        </div>
+                        <!-- Chi nhánh quản lý -->
+                        <div class="form-group col-md-4">
+                            <label for="branch">Chi nhánh quản lý</label>
+                            <?= form_input(['name' => 'branch',  'value' => '$branch_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                        </div>
 
-                    <div class="col-md-6" id="password">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'password', 'placeholder' => !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password', 'class' => 'form-control']) ?>
-                            </div>
+                        <!-- Ngày upload -->
+                        <div class="form-group col-md-3">
+                            <label for="upload_date">Ngày upload</label>
+                            <?= form_input(['name' => 'upload_date', 'type' => 'date', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                         </div>
-                    </div>
-                    <div class="col-md-6" id="password_confirm">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'password_confirm', 'placeholder' => !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password', 'class' => 'form-control']) ?>
-                            </div>
+                        <!-- Đơn vị upload -->
+                        <div class="form-group col-md-4">
+                            <label for="branch">Chi nhánh quản lý</label>
+                            <?= form_input(['name' => 'donvi',  'value' => '$donvi_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                         </div>
-                    </div>
-                    <div class="col-md-12" id="address">
-                        <div class="form-group">
-                            <label for="address"><?= !empty($this->lang->line('label_address')) ? $this->lang->line('label_address') : 'Address'; ?></label>
-                            <textarea type="textarea" class="form-control" placeholder=<?= !empty($this->lang->line('label_address')) ? $this->lang->line('label_address') : 'Address'; ?> name="address" id="address"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="city">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_city')) ? $this->lang->line('label_city') : 'City'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'city', 'placeholder' => !empty($this->lang->line('label_city')) ? $this->lang->line('label_city') : 'City', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="state">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_state')) ? $this->lang->line('label_state') : 'State'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'state', 'placeholder' => !empty($this->lang->line('label_state')) ? $this->lang->line('label_state') : 'State', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="zip_code">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_zip_code')) ? $this->lang->line('label_zip_code') : 'Zip Code'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'zip_code', 'placeholder' => !empty($this->lang->line('label_zip_code')) ? $this->lang->line('label_zip_code') : 'Zip Code', 'class' => 'form-control', 'type' => 'number']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="country">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_country')) ? $this->lang->line('label_country') : 'Country'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'country', 'placeholder' => !empty($this->lang->line('label_country')) ? $this->lang->line('label_country') : 'Country', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
                 </form>
             <?php } ?>
-            <?= form_open('auth/edit_user', 'id="modal-edit-user-part"', 'class="modal-part"'); ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name'; ?></label>
-                        <div class="input-group">
-                            <input name="id" type="hidden" id="id" value="">
-                            <?= form_input(['name' => 'first_name', 'placeholder' => !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'last_name', 'placeholder' => !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name', 'class' => 'form-control']) ?>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'password', 'placeholder' => !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'password_confirm', 'placeholder' => !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </form>
-            <?php include('include-footer.php'); ?>
         </div>
     </div>
 

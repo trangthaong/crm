@@ -152,17 +152,26 @@ class Clients extends CI_Controller
 	}
 
 
-	public function get_users_list()
+	public function get_clients_list()
 	{
-		if (!check_permissions("clients", "read", "", true) || !check_permissions("users", "read", "", true)) {
+		// Kiểm tra quyền truy cập
+		if (!check_permissions("clients", "read", "", true)) {
 			return redirect(base_url(), 'refresh');
 		}
+
+		// Kiểm tra trạng thái đăng nhập
 		if (!$this->ion_auth->logged_in()) {
 			redirect('auth', 'refresh');
 		} else {
+			// Lấy workspace_id từ session
 			$workspace_id = $this->session->userdata('workspace_id');
-			$user_id = $this->session->userdata('user_id');
-			return $this->users_model->get_users_list($workspace_id, $user_id);
+
+			// Gọi model để lấy danh sách clients
+			$this->load->model('Clients_model');
+			$clients = $this->Clients_model->get_clients_list($workspace_id);
+
+			// Trả về dữ liệu dưới dạng JSON
+			echo json_encode($clients);
 		}
 	}
 
