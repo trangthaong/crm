@@ -153,16 +153,14 @@ $response = get_system_settings('general');
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="<?= base_url('home'); ?>">
-                <img alt="Task Hub"
-                    src="<?= !empty($response['full_logo']) ? base_url('assets/icons/' . $response['full_logo']) : base_url('assets/icons/logo.png'); ?>"
-                    width="200px">
+                <img alt="MBV"
+                    src="<?= base_url('assets/icons/logo.jpg'); ?>" width="200px">
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="<?= base_url('home'); ?>">
-                <img alt="Task Hub"
-                    src="<?= !empty($response['half_logo']) ? base_url('assets/icons/' . $response['half_logo']) : base_url('assets/icons/logo-half.png'); ?>"
-                    width="40px">
+            <img alt=MBV"
+            src="<?= base_url('assets/icons/logo.jpg'); ?>" width="40px">
             </a>
         </div>
         <ul class="sidebar-menu">
@@ -251,7 +249,53 @@ $response = get_system_settings('general');
                         </span></a>
                 </li>
             <?php } ?>
-            <?php if (!empty($this->session->has_userdata('workspace_id'))) { ?>
+
+                <?php if (check_permissions("clients", "read")) { ?>
+                    <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                            href="<?= base_url('clients'); ?>"><i class="fas fa-users text-info"></i> <span>
+                                <?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?>
+                            </span></a>
+                    </li>
+                <?php } ?>
+
+                <?php if (check_permissions("leads", "read")) { ?>
+                    <li <?= (current_url() == base_url('leads')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                            href="<?= base_url('leads'); ?>"><i class="fas fa-tty text-danger"></i> <span>
+                                <?= !empty($this->lang->line('label_leads')) ? $this->lang->line('label_leads') : 'Leads'; ?>
+                            </span></a>
+                    </li>
+                <?php } ?>
+                <!-- <li <?= (current_url() == base_url('screenshot')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('screenshot'); ?>"><i class="fas fa-phone text-danger"></i> <span>
+                                <?= !empty($this->lang->line('label_screenshot')) ? $this->lang->line('label_screenshot') : 'screenshot'; ?>
+                            </span></a>
+                    </li> -->
+                
+                <?php if (check_permissions("calendar", "read")) { ?>
+                    <li <?= (current_url() == base_url('calendar')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                            href="<?= base_url('calendar'); ?>"><i class="fas fa-calendar text-danger"></i> <span>
+                                <?= !empty($this->lang->line('label_calendar')) ? $this->lang->line('label_calendar') : 'Calendar'; ?>
+                            </span></a>
+                    </li>
+                <?php } ?>
+                
+                <?php if (check_permissions("users", "read")) { ?>
+                    <li <?= (current_url() == base_url('users')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                            href="<?= base_url('users'); ?>"><i class="fas fa-user text-warning"></i> <span>
+                                <?= !empty($this->lang->line('label_users')) ? $this->lang->line('label_users') : 'Users'; ?>
+                            </span></a>
+                    </li>
+                <?php } ?>
+                
+                
+                <?php if (check_permissions("contracts", "read")) { ?>
+                    <li <?= (current_url() == base_url('contracts') || current_url() == base_url('contracts/contracts-type')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('contracts'); ?>"><i
+                                class="fas fa-file-contract"></i> <span>
+                                <?= !empty($this->lang->line('label_contracts')) ? $this->lang->line('label_contracts') : 'Contracts'; ?>
+                            </span></a>
+                    </li>
+                <?php } ?>
+
+                <?php if (!empty($this->session->has_userdata('workspace_id'))) { ?>
                 <?php if (check_permissions("projects", "read")) {
                     ?>
                     <li class="dropdown <?= (current_url() == base_url('projects') ||
@@ -329,48 +373,6 @@ $response = get_system_settings('general');
                     </li>
                 <?php } ?>
 
-                <?php if (check_permissions("leads", "read")) { ?>
-                    <li <?= (current_url() == base_url('leads')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('leads'); ?>"><i class="fas fa-tty text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_leads')) ? $this->lang->line('label_leads') : 'Leads'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
-                <!-- <li <?= (current_url() == base_url('screenshot')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('screenshot'); ?>"><i class="fas fa-phone text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_screenshot')) ? $this->lang->line('label_screenshot') : 'screenshot'; ?>
-                            </span></a>
-                    </li> -->
-                
-                <?php if (check_permissions("calendar", "read")) { ?>
-                    <li <?= (current_url() == base_url('calendar')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('calendar'); ?>"><i class="fas fa-calendar text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_calendar')) ? $this->lang->line('label_calendar') : 'Calendar'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
-                
-                <?php if (check_permissions("users", "read")) { ?>
-                    <li <?= (current_url() == base_url('users')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('users'); ?>"><i class="fas fa-user text-warning"></i> <span>
-                                <?= !empty($this->lang->line('label_users')) ? $this->lang->line('label_users') : 'Users'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
-                <?php if (check_permissions("clients", "read")) { ?>
-                    <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('clients'); ?>"><i class="fas fa-users text-info"></i> <span>
-                                <?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
-                
-                <?php if (check_permissions("contracts", "read")) { ?>
-                    <li <?= (current_url() == base_url('contracts') || current_url() == base_url('contracts/contracts-type')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('contracts'); ?>"><i
-                                class="fas fa-file-contract"></i> <span>
-                                <?= !empty($this->lang->line('label_contracts')) ? $this->lang->line('label_contracts') : 'Contracts'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
                 <?php if (is_admin()) { ?>
                     <li <?= (current_url() == base_url('activity-logs')) ? 'class="active"' : ''; ?>><a class="nav-link"
                             href="<?= base_url('activity-logs'); ?>"><i class="fas fa-chart-line text-warning"></i><span>
