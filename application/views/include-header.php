@@ -154,13 +154,13 @@ $response = get_system_settings('general');
         <div class="sidebar-brand">
             <a href="<?= base_url('home'); ?>">
                 <img alt="MBV"
-                    src="<?= base_url('assets/icons/logo.jpg'); ?>" width="200px">
+                    src="<?= base_url('assets/icons/logo.png'); ?>" width="200px">
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="<?= base_url('home'); ?>">
             <img alt=MBV"
-            src="<?= base_url('assets/icons/logo.jpg'); ?>" width="40px">
+            src="<?= base_url('assets/icons/logo.png'); ?>" width="40px">
             </a>
         </div>
         <ul class="sidebar-menu">
