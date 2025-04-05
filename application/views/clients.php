@@ -125,8 +125,8 @@
                                     <!-- Nút Thêm -->
                                     <div>
                                         <?php if (check_permissions("clients", "create")) { ?>
-                                            <i class="btn btn-primary btn-rounded no-shadow" id="" style="margin-right: 10px;">
-                                                <?= !empty($this->lang->line('label_add_client_2')) ? $this->lang->line('label_add_client_2') : 'Add Client'; ?>
+                                            <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-from-file" style="margin-right: 10px;">
+                                                <?= !empty($this->lang->line('label_add_client_2')) ? $this->lang->line('label_add_client_2') : 'Thêm từ file'; ?>
                                             </i>
                                         <?php } ?>
                                         <?php if (check_permissions("clients", "create")) { ?>
@@ -259,14 +259,15 @@
                 </div>
             </div>
 
-            <!-- Form tạo KHHH -->
+            <!-- Form tạo KHHH đơn lẻ -->
             <?php if (check_permissions("clients", "create")) { ?>
+            <div class="card mt-4">
+                <div class="card-body">
                 <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="modal-title" class="d-none">Thêm khách hàng đơn lẻ</div>
                         <div id="modal-footer-add-title" class="d-none"><?= !empty($this->lang->line('label_add')) ? $this->lang->line('label_add') : 'Lưu'; ?></div>
-                    </div>
                     <div class="row" >
                         <!-- Tên khách hàng -->
                         <div class="col-md-4">
@@ -419,6 +420,37 @@
                 </div>
                 </form>
             <?php } ?>
+
+            </div>
+        </div>
+
+           <!-- Form thêm khách hàng từ file -->
+           <?php if (check_permissions("clients", "create")) { ?>
+            <div class="card mt-4">
+                <div class="card-body">
+                <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="modal-title" class="d-none">Thêm khách hàng từ file</div>
+                        <div id="modal-footer-add-title" class="d-none"><?= !empty($this->lang->line('label_add')) ? $this->lang->line('label_add') : 'Lưu'; ?></div>
+                        <div class="row">
+                            <div class="col-lg-7">
+                            <label for="file" class="mr-3"><?= !empty($this->lang->line('label_file')) ? $this->lang->line('label_file') : 'Upload file danh sách khách hàng (Định dạng .csv)'; ?> <span class='text-danger text-sm'>*</span></label>
+                            <div class="form-group d-flex align-items-center">
+                                <input type="file" name="upload_file" class="form-control mr-3" accept=".csv" style="max-width: 300px;" />
+                                <a href="<?= base_url('assets/project/upload/project-bulk-upload-sample.csv') ?>" class="btn btn-info" download="project-bulk-upload-sample.csv">
+                                    <?= !empty($this->lang->line('label_bulk_upload_sample_file')) ? $this->lang->line('label_bulk_upload_sample_file') : 'Tải file mẫu'; ?> <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary mb-2" id="submit_button"><?= !empty($this->lang->line('label_submit')) ? $this->lang->line('label_submit') : 'Import'; ?></button>
+                                <div id="result" style="display: none;"></div>
+                            </div>
+                        </div>
+                <?php } ?>
         </div>
     </div>
 
