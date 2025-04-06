@@ -163,76 +163,7 @@ $response = get_system_settings('general');
             src="<?= base_url('assets/icons/logo.png'); ?>" width="40px">
             </a>
         </div>
-        <ul class="sidebar-menu">
-            <li data-toggle="dropdown" class="p-2">
-                <a class="workspace-btn nav-link dropdown-toggle" href="#"><i class="fas fa-check"></i> <span>
-                        <?php
-                        if (!empty($workspace)) {
-                            $workspace_id = $this->session->userdata('workspace_id');
-                            foreach ($workspace as $row) {
-                                if ($row->id == $workspace_id) {
-                                    echo $row->title;
-                                }
-                            }
-                        } else {
-                            echo 'No Workspace Found.';
-                        } ?>
-                    </span>
-                </a>
-            </li>
-            <div class="dropdown-menu">
-                <?php
-                if (!empty($workspace)) {
-                    $workspace_id = $this->session->userdata('workspace_id');
-                    $workspace_count = count($workspace);
-                    if ($workspace_count > 5) {
-                        $workspace_count = 5;
-                    }
-                    for ($i = 0; $i < $workspace_count; $i++) {
-                        $row = $workspace[$i]; ?>
-                        <a href="<?= base_url('workspace/change/' . $row->id); ?>" class="dropdown-item has-icon">
-                            <?php if ($row->id == $workspace_id) { ?>
-                                <i class="fas fa-check"></i>
-                            <?php } ?>
-                            <?= $row->title ?>
-                            <?php if ($row->created_by == $user->id) { ?>
-                                <span class="badge badge-info projects-badge">
-                                    <?= !empty($this->lang->line('label_owner')) ? $this->lang->line('label_owner') : 'Owner'; ?>
-                                </span>
-                            <?php } ?>
-                        </a>
-                        <?php
-                    }
-                } else {
-                    echo '<a href="#" class="dropdown-item has-icon">No Workspace Found.</a>';
-                }
-                ?>
-                <div class="dropdown-divider"></div>
-                <a href="<?= base_url('workspace/manage-workspaces') ?>" class="dropdown-item has-icon">
-                    <i class="fas fa-chart-bar"></i>
-                    <?= !empty($this->lang->line('label_manage_workspaces')) ? $this->lang->line('label_manage_workspaces') . ' ' : 'Manage Workspaces '; ?>
-                    <div class="badge badge-info projects-badge"><?php echo workspace_count() ?></div>
-                </a>
-                <?php if (is_admin()) { ?>
-                    <a href="#" id="modal-add-workspace" class="dropdown-item has-icon">
-                        <i
-                            class="fas fa-plus"></i><?= !empty($this->lang->line('label_create_new_workspace')) ? $this->lang->line('label_create_new_workspace') : 'Create New Workspace'; ?>
-                    </a>
-                    <?php if (!empty($workspace)) { ?>
-                        <a href="#" data-id="<?= $workspace_id ?>" class="dropdown-item has-icon modal-edit-workspace-ajax">
-                            <i class="fas fa-edit"></i>
-                            <?= !empty($this->lang->line('label_edit_workspace')) ? $this->lang->line('label_edit_workspace') : 'Edit Workspace'; ?>
-                        </a>
-                    <?php }
-                } ?>
-                <?php if (!empty($this->session->has_userdata('workspace_id'))) { ?>
-                    <a href="<?= base_url('users/remove-user-from-workspace/' . $user->id); ?>"
-                        class="dropdown-item has-icon">
-                        <i class="fas fa-times"></i>
-                        <?= !empty($this->lang->line('label_remove_me_from_workspace')) ? $this->lang->line('label_remove_me_from_workspace') : 'Remove Me From Workspace'; ?>
-                    </a>
-                <?php } ?>
-            </div>
+        <ul class="sidebar-menu"> 
             <div class="pb-2 pl-2 pr-2">
                 <!-- Search Bar -->
                 <input type="text" class="form-control menuSearch" placeholder="Search Menu...">
@@ -251,10 +182,28 @@ $response = get_system_settings('general');
             <?php } ?>
 
                 <?php if (check_permissions("clients", "read")) { ?>
-                    <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                    <!-- <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
                             href="<?= base_url('clients'); ?>"><i class="fas fa-users text-info"></i> <span>
                                 <?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?>
                             </span></a>
+                    </li>  -->
+                <li class="dropdown <?= (current_url() == base_url('clients') ||
+                        current_url() == base_url('clients') ||
+                        current_url() == base_url('clients/assign_clients')) ? ' active' : ''; ?>">
+                        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                                class="fas fa-users text-info"></i><span><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?></span></a>
+                        <ul class="dropdown-menu">
+                            <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>>
+                                <a class="nav-link" href="<?= base_url('clients'); ?>">
+                                    <span>Quản lý KHHH</span>
+                                </a>
+                            </li>
+                            <li <?= (current_url() == base_url('clients/assign_clients')) ? 'class="active"' : ''; ?>>
+                                <a class="nav-link" href="<?= base_url('clients/assign_clients'); ?>">
+                                    <span>Phân giao KH</span>
+                                </a>
+                            </li>
+                            </ul>
                     </li>
                 <?php } ?>
 
