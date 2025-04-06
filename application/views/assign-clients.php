@@ -54,7 +54,7 @@
                                         <label>Chọn KH phân giao</label>
                                         <div class="search-container d-flex">
                                             <?php if (check_permissions("clients", "read")) { ?>
-                                            <button class="btn btn-primary btn-rounded no-shadow" id="modal-search-user">
+                                            <button class="btn btn-primary btn-rounded no-shadow" id="modal-search-client">
                                                 <i class="fas fa-search"></i> Tìm kiếm khách hàng
                                             </button>
                                             <?php } ?>

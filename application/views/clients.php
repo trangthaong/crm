@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?> &mdash; <?= get_compnay_title(); ?></title>
+    <title>Quản lý KHHH</title>
     <?php include('include-css.php'); ?>
 
 </head>

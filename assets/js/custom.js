@@ -1134,6 +1134,58 @@ $("#modal-add-from-file").fireModal({
 
 $("#modal-search-user").fireModal({
     size: 'modal-lg',
+    title: 'Tìm kiếm RM phân giao',
+    body: $("#modal-add-user-part"),
+    footerClass: 'bg-whitesmoke',
+    autoFocus: false,
+    onFormSubmit: function (modal, e, form) {
+        // Form Data
+        let form_data = $(e.target).serialize();
+
+        var formData = new FormData(this);
+        formData.append(csrfName, csrfHash);
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (result) {
+
+                csrfName = result['csrfName'];
+                csrfHash = result['csrfHash'];
+
+                if (result['error'] == false) {
+                    form.stopProgress();
+                    location.reload();
+                } else {
+                    form.stopProgress();
+                    modal.find('.modal-body').prepend('<div class="alert alert-danger">' + result['message'] + '</div>')
+                    modal.find('.alert-danger').delay(4000).fadeOut();
+                }
+
+            }
+        });
+
+        e.preventDefault();
+    },
+    shown: function (modal, form) {
+        //   console.log(form)
+    },
+    buttons: [{
+        text: modal_footer_add_title,
+        submit: true,
+        class: 'btn btn-primary btn-shadow',
+        id: 'adduserbtn',
+        handler: function (modal) { }
+    }]
+});
+
+$("#modal-search-client").fireModal({
+    size: 'modal-lg',
     title: 'Tìm kiếm Khách hàng phân giao',
     body: $("#modal-add-user-part"),
     footerClass: 'bg-whitesmoke',
