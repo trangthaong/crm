@@ -8,7 +8,7 @@ class Clients extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->model(['users_model', 'workspace_model', 'projects_model', 'notifications_model']);
+		$this->load->model(['users_model', 'Clients_model', 'workspace_model', 'projects_model', 'notifications_model']);
 		$this->load->library(['ion_auth', 'form_validation']);
 		$this->load->helper(['url', 'language']);
 		$this->load->library('session');
@@ -72,6 +72,79 @@ class Clients extends CI_Controller
 			}
 		}
 	}
+
+	public function detail($id)
+	{
+		$this->load->model('Clients_model');
+		$data['client_detail'] = $this->Clients_model->get_client_by_id($id);
+	
+		if (!$data['client_detail']) {
+			show_404(); // Hiển thị lỗi nếu không tìm thấy khách hàng
+		}
+	
+		$this->load->view('client-detail', $data);
+	}
+
+	public function assign_clients()
+    {
+		if (!check_permissions("clients", "read", "", true) || !check_permissions("users", "read", "", true)) {
+			return redirect(base_url(), 'refresh');
+		}
+		if (!$this->ion_auth->logged_in()) {
+			redirect('auth', 'refresh');
+		} else {
+			$data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+
+			$workspace_ids = explode(',', $user->workspace_id);
+
+			$section = array_map('trim', $workspace_ids);
+
+			$workspace_ids = $section;
+
+			$data['workspace'] = $workspace = $this->workspace_model->get_workspace($workspace_ids);
+			if (!empty($workspace)) {
+				if (!$this->session->has_userdata('workspace_id')) {
+					$this->session->set_userdata('workspace_id', $workspace[0]->id);
+				}
+			}
+			$data['is_admin'] =  $this->ion_auth->is_admin();
+
+			$current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
+			$user_ids = explode(',', $current_workspace_id[0]->user_id);
+			$section = array_map('trim', $user_ids);
+			$user_ids = $section;
+
+			$data['all_user'] = $this->users_model->get_user($user_ids);
+			$data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
+
+			$admin_ids = explode(',', $current_workspace_id[0]->admin_id);
+			$section = array_map('trim', $admin_ids);
+			$data['admin_ids'] = $admin_ids = $section;
+
+			$super_admin_ids = $this->users_model->get_all_super_admins_id(1);
+			$data['system_modules'] = $this->config->item('system_modules');
+            $data['modules'] = $this->users_model->modules($this->session->userdata('user_id'));			
+
+			foreach ($super_admin_ids as $super_admin_id) {
+				$temp_ids[] = $super_admin_id['user_id'];
+			}
+			$data['super_admin_ids'] = $temp_ids;
+			$workspace_id = $this->session->userdata('workspace_id');
+			if (!empty($workspace_id)) {
+				$this->load->model('Clients_model');
+				// Lấy dữ liệu từ model (nếu cần)
+				$data['clients'] = $this->Clients_model->get_all_clients(); // Lấy danh sách khách hàng
+
+				// Tải view và truyền dữ liệu
+				$this->load->view('assign-clients', $data);
+			} else {
+				redirect('home', 'refresh');
+			}
+			}
+			
+    }
+
+
 	function deactive($id = '')
 	{
 		if (defined('ALLOW_MODIFICATION') && ALLOW_MODIFICATION == 0) {
@@ -173,6 +246,41 @@ class Clients extends CI_Controller
 			// Trả về dữ liệu dưới dạng JSON
 			echo json_encode($clients);
 		}
+	}
+
+	public function upload_bulk_clients()
+	{
+		if (!check_permissions("clients", "create")) {
+			show_error('Bạn không có quyền truy cập.', 403);
+		}
+	
+		if (isset($_FILES['fileUpload']['name']) && $_FILES['fileUpload']['name'] != '') {
+			$config['upload_path'] = './uploads/clients/';
+			$config['allowed_types'] = 'csv|xlsx';
+			$config['max_size'] = 2048; // 2MB
+			$this->load->library('upload', $config);
+	
+			if (!$this->upload->do_upload('fileUpload')) {
+				$this->session->set_flashdata('error', $this->upload->display_errors());
+			} else {
+				$file_data = $this->upload->data();
+				$file_path = './uploads/clients/' . $file_data['file_name'];
+	
+				// Gọi model để xử lý file
+				$this->load->model('Clients_model');
+				$result = $this->Clients_model->process_bulk_upload($file_path);
+	
+				if ($result['status'] == 'success') {
+					$this->session->set_flashdata('success', $result['message']);
+				} else {
+					$this->session->set_flashdata('error', $result['message']);
+				}
+			}
+		} else {
+			$this->session->set_flashdata('error', 'Không có file nào được chọn.');
+		}
+	
+		redirect('clients');
 	}
 
 	function search_user_by_email($email = '')
