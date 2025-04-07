@@ -330,7 +330,7 @@ $response = get_system_settings('general');
                     </li>
                 <?php } ?>
             <?php } ?>
-            <?php if (check_permissions("projects", "read") || check_permissions("tasks", "read") || check_permissions("leads", "read") || check_permissions("invoices", "read")) {
+            <?php if (check_permissions("projects", "read") || check_permissions("tasks", "read") || check_permissions("leads", "read")) {
                 ?>
                 <li
                     class="dropdown <?= (current_url() == base_url('report/project_report') || current_url() == base_url('report/tasks_report') || current_url() == base_url('report/leads_report') || current_url() == base_url('report/invoices_report')) ? ' active' : ''; ?>">
@@ -361,15 +361,6 @@ $response = get_system_settings('general');
                                 <a class="nav-link" href="<?= base_url('report/leads_report'); ?>">
                                     <span>
                                         <?= !empty($this->lang->line('label_leads_report')) ? $this->lang->line('label_leads_report') : 'Leads Report'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <?php if (check_permissions("invoices", "read")) { ?>
-                            <li <?= (current_url() == base_url('report/invoices_report')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('report/invoices_report'); ?>">
-                                    <span>
-                                        <?= !empty($this->lang->line('label_invoices_report')) ? $this->lang->line('label_invoices_report') : 'Invoices Report'; ?>
                                     </span>
                                 </a>
                             </li>
@@ -436,94 +427,5 @@ $response = get_system_settings('general');
             </li>
         </ul>
     </aside>
-    <?php if (check_permissions("time_tracker", "create")) { ?>
-        <div class="timer" id="timer" onclick="open_timer_section()">
-            <div class="internal-section rounded-circle border shadow-sm p-1 mb-2 bg-white rounded" id="modal"
-                data-toggle="modal" data-target="#exampleModalLong">
-                <img alt="image" class="timer-img" id="timer-image" width="10%" height="10%"
-                    src="<?= base_url('assets/img/94150-clock.png'); ?>" />
-            </div>
-        </div>
-    <?php } ?>
-    <?php if (check_permissions("chat", "read")) { ?>
-        <div class="align-items-center border chat-internal-section d-flex justify-content-center mb-2 p-1 rounded rounded-circle shadow-sm"
-            id="modal">
-
-            <div id="chat-button" class="text-white"><i class="far fa-comments"></i></div>
-            <!-- Floating chat iframe -->
-            <iframe src="<?= base_url('chat/floating_chat') ?>" id="chat-iframe"
-                style="display: none; position: absolute; bottom: 65px; right: -44px; width: 450px; height: 600px; border: none;z-index:999;"></iframe>
-        </div>
-    <?php } ?>
 </div>
-</div>
-<!-- modal for timer -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Timer</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <select class="form-control select2" name="project_id" id="project_id">
-                        <option value="" selected>
-                            <?= !empty($this->lang->line('label_select_project')) ? $this->lang->line('label_select_project') : 'Select Project'; ?>
-                        </option>
-                        <?php foreach ($projects as $project) {
-                            ?>
-                            <option value="<?= $project['id'] ?>"><?= $project['title'] ?></option>
-                            <?php
-                        } ?>
-                    </select>
-                </div>
-                <div class="stopwatch">
-                    <div class="stopwatch_time">
-                        <input type="text" name="hour" id="hour" value="00" class="form-control stopwatch_time_input"
-                            readonly>
-                        <div class="stopwatch_time_lable">Hours</div>
-                    </div>
-                    <div class="stopwatch_time">
-                        <input type="text" name="minute" id="minute" value="00"
-                            class="form-control stopwatch_time_input" readonly>
-                        <div class="stopwatch_time_lable">Minutes</div>
-                    </div>
-                    <div class="stopwatch_time">
-                        <input type="text" name="second" id="second" value="00"
-                            class="form-control stopwatch_time_input" readonly>
-                        <div class="stopwatch_time_lable">Second</div>
-                    </div>
-                </div>
-                <div class="selectgroup selectgroup-pills d-flex justify-content-around mt-3">
-                    <label class="selectgroup-item">
-                        <span class="selectgroup-button selectgroup-button-icon" title="Start" id="start"
-                            onclick="startTimer()"><i class="fas fa-play"></i></span>
-                    </label>
-                    <label class="selectgroup-item">
-                        <span class="selectgroup-button selectgroup-button-icon" title="Stop" id="end"
-                            onclick="stopTimer()"><i class="fas fa-stop"></i></span>
-                    </label>
-                    <label class="selectgroup-item">
-                        <span class="selectgroup-button selectgroup-button-icon" title="Pause" id="pause"
-                            onclick="pauseTimer()"><i class="fas fa-pause"></i></span>
-                    </label>
-                </div>
-                <div class="form-group mb-0">
-                    <label
-                        class="label"><?= !empty($this->lang->line('label_message')) ? $this->lang->line('label_message') : 'Message'; ?>:</label>
-                    <textarea class="form-control" id="message" placeholder="Enter Your Message" name="message"
-                        required></textarea>
-                </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <a href="<?= base_url('time_tracker'); ?>" class="btn btn-primary"><i
-                        class="fas fa-regular fa-clock"></i> View all Timesheets</a>
-
-            </div>
-        </div>
-    </div>
 </div>

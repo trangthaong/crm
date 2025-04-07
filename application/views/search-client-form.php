@@ -38,6 +38,19 @@
                     </select>
                 </div>
 
+                <?php if (isset($context) && $context === 'campaigns_clients') { ?>
+                <!-- Loại Khách hàng -->
+                <div class="form-group">
+                    <label for="loaiKH">Loại Khách hàng</label>
+                    <select class="form-control" id="frequency" name="frequency">
+                        <option value="">Tất cả</option>
+                        <option value="low">Khách hàng hiện hữu</option>
+                        <option value="medium">Khách hàng tiềm năng</option>
+                    </select>
+                </div>
+                <?php } ?>
+
+                <?php if ((isset($context) && ($context === 'client_page' || $context === 'assign_clients'))) { ?>
                 <!-- Tần suất giao dịch -->
                 <div class="form-group">
                     <label for="frequency">Tần suất giao dịch</label>
@@ -48,6 +61,7 @@
                         <option value="high">Cao</option>
                     </select>
                 </div>
+                <?php } ?>
 
                 <?php if (isset($context) && $context === 'client_page') { ?>
                 <!-- Đơn vị -->
@@ -109,8 +123,13 @@
             data-query-params="queryParams">            
                     <thead>
                         <tr>
+                            <?php if (isset($context) && $context !== 'client_page') { ?>
+                                <th data-field="action" data-sortable="false">Click chọn</th>
+                            <?php } ?>
                             <th data-field="stt" data-sortable="false">STT</th>
-                            <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
+                            <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?>
+
+                            </th>
 
                             <th data-field="TenKH" data-sortable="true"><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></th>
 
@@ -126,12 +145,6 @@
                             <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
                             <th data-field="MaDV" data-sortable="false">Mã đơn vị mở code</th>
                             <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>
-                            <?php if (check_permissions("clients", "delete")) { ?>
-                                <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?></th>
-                                <?php //} 
-                                ?>
-                            <?php }
-                            ?>
                         </tr>   
                     </thead>
                 </table>
