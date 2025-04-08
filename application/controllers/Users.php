@@ -2,8 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Users extends CI_Controller
-{
-
+{	
 	public function __construct()
 	{
 		parent::__construct();
@@ -140,15 +139,79 @@ class Users extends CI_Controller
 
 	public function get_users_list()
 	{
-		if (!$this->ion_auth->logged_in()) {
-			redirect('auth', 'refresh');
-		} else {
-			$workspace_id = $this->session->userdata('workspace_id');
-			$user_id = $this->session->userdata('user_id');
-			return $this->users_model->get_users_list($workspace_id, $user_id);
-		}
+		if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
+
+		$user = $this->ion_auth->user()->row();
+		$role = $this->ion_auth->get_users_groups($user->id)->row()->name;
+		$data = $this->users_model->get_rms_list($user, $role);
+	
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
 
+	public function view_details($id)
+{
+    if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
+
+    // Lấy thông tin người dùng từ database
+    $user_details = $this->users_model->get_user_details($id);
+
+    // Hiển thị thông tin người dùng (có thể sử dụng view để hiển thị)
+    $data['user_details'] = $user_details;
+    $this->load->view('user-detail', $data);
+}
+
+
+	public function import()
+	{
+		if (!empty($_FILES['rm_file']['name'])) {
+			$file_ext = pathinfo($_FILES['rm_file']['name'], PATHINFO_EXTENSION);
+			if ($file_ext !== 'xlsx') {
+				$this->session->set_flashdata('error', 'Định dạng file không hợp lệ. Chỉ hỗ trợ .xlsx');
+				redirect('rm');
+			}
+	
+			$file_path = $_FILES['rm_file']['tmp_name'];
+			$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
+			$sheetData = $spreadsheet->getActiveSheet()->toArray();
+	
+			$valid = [];
+			$errors = [];
+			$rowCount = 0;
+	
+			foreach ($sheetData as $index => $row) {
+				if ($index === 0) continue; // bỏ header
+	
+				$ma_hris = trim($row[0] ?? '');
+				$ten_rm = trim($row[1] ?? '');
+	
+				if (empty($ma_hris) || empty($ten_rm)) {
+					$errors[] = ['row' => $index + 1, 'error' => 'Thiếu mã HRIS hoặc tên RM'];
+					continue;
+				}
+	
+				if (++$rowCount > 1000) {
+					$this->session->set_flashdata('error', 'Số lượng bản ghi vượt định mức (1000)');
+					redirect('rm');
+				}
+	
+				$valid[] = [
+					'ma_hris' => $ma_hris,
+					'ten_rm' => $ten_rm,
+					'ma_rm' => uniqid('RM'),
+					'created_at' => date('Y-m-d'),
+				];
+			}
+	
+			foreach ($valid as $item) {
+				$this->your_model->insert_rm($item); // thay bằng model thật của bạn
+			}
+	
+			$this->session->set_flashdata('success', 'Đã thêm ' . count($valid) . ' RM. Lỗi: ' . count($errors));
+			redirect('rm');
+		}
+	}
+	
 	public function index()
 	{
 		if (!check_permissions("users", "read", "", true)) {
@@ -329,7 +392,25 @@ class Users extends CI_Controller
 			echo json_encode($response);
 		}
 	}
-
+	public function addRM()
+	{
+		// Lấy dữ liệu dropdown từ DB hoặc định nghĩa sẵn
+		$data['department_options'] = $this->common_model->get_dropdown('departments', 'id', 'name');
+		$data['position_options'] = $this->common_model->get_dropdown('positions', 'id', 'name');
+		$data['title_options'] = $this->common_model->get_dropdown('titles', 'id', 'name');
+		$data['hris_block_options'] = $this->common_model->get_dropdown('hris_blocks', 'id', 'name');
+		$data['block_options'] = $this->common_model->get_dropdown('blocks', 'id', 'name');
+		$data['rm_level_options'] = $this->common_model->get_dropdown('rm_levels', 'id', 'name');
+	
+		// Lấy thông tin user đang đăng nhập để set mặc định các trường hệ thống
+		$user = $this->session->userdata('user_logged_in');
+		$data['user_branch'] = $user['branch_name'] ?? '';
+		$data['upload_unit'] = $user['unit_name'] ?? '';
+	
+		// Load view modal (hoặc trả về modal nếu đang xử lý bằng AJAX)
+		$this->load->view('rm/modal_add_rm', $data);
+	}
+	
 	function make_user_super_admin($id = '')
 	{
 		if (defined('ALLOW_MODIFICATION') && ALLOW_MODIFICATION == 0) {

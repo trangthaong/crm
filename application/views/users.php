@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title><?= !empty($this->lang->line('label_add_user')) ? $this->lang->line('label_add_user') : 'Add User'; ?> &mdash; <?= get_compnay_title(); ?></title>
+    <title>Quản lý RM</title>
     <?php include('include-css.php'); ?>
 
 </head>
@@ -19,12 +19,18 @@
             <div class="main-content">
                 <section class="section">
                     <div class="section-header">
-                        <h1><?= $this->lang->line('label_users') ?></h1>
-                        <div class="section-header-breadcrumb">
-                            <?php if (check_permissions("users", "create")) { ?>
-                                <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-user"><?= !empty($this->lang->line('label_add_user')) ? $this->lang->line('label_add_user') : 'Add User'; ?></i>
-                            <?php } ?>
-                        </div>
+                    <h1>Quản lý thông tin RM</h1>
+                    <div class="section-header-breadcrumb">
+                    
+    <?php if (check_permissions("users", "create")) { ?>
+        <!-- Thêm chỉ biểu tượng dấu "+" vào nút -->
+        <button class="btn btn-primary btn-rounded no-shadow" id="modal-add-user">
+            <i class="fa fa-plus"></i>
+        </button>
+    <?php } ?>
+</div>
+
+
 
                     </div>
                     <div class="section-body">
@@ -33,41 +39,138 @@
                             <div class='col-md-12'>
                                 <div class="card">
                                     <div class="card-body">
+                    
 
-                                        <table class='table-striped' id='users_list' data-toggle="table" data-url="<?= base_url('users/get_users_list') ?>" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-show-columns="true" data-show-refresh="true" data-trim-on-search="false" data-sort-name="first_name" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
-                      "fileName": "users-list",
-                      "ignoreColumn": ["state"] 
-                    }' data-query-params="queryParams">
-                                            <thead>
-                                                <tr>
-                                                    <th data-field="id" data-visible="false" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
 
-                                                    <th data-field="first_name" data-sortable="true"><?= !empty($this->lang->line('label_users')) ? $this->lang->line('label_users') : 'Users'; ?></th>
+</div>
 
-                                                    <th data-field="role" data-sortable="false"><?= !empty($this->lang->line('label_role')) ? $this->lang->line('label_role') : 'Role'; ?></th>
-                                                    <th data-field="assigned" data-sortable="false"><?= !empty($this->lang->line('label_assigned')) ? $this->lang->line('label_assigned') : 'Assigned'; ?></th>
-                                                    <?php //if ($this->ion_auth->is_admin()) { 
-                                                    ?>
-                                                    <th data-field="active" data-sortable="false"><?= !empty($this->lang->line('label_status')) ? $this->lang->line('label_status') : 'Status'; ?></th>
-                                                    <?php //} 
-                                                    ?>
+<!-- Search Tools -->
+<div class="row mb-3">
+    <div class="col-md-6 d-flex">
+        <div class="input-group w-100">
+            <input type="text" id="searchKeyword" class="form-control" placeholder="Nhập Mã RM..." maxlength="50">
+            <div class="input-group-append">
+                <button class="btn btn-primary" id="btnSearch">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-                                                    <?php //if ($this->ion_auth->is_admin()) { 
-                                                    ?>
-                                                    <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?></th>
-                                                    <?php //} 
-                                                    ?>
+    <div class="col-md-6 text-right d-flex justify-content-end gap-2">
+    <button class="btn btn-secondary mr-2" id="btnAdvancedSearch">
+        <i class="fas fa-filter"></i> Tìm kiếm nâng cao
+    </button>
+    <!-- Đổi button một xíu để kích hoạt modal -->
+<button class="btn btn-info" id="btnImportFromFile" data-toggle="modal" data-target="#importRmModal">
+    <i class="fas fa-file-import"></i> Thêm từ file
+</button>
 
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+</div>
+
+</div>
+
+<div id="advancedSearchForm" class="card p-3 mb-3" style="display: none;">
+  <div class="form-row">
+
+    <!-- Mã RM -->
+    <div class="form-group col-md-3">
+      <label for="rmCode">Mã RM</label>
+      <input type="text" class="form-control" id="rmCode" maxlength="50" placeholder="Nhập mã RM">
+    </div>
+
+    <!-- Mã HRIS -->
+    <div class="form-group col-md-3">
+      <label for="hrisCode">Mã HRIS</label>
+      <input type="text" class="form-control" id="hrisCode" maxlength="50" placeholder="Nhập mã HRIS">
+    </div>
+
+    <!-- Tên RM -->
+    <div class="form-group col-md-3">
+      <label for="rmName">Tên RM</label>
+      <input type="text" class="form-control" id="rmName" maxlength="100" placeholder="Nhập tên RM">
+    </div>
+
+    <!-- Đơn vị -->
+    <div class="form-group col-md-3">
+      <label for="unit">Đơn vị</label>
+      <select class="form-control select2" id="unit" multiple>
+        <option value="all">Tất cả</option>
+        <!-- JS sẽ đổ danh sách đơn vị tùy theo role -->
+      </select>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group col-md-3">
+      <label for="email">Email</label>
+      <input type="text" class="form-control" id="email" maxlength="100" placeholder="Nhập email">
+    </div>
+
+    <!-- Số điện thoại -->
+    <div class="form-group col-md-3">
+      <label for="phone">Số điện thoại</label>
+      <input type="text" class="form-control" id="phone" maxlength="50" placeholder="Nhập số điện thoại">
+    </div>
+
+    <!-- Khối -->
+    <div class="form-group col-md-3">
+      <label for="division">Khối</label>
+      <select class="form-control select2" id="division" multiple>
+        <!-- Load danh sách khối theo role -->
+      </select>
+    </div>
+
+    <!-- Tình trạng -->
+    <div class="form-group col-md-3">
+      <label for="status">Tình trạng</label>
+      <select class="form-control" id="status">
+        <option value="all">Tất cả</option>
+        <option value="active">Hiệu lực</option>
+        <option value="inactive">Không hiệu lực</option>
+      </select>
+    </div>
+
+  </div>
+  <div class="text-right">
+    <button class="btn btn-primary" id="btnSearch">Tìm kiếm</button>
+    <button class="btn btn-secondary" id="btnReset">Đặt lại</button>
+  </div>
+</div>
+        <table id="users_list"
+            data-toggle="table"
+            data-url="<?= base_url('users/get_users_list') ?>"
+            data-side-pagination="server"
+            data-pagination="true"
+            data-search="true"
+            data-show-refresh="true"
+            data-page-list="[5, 10, 20, 50]"
+            data-sort-name="full_name"
+            data-sort-order="asc"
+            class="table table-striped">
+            <thead>
+                <tr>
+                    <th data-field="rm_code" data-sortable="true">Mã RM</th>
+                    <th data-field="hris_code" data-sortable="true">Mã HRIS</th>
+                    <th data-field="full_name" data-sortable="true">Họ và tên</th>
+                    <th data-field="phone_number" data-sortable="false">Điện thoại</th>
+                    <th data-field="email" data-sortable="false">Email</th>
+                    <th data-field="position" data-sortable="false">Chức danh</th>
+                    <th data-field="branch_level_2_code">Mã CN cấp 2</th>
+                    <th data-field="branch_level_2_name">Tên CN cấp 2</th>
+                    <th data-field="branch_level_1_code">Mã CN cấp 1</th>
+                    <th data-field="branch_level_1_name">Tên CN cấp 1</th>
+                    <th data-field="action" data-sortable="false">Hành động</th>
+                </tr>
+            </thead>
+        </table>
+
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
+        </div>
+    </section>
+</div>
 
             <?php
             $user_permissions = $client_permissions_data = "";
@@ -147,184 +250,126 @@
             <?php if (check_permissions("users", "create")) { ?>
                 <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_email')) ? $this->lang->line('label_email') : 'Email'; ?> <?= !empty($this->lang->line('label_if_user_already_exits_in_other_workspace_than_select_email')) ? $this->lang->line('label_if_user_already_exits_in_other_workspace_than_select_email') : '(If User Already Exits In Other Workspace Than Select Email)'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'email', 'class' => 'demo-default', 'id' => 'email']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="first_name">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'first_name', 'placeholder' => !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="last_name">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'last_name', 'placeholder' => !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name', 'class' => 'form-control']) ?>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label>Mã HRIS <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'ma_hris', 'class' => 'form-control', 'maxlength' => '50', 'required' => true]) ?>
+    </div>
+</div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="password">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'password', 'placeholder' => !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6" id="password_confirm">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'password_confirm', 'placeholder' => !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Tên RM <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'ten_rm', 'class' => 'form-control', 'maxlength' => '200', 'required' => true]) ?>
+    </div>
+</div>
 
-                    <div class="col-md-6" id="date_of_birth">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Birth'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'date_of_birth', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Birth', 'class' => 'form-control datepicker']) ?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Phòng <span class="text-danger">*</span></label>
+        <?= form_dropdown('phong', $phong_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
 
-                    <div class="col-md-6" id="date_of_joining">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_date_of_joining')) ? $this->lang->line('label_date_of_joining') : 'Date of Joining'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'date_of_joining', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_date_of_joining')) ? $this->lang->line('label_date_of_joining') : 'Date of Joining', 'class' => 'form-control datepicker']) ?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Vị trí <span class="text-danger">*</span></label>
+        <?= form_dropdown('vi_tri', $vi_tri_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
 
-                    <div class="col-md-6" id="gender">
-                        <div class="form-group">
-                            <label class="form-control-label col-md-12"><?= !empty($this->lang->line('label_gender')) ? $this->lang->line('label_gender') : 'Gender'; ?></label>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Chức danh <span class="text-danger">*</span></label>
+        <?= form_dropdown('chuc_danh', $chuc_danh_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
 
-                            <input id="male" name="gender" type="radio" class="" value="male" <?php echo $this->form_validation->set_radio('gender', 0); ?> />
-                            <label for="male" class=""><?= !empty($this->lang->line('label_male')) ? $this->lang->line('label_male') : 'Male'; ?></label>
-                            <input id="female" name="gender" type="radio" class="" value="female" <?php echo $this->form_validation->set_radio('gender', 1); ?> />
-                            <label for="female" class=""><?= !empty($this->lang->line('label_female')) ? $this->lang->line('label_female') : 'Female'; ?></label>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Khối HRIS <span class="text-danger">*</span></label>
+        <?= form_dropdown('khoi_hris', $khoi_hris_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
 
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Ngày sinh <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'ngay_sinh', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
+    </div>
+</div>
 
-                    <div class="col-md-6" id="designation">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'designation', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Ngày vào MB <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'ngay_vao_mb', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
+    </div>
+</div>
 
-                    <div class="col-md-6" id="phone">
-                        <div class="form-group">
-                            <label><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone'; ?></label>
-                            <div class="input-group">
-                                <?= form_input(['name' => 'phone', 'type' => 'number', 'placeholder' => !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone', 'class' => 'form-control']) ?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Giới tính <span class="text-danger">*</span></label>
+        <?= form_dropdown('gioi_tinh', ['female' => 'Nữ', 'male' => 'Nam'], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
 
-                </div>
-                </form>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Số điện thoại <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'so_dien_thoai', 'type' => 'number', 'class' => 'form-control', 'maxlength' => '15', 'required' => true]) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Email <span class="text-danger">*</span></label>
+        <?= form_input(['name' => 'email', 'type' => 'email', 'class' => 'form-control', 'maxlength' => '50', 'required' => true, 'pattern' => '.+@.+\..+']) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Khối <span class="text-danger">*</span></label>
+        <?= form_dropdown('khoi', $khoi_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Cấp độ RM <span class="text-danger">*</span></label>
+        <?= form_dropdown('cap_do_rm', $rm_level_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+    </div>
+</div>
+
+<!-- Thông tin hệ thống -->
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Mã RM (tự sinh)</label>
+        <?= form_input(['name' => 'ma_rm', 'class' => 'form-control', 'readonly' => true, 'placeholder' => 'Tự sinh sau khi thêm']) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Chi nhánh quản lý</label>
+        <?= form_dropdown('chi_nhanh', $chi_nhanh_options ?? [], $default_chi_nhanh ?? '', ['class' => 'form-control', 'disabled' => true]) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Đơn vị upload</label>
+        <?= form_input(['name' => 'don_vi_upload', 'class' => 'form-control', 'readonly' => true, 'value' => $don_vi_upload ?? '']) ?>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Ngày upload</label>
+        <?= form_input(['name' => 'ngay_upload', 'class' => 'form-control', 'readonly' => true, 'value' => date('d/m/Y')]) ?>
+    </div>
+</div>
             <?php } ?>
-            <?= form_open('auth/edit_user', 'id="modal-edit-user-part"', 'class="modal-part"'); ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name'; ?></label>
-                        <div class="input-group">
-                            <input name="id" type="hidden" id="id" value="">
-                            <?= form_input(['name' => 'first_name', 'placeholder' => !empty($this->lang->line('label_first_name')) ? $this->lang->line('label_first_name') : 'First Name', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'last_name', 'placeholder' => !empty($this->lang->line('label_last_name')) ? $this->lang->line('label_last_name') : 'Last Name', 'class' => 'form-control']) ?>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'password', 'placeholder' => !empty($this->lang->line('label_password')) ? $this->lang->line('label_password') : 'Password', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'password_confirm', 'placeholder' => !empty($this->lang->line('label_confirm_password')) ? $this->lang->line('label_confirm_password') : 'Confirm Password', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6" id="date_of_birth">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Birth'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'date_of_birth', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_date_of_birth')) ? $this->lang->line('label_date_of_birth') : 'Date of Birth', 'class' => 'form-control datepicker']) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6" id="date_of_joining">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_date_of_joining')) ? $this->lang->line('label_date_of_joining') : 'Date of Joining'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'date_of_joining', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_date_of_joining')) ? $this->lang->line('label_date_of_joining') : 'Date of Joining', 'class' => 'form-control datepicker']) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6" id="gender">
-                    <div class="form-group">
-                        <label class="form-control-label col-md-12"><?= !empty($this->lang->line('label_gender')) ? $this->lang->line('label_gender') : 'Gender'; ?></label>
-
-                        <input id="male" name="gender" type="radio" class="" value="0" <?php echo $this->form_validation->set_radio('gender', 0); ?> />
-                        <label for="male" class=""><?= !empty($this->lang->line('label_male')) ? $this->lang->line('label_male') : 'Male'; ?></label>
-                        <input id="female" name="gender" type="radio" class="" value="1" <?php echo $this->form_validation->set_radio('gender', 1); ?> />
-                        <label for="female" class=""><?= !empty($this->lang->line('label_female')) ? $this->lang->line('label_female') : 'Female'; ?></label>
-
-                    </div>
-                </div>
-
-                <div class="col-md-6" id="designation">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'designation', 'type' => 'text', 'placeholder' => !empty($this->lang->line('label_designation')) ? $this->lang->line('label_designation') : 'Designation', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6" id="phone">
-                    <div class="form-group">
-                        <label><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone'; ?></label>
-                        <div class="input-group">
-                            <?= form_input(['name' => 'phone', 'type' => 'number', 'placeholder' => !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone', 'class' => 'form-control']) ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
             </form>
             <?php include('include-footer.php'); ?>
         </div>
@@ -338,6 +383,90 @@
 
     <!-- Page Specific JS File -->
     <script src="assets/js/page/components-user.js"></script>
+    <script>
+    $('#btnSearch').click(function () {
+        let keyword = $('#searchKeyword').val().trim();
+        if (keyword.length > 50) {
+            alert("Tối đa 50 ký tự");
+            return;
+        }
+
+        // Gửi keyword vào table
+        $('#users_list').bootstrapTable('refresh', {
+            query: {
+                search: keyword
+            }
+        });
+    });
+
+    $('#btnAdvancedSearch').click(function () {
+        $('#advanced-search-form').slideToggle();
+    });
+    $('#btnAdvancedSearch').click(function () {
+    $('#advancedSearchForm').slideToggle();
+});
+
+$('#btnReset').click(function () {
+    $('#advancedSearchForm').find('input, select').val('').trigger('change');
+});
+
+$('#btnSearch').click(function () {
+    // Gửi thông tin lọc đến bảng hoặc AJAX
+    let params = {
+        rm_code: $('#rmCode').val(),
+        hris_code: $('#hrisCode').val(),
+        rm_name: $('#rmName').val(),
+        unit: $('#unit').val(),
+        email: $('#email').val(),
+        phone: $('#phone').val(),
+        division: $('#division').val(),
+        status: $('#status').val()
+    };
+
+    $('#users_list').bootstrapTable('refresh', {
+        query: params
+    });
+});
+function indexFormatter(value, row, index) {
+  return index + 1;
+}
+
+function actionFormatter(value, row, index) {
+  return `<a href="edit/${row.id}" class="btn btn-sm btn-warning">Sửa</a>`;
+}
+
+</script>
+
+<!-- Modal Thêm RM từ file -->
+<div class="modal fade" id="importRmModal" tabindex="-1" role="dialog" aria-labelledby="importRmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <?= form_open_multipart('rm/import', ['id' => 'import-rm-form']); ?>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Thêm RM từ file Excel</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Tải file mẫu:</label>
+          <a href="<?= base_url('assets/sample-rm.xlsx') ?>" class="btn btn-sm btn-outline-info">Tải xuống</a>
+        </div>
+
+        <div class="form-group">
+          <label>Chọn file Excel (.xlsx, tối đa 1000 bản ghi)</label>
+          <input type="file" name="rm_file" accept=".xlsx" class="form-control" required>
+        </div>
+
+        <div id="import-result"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Nhập dữ liệu</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bỏ qua</button>
+      </div>
+    </div>
+    <?= form_close(); ?>
+  </div>
+</div>
 
 </body>
 

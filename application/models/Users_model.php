@@ -19,6 +19,75 @@ class Users_model extends CI_Model
         $result = $query->result_array();
         return $result[0]['role'];
     }
+    public function get_rms_list($user, $role)
+    {
+        $this->db->select('
+            rm.id,
+            rm.rm_code,
+            rm.hris_code,
+            rm.full_name,
+            rm.phone AS phone_number,
+            rm.email,
+            rm.position,
+            rm.branch_lv2_code AS branch_level_2_code,
+            rm.branch_lv2_name AS branch_level_2_name,
+            rm.branch_lv1_code AS branch_level_1_code,
+            rm.branch_lv1_name AS branch_level_1_name
+        ');
+        $this->db->from('rms as rm');
+    
+    
+        $get = $this->input->get();
+        if (isset($get['search']) && !empty($get['search'])) {
+            $search = strip_tags($get['search']);
+            $this->db->group_start();
+            $this->db->like('rm.full_name', $search);
+            $this->db->or_like('rm.email', $search);
+            $this->db->or_like('rm.rm_code', $search);
+            $this->db->group_end();
+        }
+    
+        $total_query = clone $this->db;
+        $total = $total_query->count_all_results('', false);
+    
+        $offset = isset($get['offset']) ? (int)$get['offset'] : 0;
+        $limit = isset($get['limit']) ? (int)$get['limit'] : 10;
+        $sort = isset($get['sort']) ? $get['sort'] : 'rm.id';
+        $order = isset($get['order']) ? $get['order'] : 'ASC';
+    
+        $this->db->order_by($sort, $order);
+        $this->db->limit($limit, $offset);
+    
+        $query = $this->db->get();
+        $rows = $query->result_array();
+    
+        // Thêm cột action
+        foreach ($rows as &$row) {
+            // Tạo liên kết cho mã RM
+            $row['rm_code'] = '<a href="' . base_url('users/view-details/' . $row['id']) . '" target="_blank">' . $row['rm_code'] . '</a>';
+            $row['action'] = '<a href="' . base_url('users/edit-profile/' . $row['id']) . '" target="_blank"><i class="fas fa-edit"></i></a>';
+        }
+
+    
+        return [
+            'total' => $total,
+            'rows' => $rows
+        ];
+    }
+
+    public function get_user_details($id)
+    {
+        $this->db->select('*');
+        $this->db->from('rms');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+    
+
+
+    
+
 
     function get_users_list($workspace_id, $user_id = '')
     {
@@ -353,64 +422,64 @@ class Users_model extends CI_Model
         }
     }
 
-    function remove_user_from_workspace($workspace_id, $user_id)
-    {
-        $this->remove_user_from_admin($workspace_id, $user_id);
-        $query = $this->db->query('SELECT user_id FROM workspace WHERE FIND_IN_SET(' . $user_id . ',`user_id`) and id =' . $workspace_id . ' ');
-        // print_r($this->db->last_query());
-        // return false;
-        $result = $query->result_array();
-        if (!empty($result)) {
-            $admin_id = $result[0]['user_id'];
-            // $admin_id = preg_replace('\s+/', '', $admin_id);
-            $admin_ids = explode(",", $admin_id);
-            if (($key = array_search($user_id, $admin_ids)) !== false) {
-                unset($admin_ids[$key]);
-            }
-            $admin_id = implode(",", $admin_ids);
-            if ($this->db->query('UPDATE workspace SET user_id="' . $admin_id . '" WHERE id=' . $workspace_id . ' ')) {
+    // function remove_user_from_workspace($workspace_id, $user_id)
+    // {
+    //     $this->remove_user_from_admin($workspace_id, $user_id);
+    //     $query = $this->db->query('SELECT user_id FROM workspace WHERE FIND_IN_SET(' . $user_id . ',`user_id`) and id =' . $workspace_id . ' ');
+    //     // print_r($this->db->last_query());
+    //     // return false;
+    //     $result = $query->result_array();
+    //     if (!empty($result)) {
+    //         $admin_id = $result[0]['user_id'];
+    //         // $admin_id = preg_replace('\s+/', '', $admin_id);
+    //         $admin_ids = explode(",", $admin_id);
+    //         if (($key = array_search($user_id, $admin_ids)) !== false) {
+    //             unset($admin_ids[$key]);
+    //         }
+    //         $admin_id = implode(",", $admin_ids);
+    //         if ($this->db->query('UPDATE workspace SET user_id="' . $admin_id . '" WHERE id=' . $workspace_id . ' ')) {
 
-                $query = $this->db->query('SELECT workspace_id FROM users WHERE FIND_IN_SET(' . $workspace_id . ',`workspace_id`) and id =' . $user_id . ' ');
-                $result = $query->result_array();
-                if (!empty($result)) {
-                    $admin_id = $result[0]['workspace_id'];
-                    // $admin_id = preg_replace('\s+/', '', $admin_id);
-                    $admin_ids = explode(",", $admin_id);
-                    if (($key = array_search($workspace_id, $admin_ids)) !== false) {
-                        unset($admin_ids[$key]);
-                    }
-                    $admin_id = implode(",", $admin_ids);
-                    $this->db->query('UPDATE users SET workspace_id="' . $admin_id . '" WHERE id=' . $user_id . ' ');
+    //             $query = $this->db->query('SELECT workspace_id FROM users WHERE FIND_IN_SET(' . $workspace_id . ',`workspace_id`) and id =' . $user_id . ' ');
+    //             $result = $query->result_array();
+    //             if (!empty($result)) {
+    //                 $admin_id = $result[0]['workspace_id'];
+    //                 // $admin_id = preg_replace('\s+/', '', $admin_id);
+    //                 $admin_ids = explode(",", $admin_id);
+    //                 if (($key = array_search($workspace_id, $admin_ids)) !== false) {
+    //                     unset($admin_ids[$key]);
+    //                 }
+    //                 $admin_id = implode(",", $admin_ids);
+    //                 $this->db->query('UPDATE users SET workspace_id="' . $admin_id . '" WHERE id=' . $user_id . ' ');
 
-                    if ($this->db->query('UPDATE users SET workspace_id="' . $admin_id . '" WHERE id=' . $user_id . ' ')) {
+    //                 if ($this->db->query('UPDATE users SET workspace_id="' . $admin_id . '" WHERE id=' . $user_id . ' ')) {
 
-                        $query = $this->db->query('SELECT id,user_id FROM projects WHERE FIND_IN_SET(' . $user_id . ',`user_id`) and workspace_id =' . $workspace_id . ' ');
-                        $results = $query->result_array();
-                        if (!empty($results)) {
-                            foreach ($results as $result) {
-                                $admin_id = $result['user_id'];
-                                $id = $result['id'];
-                                $admin_id = preg_replace('\s+/', '', $admin_id);
-                                $admin_ids = explode(",", $admin_id);
-                                if (($key = array_search($user_id, $admin_ids)) !== false) {
-                                    unset($admin_ids[$key]);
-                                }
-                                $admin_id = implode(",", $admin_ids);
-                                $this->db->query('UPDATE projects SET user_id="' . $admin_id . '" WHERE id=' . $id . ' ');
-                            }
-                        }
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+    //                     $query = $this->db->query('SELECT id,user_id FROM projects WHERE FIND_IN_SET(' . $user_id . ',`user_id`) and workspace_id =' . $workspace_id . ' ');
+    //                     $results = $query->result_array();
+    //                     if (!empty($results)) {
+    //                         foreach ($results as $result) {
+    //                             $admin_id = $result['user_id'];
+    //                             $id = $result['id'];
+    //                             $admin_id = preg_replace('\s+/', '', $admin_id);
+    //                             $admin_ids = explode(",", $admin_id);
+    //                             if (($key = array_search($user_id, $admin_ids)) !== false) {
+    //                                 unset($admin_ids[$key]);
+    //                             }
+    //                             $admin_id = implode(",", $admin_ids);
+    //                             $this->db->query('UPDATE projects SET user_id="' . $admin_id . '" WHERE id=' . $id . ' ');
+    //                         }
+    //                     }
+    //                     return true;
+    //                 } else {
+    //                     return false;
+    //                 }
+    //             }
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     function get_user($user_id, $groups = [])
     {
@@ -482,18 +551,21 @@ class Users_model extends CI_Model
         return $query->result_array();
     }
 
-    function get_user_by_id($user_id, $row = false)
-    {
-
-        $this->db->from('users');
-        $this->db->where('id', $user_id);
-        $query = $this->db->get();
-        if ($row) {
-            return $query->row();
-        } else {
-            return $query->result_array();
-        }
+    public function get_user_by_id($user_id)
+{
+    $this->db->select('user_id, rm_code, hris_code, full_name, phone, email, position, branch_lv2_code, branch_lv2_name, branch_lv1_code, branch_lv1_name');
+    $this->db->from('rms');
+    $this->db->where('user_id', $user_id);
+    $query = $this->db->get();
+    
+    // Nếu có người dùng, trả về kết quả
+    if ($query->num_rows() > 0) {
+        return $query->row();  // Trả về đối tượng người dùng
+    } else {
+        return null;  // Nếu không tìm thấy người dùng
     }
+}
+
     function get_user_by_email($email)
     {
 
