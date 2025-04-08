@@ -98,8 +98,7 @@
             <?php if (isset($context) && $context === 'client_page') { ?>
                 <div>
                     <?php if (check_permissions("clients", "create")) { ?>
-                        <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-from-file" style="margin-right: 10px;">
-                            <?= !empty($this->lang->line('label_add_client_2')) ? $this->lang->line('label_add_client_2') : 'Thêm từ file'; ?>
+                        <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-from-file" style="margin-right: 10px; font-style: normal;">Thêm từ file
                         </i>
                     <?php } ?>
                     <?php if (check_permissions("clients", "create")) { ?>
@@ -126,8 +125,7 @@
                             <?php if (isset($context) && $context !== 'client_page') { ?>
                                 <th data-field="action" data-sortable="false">Click chọn</th>
                             <?php } ?>
-                            <th data-field="stt" data-sortable="false">STT</th>
-                            <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?>
+                            <th data-field="MaKH" data-sortable="true">Mã khách hàng</th>
 
                             </th>
 
@@ -147,6 +145,7 @@
                             <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>
                         </tr>   
                     </thead>
+                    
                 </table>
                 </div>
             </div>
