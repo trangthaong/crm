@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title><?= !empty($this->lang->line('label_add_user')) ? $this->lang->line('label_add_user') : 'Add RM'; ?> &mdash; <?= get_compnay_title(); ?></title>
+    <title>Quản lý RM</title>
     <?php include('include-css.php'); ?>
 
 </head>
@@ -136,36 +136,41 @@
     <button class="btn btn-secondary" id="btnReset">Đặt lại</button>
   </div>
 </div>
+        <table id="users_list"
+            data-toggle="table"
+            data-url="<?= base_url('users/get_users_list') ?>"
+            data-side-pagination="server"
+            data-pagination="true"
+            data-search="true"
+            data-show-refresh="true"
+            data-page-list="[5, 10, 20, 50]"
+            data-sort-name="full_name"
+            data-sort-order="asc"
+            class="table table-striped">
+            <thead>
+                <tr>
+                    <th data-field="rm_code" data-sortable="true">Mã RM</th>
+                    <th data-field="hris_code" data-sortable="true">Mã HRIS</th>
+                    <th data-field="full_name" data-sortable="true">Họ và tên</th>
+                    <th data-field="phone_number" data-sortable="false">Điện thoại</th>
+                    <th data-field="email" data-sortable="false">Email</th>
+                    <th data-field="position" data-sortable="false">Chức danh</th>
+                    <th data-field="branch_level_2_code">Mã CN cấp 2</th>
+                    <th data-field="branch_level_2_name">Tên CN cấp 2</th>
+                    <th data-field="branch_level_1_code">Mã CN cấp 1</th>
+                    <th data-field="branch_level_1_name">Tên CN cấp 1</th>
+                    <th data-field="action" data-sortable="false">Hành động</th>
+                </tr>
+            </thead>
+        </table>
 
-
-                                        <table class='table-striped' id='users_list' data-toggle="table" data-url="<?= base_url('users/get_users_list') ?>" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="true" data-show-columns="true" data-show-refresh="true" data-trim-on-search="false" data-sort-name="first_name" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
-                      "fileName": "users-list",
-                      "ignoreColumn": ["state"] 
-                    }' data-query-params="queryParams">
-                    <thead>
-    <tr>
-        <th data-field="rm_code" data-sortable="true"><?= !empty($this->lang->line('label_rm_code')) ? $this->lang->line('label_rm_code') : 'Mã RM'; ?></th>
-        <th data-field="hris_code" data-sortable="true"><?= !empty($this->lang->line('label_hris_code')) ? $this->lang->line('label_hris_code') : 'Mã HRIS'; ?></th>
-        <th data-field="full_name" data-sortable="true"><?= !empty($this->lang->line('label_full_name')) ? $this->lang->line('label_full_name') : 'Họ và tên'; ?></th>
-        <th data-field="phone_number" data-sortable="false"><?= !empty($this->lang->line('label_phone_number')) ? $this->lang->line('label_phone_number') : 'Điện thoại'; ?></th>
-        <th data-field="email" data-sortable="false"><?= !empty($this->lang->line('label_email')) ? $this->lang->line('label_email') : 'Email'; ?></th>
-        <th data-field="position" data-sortable="false"><?= !empty($this->lang->line('label_position')) ? $this->lang->line('label_position') : 'Chức danh'; ?></th>
-        <th data-field="branch_level_2_code" data-sortable="false"><?= !empty($this->lang->line('label_branch_code_level_2')) ? $this->lang->line('label_branch_code_level_2') : 'Mã chi nhánh cấp 2'; ?></th>
-        <th data-field="branch_level_2_name" data-sortable="false"><?= !empty($this->lang->line('label_branch_name_level_2')) ? $this->lang->line('label_branch_name_level_2') : 'Tên chi nhánh cấp 2'; ?></th>
-        <th data-field="branch_level_1_code" data-sortable="false"><?= !empty($this->lang->line('label_branch_code_level_1')) ? $this->lang->line('label_branch_code_level_1') : 'Mã chi nhánh cấp 1'; ?></th>
-        <th data-field="branch_level_1_name" data-sortable="false"><?= !empty($this->lang->line('label_branch_name_level_1')) ? $this->lang->line('label_branch_name_level_1') : 'Tên chi nhánh cấp 1'; ?></th>
-        <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Hành động'; ?></th>
-    </tr>
-</thead>
-
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
+        </div>
+    </section>
+</div>
 
             <?php
             $user_permissions = $client_permissions_data = "";

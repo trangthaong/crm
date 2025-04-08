@@ -2,34 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Users extends CI_Controller
-{
-	public function get_rm_list()
-	{
-		$user = $this->ion_auth->user()->row(); // Lấy thông tin người dùng hiện tại
-		$role = $this->ion_auth->get_users_groups($user->id)->row()->name;
-	
-		$this->db->select('rm.id, rm.rm_code, rm.hris_code, rm.full_name, rm.phone, rm.email, rm.position, 
-						   rm.branch_lv2_code, rm.branch_lv2_name, rm.branch_lv1_code, rm.branch_lv1_name');
-	
-		$this->db->from('rms as rm');
-	
-		if ($role == 'RM') {
-			// RM chỉ xem được thông tin của chính họ
-			$this->db->where('rm.user_id', $user->id);
-		} elseif ($role == 'CBQL') {
-			// CBQL xem tất cả RM trong chi nhánh của mình
-			$this->db->where('rm.branch_lv2_code', $user->branch_lv2_code);
-		}
-		
-		$query = $this->db->get();
-		$result = $query->result();
-	
-		echo json_encode([
-			'total' => count($result),
-			'rows' => $result
-		]);
-	}
-	
+{	
 	public function __construct()
 	{
 		parent::__construct();
@@ -166,14 +139,29 @@ class Users extends CI_Controller
 
 	public function get_users_list()
 	{
-		if (!$this->ion_auth->logged_in()) {
-			redirect('auth', 'refresh');
-		} else {
-			$workspace_id = $this->session->userdata('workspace_id');
-			$user_id = $this->session->userdata('user_id');
-			return $this->users_model->get_users_list($workspace_id, $user_id);
-		}
+		if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
+
+		$user = $this->ion_auth->user()->row();
+		$role = $this->ion_auth->get_users_groups($user->id)->row()->name;
+		$data = $this->users_model->get_rms_list($user, $role);
+	
+		header('Content-Type: application/json');
+		echo json_encode($data);
 	}
+
+	public function view_details($id)
+{
+    if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
+
+    // Lấy thông tin người dùng từ database
+    $user_details = $this->users_model->get_user_details($id);
+
+    // Hiển thị thông tin người dùng (có thể sử dụng view để hiển thị)
+    $data['user_details'] = $user_details;
+    $this->load->view('user-detail', $data);
+}
+
+
 	public function import()
 	{
 		if (!empty($_FILES['rm_file']['name'])) {
