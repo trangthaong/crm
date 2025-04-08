@@ -20,7 +20,6 @@
                     <h1><?= !empty($this->lang->line('label_client')) ? $this->lang->line('label_client') : 'Quản lý Khách hàng hiện hữu'; ?></h1>
                 <div class="section-header-breadcrumb"></div>
                 </div>
-            </section>
 
             <div class="section-body">
             <?php $context = 'client_page'; ?>
@@ -84,9 +83,6 @@
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                     
-                        </div>
-                    </div>
-                </div>
 
         <!-- Form tạo KHHH đơn lẻ -->
         <?php if (check_permissions("clients", "create")) { ?>

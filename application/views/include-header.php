@@ -310,30 +310,6 @@ $response = get_system_settings('general');
                 </li>
                 <li class="menu-header">-</li>
             <?php } ?>
-            <li class="language-btn dropup">
-                <a data-toggle="dropdown" class="nav-link dropdown-toggle" href="#"><i class="fas fa-language"></i>
-                    <span><?= isset($user->lang) ? ucfirst($user->lang) : ' '; ?></span>
-                </a>
-                <div class="dropdown-menu">
-                    <?php
-                    $languages = get_languages();
-                    if (!empty($languages)) {
-                        foreach ($languages as $lang) { ?>
-                            <a href='<?= base_url("languageswitch/switchlang/" . $lang['language']); ?>'
-                                class="dropdown-item has-icon"><?= (($lang['language'] == $user->lang) ? '<i class="fas fa-check"></i>' : ''); ?>
-                                <?= ucfirst($lang['language']); ?> </a>
-                        <?php }
-                    }
-                    if (is_admin()) {
-                        ?>
-                        <div class="dropdown-divider"></div>
-                        <a href='<?= base_url("languages/change/" . $user->lang); ?>' class="dropdown-item has-icon">
-                            <?= !empty($this->lang->line('label_create_and_customize')) ? $this->lang->line('label_create_and_customize') : 'Create & Customize'; ?>
-                        </a>
-                    <?php } ?>
-
-                </div>
-            </li>
         </ul>
     </aside>
 </div>

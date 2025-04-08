@@ -168,50 +168,43 @@
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
-
+                                <div class="modal-footer">
+                                    <button type="submit" id="submit_button_update" class="btn btn-primary"><?= !empty($this->lang->line('label_save')) ? $this->lang->line('label_save') : 'Save'; ?></button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" id="submit_button_update" class="btn btn-primary"><?= !empty($this->lang->line('label_save')) ? $this->lang->line('label_save') : 'Save'; ?></button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                        </form>
                     </div>
                 </div>
+
+                <!-- Form tìm kiếm RM -->
+                <?php if (check_permissions("users", "read")) { ?>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <!-- Mở Form tìm kiếm -->
+                            <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                                <?php $context = 'assign_users'; ?>
+                                <?php include('search-rm-form.php'); ?>
+                            </form>
+                        </div>
+                    </div>
+                <?php } ?>
+                
+                <!-- Form tìm kiếm khách hàng -->
+                <?php if (check_permissions("clients", "read")) { ?>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <!-- Mở Form tìm kiếm -->
+                            <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                                <?php $context = 'assign_clients'; ?>
+                                <?php include('search-client-form.php'); ?>
+                            </form>
+                        </div>
+                    </div>
+                <?php } ?>   
             </div>
-
-            <!-- Form tìm kiếm RM -->
-            <?php if (check_permissions("users", "read")) { ?>
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <!-- Mở Form tìm kiếm -->
-                        <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
-                            <?php $context = 'assign_users'; ?>
-                            <?php include('search-rm-form.php'); ?>
-                        </form>
-                    </div>
-                </div>
-            <?php } ?>
-            
-            <!-- Form tìm kiếm khách hàng -->
-            <?php if (check_permissions("clients", "read")) { ?>
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <!-- Mở Form tìm kiếm -->
-                        <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
-                            <?php $context = 'assign_clients'; ?>
-                            <?php include('search-client-form.php'); ?>
-                        </form>
-                    </div>
-                </div>
-            <?php } ?>
-
-            
-            
         </div>
-    </div>
 
     <script>
         not_in_workspace_user = <?php echo json_encode(array_values($not_in_workspace_user)); ?>;
