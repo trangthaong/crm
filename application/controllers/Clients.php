@@ -18,7 +18,7 @@ class Clients extends CI_Controller
 	}
 	public function index()
 	{
-		if (!check_permissions("clients", "read", "", true) || !check_permissions("users", "read", "", true)) {
+		if (!check_permissions("clients", "read", "", true) ) {
 			return redirect(base_url(), 'refresh');
 		}
 		if (!$this->ion_auth->logged_in()) {
@@ -26,6 +26,7 @@ class Clients extends CI_Controller
 		} else {
 
 			$data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+			
 
 			$workspace_ids = explode(',', $user->workspace_id);
 
@@ -52,6 +53,7 @@ class Clients extends CI_Controller
 			$admin_ids = explode(',', $current_workspace_id[0]->admin_id);
 			$section = array_map('trim', $admin_ids);
 			$data['admin_ids'] = $admin_ids = $section;
+			$data['per_page'] = 5;
 
 			$super_admin_ids = $this->users_model->get_all_super_admins_id(1);
 			$data['system_modules'] = $this->config->item('system_modules');
@@ -62,10 +64,12 @@ class Clients extends CI_Controller
 			}
 			$data['super_admin_ids'] = $temp_ids;
 			$workspace_id = $this->session->userdata('workspace_id');
+			
 			if (!empty($workspace_id)) {
 				$projects = $this->projects_model->get_projects($this->session->userdata('workspace_id'));
                 $data['projects'] = $projects;
 				$data['notifications'] = !empty($workspace_id) ? $this->notifications_model->get_notifications($this->session->userdata['user_id'], $workspace_id) : array();
+				// Gọi hàm get_clients_list từ model
 				$this->load->view('clients', $data);
 			} else {
 				redirect('home', 'refresh');
@@ -73,17 +77,28 @@ class Clients extends CI_Controller
 		}
 	}
 
-	public function detail($id)
-	{
-		$this->load->model('Clients_model');
-		$data['client_detail'] = $this->Clients_model->get_client_by_id($id);
-	
-		if (!$data['client_detail']) {
-			show_404(); // Hiển thị lỗi nếu không tìm thấy khách hàng
-		}
-	
-		$this->load->view('client-detail', $data);
-	}
+	public function detail($maKH = null, $user_id = null, $workspace_id = null)
+{
+	//Lấy thông tin người dùng
+	$data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+	$workspace_ids = explode(',', $user->workspace_id);
+
+    // Truy vấn thông tin chi tiết khách hàng dựa trên MaKH
+    $data['client_detail'] = $this->Clients_model->get_client_by_id($maKH);
+
+    // Kiểm tra nếu không tìm thấy khách hàng
+    if (!$data['client_detail']) {
+        show_404(); // Hiển thị lỗi nếu không tìm thấy khách hàng
+    }
+
+    // Truyền thông tin user_id và workspace_id vào view
+    $data['user_id'] = $user_id;
+    $data['workspace_id'] = $workspace_id;
+
+    // Tải view với dữ liệu chi tiết khách hàng và thông tin người dùng
+    $this->load->view('client-detail', $data);
+}
+
 
 	public function assign_clients()
     {

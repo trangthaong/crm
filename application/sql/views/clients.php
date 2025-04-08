@@ -33,7 +33,7 @@
                 <div class="card-body"> 
                   <table class='table-striped' id='users_list'
                     data-toggle="table"
-                    data-url="<?=base_url('clients/get_users_list')?>"
+                    data-url="<?=base_url('clients/get_clients_list')?>"
                     data-click-to-select="true"
                     data-side-pagination="server"
                     data-pagination="true"
@@ -46,24 +46,29 @@
                     data-maintain-selected="true"
                     data-export-types='["txt","excel"]'
                     data-export-options='{
-                      "fileName": "users-list",
+                      "fileName": "clients-list",
                       "ignoreColumn": ["state"] 
                     }'
                     data-query-params="queryParams">
                     <thead>
                       <tr>
-                        <th data-field="id" data-visible="false" data-sortable="true"><?= !empty($this->lang->line('label_id'))?$this->lang->line('label_id'):'ID'; ?></th>
-                        
-                        <th data-field="first_name" data-sortable="true"><?= !empty($this->lang->line('label_clients'))?$this->lang->line('label_clients'):'Clients'; ?></th>
-                        
-                        <th data-field="company" data-sortable="true"><?= !empty($this->lang->line('label_company'))?$this->lang->line('label_company'):'Company'; ?></th>
+                        <th data-field="stt" data-sortable="false">STT</th>
+                                                    <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
 
-                        <th data-field="phone" data-visible="false" data-sortable="true"><?= !empty($this->lang->line('label_phone'))?$this->lang->line('label_phone'):'Phone'; ?></th>
+                                                    <th data-field="TenKH" data-sortable="true"><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></th>
 
-                        <th data-field="assigned" data-sortable="false"><?= !empty($this->lang->line('label_assigned'))?$this->lang->line('label_assigned'):'Assigned'; ?></th>
-                        <?php if($this->ion_auth->is_admin()){ ?>
-                        <th data-field="active" data-sortable="false"><?= !empty($this->lang->line('label_status'))?$this->lang->line('label_status'):'Status'; ?></th>
-                        <?php } ?>
+                                                    <th data-field="Khoi" data-sortable="true"><?= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Khối'; ?></th>
+
+                                                    <th data-field="CASA" data-sortable="true">CASA hiện tại</th>
+
+                                                    <th data-field="TK" data-sortable="false">Tiết kiệm hiện tại</th>
+                                                    <th data-field="TD" data-sortable="false">Tín dụng hiện tại</th>
+                                                    <th data-field="SDT" data-sortable="true">Số điện thoại</th>
+
+                                                    <th data-field="CNquanly" data-sortable="false">Sector</th>
+                                                    <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
+                                                    <th data-field="MaDV" data-sortable="false">Mã đơn vị mở code</th>
+                                                    <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>
                         <?php if($this->ion_auth->is_admin()){ ?>
                         <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action'))?$this->lang->line('label_action'):'Action'; ?></th>
                         <?php } ?>
