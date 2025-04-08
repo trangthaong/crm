@@ -163,23 +163,14 @@ $response = get_system_settings('general');
             src="<?= base_url('assets/icons/logo.png'); ?>" width="40px">
             </a>
         </div>
-        <ul class="sidebar-menu"> 
+        <ul class="sidebar-menu" style="margin-top: 50px; display: flex; flex-direction: column; gap: 10px;"> 
             <div class="pb-2 pl-2 pr-2">
-                <!-- Search Bar -->
-                <input type="text" class="form-control menuSearch" placeholder="Search Menu...">
             </div>
             <li <?= (current_url() == base_url('home')) ? 'class="active"' : ''; ?>><a class="nav-link"
                     href="<?= base_url('home'); ?>"><i class="fas fa-fire text-danger"></i> <span>
                         <?= !empty($this->lang->line('label_dashboard')) ? $this->lang->line('label_dashboard') : 'Dashboard'; ?>
                     </span></a></li>
             
-            <?php if (check_permissions("statuses", "read")) { ?>
-                <li <?= (current_url() == base_url('statuses')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                        href="<?= base_url('statuses'); ?>"><i class="fas fa-file-contract"></i> <span>
-                            <?= !empty($this->lang->line('label_statuses')) ? $this->lang->line('label_statuses') : 'Statuses'; ?>
-                        </span></a>
-                </li>
-            <?php } ?>
 
                 <?php if (check_permissions("clients", "read")) { ?>
                     <!-- <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
@@ -219,13 +210,6 @@ $response = get_system_settings('general');
                             </span></a>
                     </li> -->
                 
-                <?php if (check_permissions("calendar", "read")) { ?>
-                    <li <?= (current_url() == base_url('calendar')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('calendar'); ?>"><i class="fas fa-calendar text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_calendar')) ? $this->lang->line('label_calendar') : 'Calendar'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
                 
                 <?php if (check_permissions("users", "read")) { ?>
                     <li <?= (current_url() == base_url('users')) ? 'class="active"' : ''; ?>><a class="nav-link"
@@ -236,13 +220,6 @@ $response = get_system_settings('general');
                 <?php } ?>
                 
                 
-                <?php if (check_permissions("contracts", "read")) { ?>
-                    <li <?= (current_url() == base_url('contracts') || current_url() == base_url('contracts/contracts-type')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('contracts'); ?>"><i
-                                class="fas fa-file-contract"></i> <span>
-                                <?= !empty($this->lang->line('label_contracts')) ? $this->lang->line('label_contracts') : 'Contracts'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
 
                 <?php if (!empty($this->session->has_userdata('workspace_id'))) { ?>
                 <?php if (check_permissions("projects", "read")) {
@@ -297,78 +274,10 @@ $response = get_system_settings('general');
                         </ul>
                     </li>
                 <?php } ?>
-                <?php if (check_permissions("tasks", "read")) { ?>
-                    <li
-                        class="dropdown <?= (current_url() == base_url('tasks') || current_url() == base_url('projects/bulk_task_upload')) ? ' active' : ''; ?>">
-                        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
-                                class="far fa-newspaper text-warning"></i><span><?= !empty($this->lang->line('label_tasks')) ? $this->lang->line('label_tasks') : 'Tasks'; ?></span></a>
-                        <ul class="dropdown-menu">
-                            <li <?= (current_url() == base_url('tasks') || $this->uri->segment(2) == 'tasks') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('tasks'); ?>"><i
-                                        class="far fa-newspaper text-success"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_tasks')) ? $this->lang->line('label_tasks') : 'Tasks'; ?>
-                                    </span></a>
-                            </li>
-                            <li <?= (current_url() == base_url('projects/bulk_task_upload') || $this->uri->segment(2) == 'projects/bulk_task_upload') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('projects/bulk_task_upload'); ?>"> <i
-                                        class="fas fa-upload text-danger"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_bulk_upload')) ? $this->lang->line('label_bulk_upload') : 'Bulk Upload'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                <?php } ?>
+                
 
-                <?php if (is_admin()) { ?>
-                    <li <?= (current_url() == base_url('activity-logs')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('activity-logs'); ?>"><i class="fas fa-chart-line text-warning"></i><span>
-                                <?= !empty($this->lang->line('label_activity_logs')) ? $this->lang->line('label_activity_logs') : 'Activity Logs'; ?>
-                            </span></a>
-                    </li>
-                <?php } ?>
             <?php } ?>
-            <?php if (check_permissions("projects", "read") || check_permissions("tasks", "read") || check_permissions("leads", "read")) {
-                ?>
-                <li
-                    class="dropdown <?= (current_url() == base_url('report/project_report') || current_url() == base_url('report/tasks_report') || current_url() == base_url('report/leads_report') || current_url() == base_url('report/invoices_report')) ? ' active' : ''; ?>">
-                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
-                            class="fas fa-money-bill-alt text-info"></i>
-                        <span><?= !empty($this->lang->line('label_report')) ? $this->lang->line('label_report') : 'Report'; ?></span></a>
-                    <ul class="dropdown-menu">
-                        <?php if (check_permissions("projects", "read")) { ?>
-                            <li <?= (current_url() == base_url('report/project_report')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('report/project_report'); ?>">
-                                    <span>
-                                        <?= !empty($this->lang->line('label_projects_report')) ? $this->lang->line('label_projects_report') : 'Projects Report'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <?php if (check_permissions("tasks", "read")) { ?>
-                            <li <?= (current_url() == base_url('report/tasks_report')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('report/tasks_report'); ?>">
-                                    <span>
-                                        <?= !empty($this->lang->line('label_tasks_report')) ? $this->lang->line('label_tasks_report') : 'Tasks Report'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <?php if (check_permissions("leads", "read")) { ?>
-                            <li <?= (current_url() == base_url('report/leads_report')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('report/leads_report'); ?>">
-                                    <span>
-                                        <?= !empty($this->lang->line('label_leads_report')) ? $this->lang->line('label_leads_report') : 'Leads Report'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                </li>
-            <?php }
-            ?>
+            
             
             <?php if (is_admin()) { ?>
                 <li
