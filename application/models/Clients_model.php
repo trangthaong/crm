@@ -65,11 +65,11 @@ class Clients_model extends CI_Model
         $bulkData['rows'] = array();
 
         foreach ($res as $row) {
-            // Gắn liên kết vào Mã KH và chỉ truyền MaKH vào trang detail
-            $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH']) . '" target="_blank">' . $row['MaKH'] . '</a>';
+            // Gắn liên kết vào Mã KH và truyền user_id vào trang detail
+            $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
             $bulkData['rows'][] = $row;
         }
-            
+        
 
         return $bulkData;
     }
@@ -404,4 +404,41 @@ class Clients_model extends CI_Model
         $query = $this->db->get('users');
         return $query->result_array();
     }
+
+    public function search_users($customer_code, $customer_name, $phone, $identity, $block, $frequency, $unit, $rm_manager)
+{
+    // Building the query to search users with optional parameters
+    $this->db->select('*');
+    $this->db->from('client'); // Replace 'users' with your actual table name
+
+    if ($customer_code) {
+        $this->db->where('MaKH', $customer_code);
+    }
+    if ($customer_name) {
+        $this->db->like('TenKH', $customer_name); // Using LIKE for partial search
+    }
+    if ($phone) {
+        $this->db->where('SDT', $phone);
+    }
+    if ($identity) {
+        $this->db->where('CMT/Hochieu', $identity);
+    }
+    if ($block) {
+        $this->db->where('Khoi', $block);
+    }
+    if ($frequency) {
+        $this->db->where('Tansuatgiaodich', $frequency);
+    }
+    if ($unit) {
+        $this->db->where('workspace_id', $unit);
+    }
+    if ($rm_manager) {
+        $this->db->where('RMquanly', $rm_manager);
+    }
+
+    $query = $this->db->get();
+
+    return $query->result(); // Return the query result
+}
+
 }
