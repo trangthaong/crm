@@ -40,8 +40,8 @@
     <div class="footer-left">
     </div>
     <div>
-        <?= !empty($this->lang->line('label_copyright')) ? $this->lang->line('label_copyright') : 'Copyright'; ?> &copy; <?= date('Y'); ?> <div class="bullet"></div> <span class="badge badge-success">v <?= (isset($current_version) && !empty($current_version)) ? $current_version : '1.0' ?></span>
-        <div class="bullet"></div> <?= !empty($this->lang->line('label_design_developed_by')) ? $this->lang->line('label_design_developed_by') : 'Design & Developed By'; ?> <a href="<?= footer_url() ?>" target="_blank"><?= get_compnay_title() ?></a>
+        <?= !empty($this->lang->line('label_copyright')) ? $this->lang->line('label_copyright') : 'Copyright'; ?> &copy; <?= date('Y'); ?> <div class="bullet"></div> <span class="badge badge-success"></span>
+        <div class="bullet"></div> <?= !empty($this->lang->line('label_design_developed_by')) ? $this->lang->line('label_design_developed_by') : 'Phát triển bởi'; ?> <a href="" target="_blank">MBV</a>
     </div>
 </footer>
 
