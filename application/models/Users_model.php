@@ -60,12 +60,20 @@ class Users_model extends CI_Model
     
         $query = $this->db->get();
         $rows = $query->result_array();
+
+        // Lấy user_id và workspace_id (ví dụ: từ session hoặc từ dữ liệu có sẵn)
+        $user_id = $user->id;  // Giả sử bạn đã có thông tin user_id từ $user
+        $workspace_id = isset($get['workspace_id']) ? $get['workspace_id'] : null; 
     
         // Thêm cột action
         foreach ($rows as &$row) {
             // Tạo liên kết cho mã RM
-            $row['rm_code'] = '<a href="' . base_url('users/view-details/' . $row['id']) . '" target="_blank">' . $row['rm_code'] . '</a>';
-            $row['action'] = '<a href="' . base_url('users/edit-profile/' . $row['id']) . '" target="_blank"><i class="fas fa-edit"></i></a>';
+
+            $row['rm_code'] = '<a href="' . base_url('index.php/users/detail/' . $row['rm_code']. '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['rm_code'] . '</a>';
+            /* $row['action'] = '<a href="' . base_url('users/assign_hist/' . $row['id']) . '" target="_blank"><i class="fas fa-edit"></i></a>'; */
+            // Thay thế nút chỉnh sửa thành nút mở pop-up
+            $row['action'] = '<button class="btn btn-info view-history" data-id="' . htmlspecialchars($row['id']) . '" data-rm_code="' . htmlspecialchars($row['rm_code']).'" data-toggle="modal" data-target="#assignHistoryModal"><i class="fas fa-history"></i> Lịch sử phân giao</button>';
+
         }
 
     
@@ -74,6 +82,13 @@ class Users_model extends CI_Model
             'rows' => $rows
         ];
     }
+
+    public function get_user_by_id($rm_code)
+    {
+        $query = $this->db->get_where('rms', ['rm_code' => $rm_code]);
+            return $query->row_array();
+    }
+    
 
     public function get_user_details($id)
     {
@@ -85,8 +100,22 @@ class Users_model extends CI_Model
     }
     
 
-
+    public function get_assign_history($rm_code) {
+        // Truy vấn lấy dữ liệu từ bảng LSPG_KHHH theo mã RM
+        $this->db->select('
+            MaPG,
+            MaKH,
+            MaRM,
+            NguoiPFG,
+            NgayPFG,
+            Ghichu
+        ');
+        $this->db->from('LSPG_KHHH');  // Tên bảng lịch sử phân giao
+        $this->db->where('MaRM', $rm_code);  // Lọc theo mã RM
+        $query = $this->db->get();
     
+        return $query->result_array();  // Trả về mảng kết quả
+    }
 
 
     function get_users_list($workspace_id, $user_id = '')
@@ -551,20 +580,7 @@ class Users_model extends CI_Model
         return $query->result_array();
     }
 
-    public function get_user_by_id($user_id)
-{
-    $this->db->select('user_id, rm_code, hris_code, full_name, phone, email, position, branch_lv2_code, branch_lv2_name, branch_lv1_code, branch_lv1_name');
-    $this->db->from('rms');
-    $this->db->where('user_id', $user_id);
-    $query = $this->db->get();
     
-    // Nếu có người dùng, trả về kết quả
-    if ($query->num_rows() > 0) {
-        return $query->row();  // Trả về đối tượng người dùng
-    } else {
-        return null;  // Nếu không tìm thấy người dùng
-    }
-}
 
     function get_user_by_email($email)
     {
@@ -575,17 +591,7 @@ class Users_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
-    function get_user_ids($user_id)
-    {
-
-        $sql = "SELECT `user_id` FROM `users_groups` where user_id != $user_id";
-        $query = $this->db->query($sql);
-        $array1 = $query->result_array();
-        $arr = array_map(function ($value) {
-            return $value['user_id'];
-        }, $array1);
-        return $arr;
-    }
+ 
 
     function get_all_client_ids($group_id)
     {

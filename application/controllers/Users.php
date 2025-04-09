@@ -16,45 +16,26 @@ class Users extends CI_Controller
 		$this->lang->load('auth');
 	}
 
-	public function detail($id = '')
+	public function detail($rm_code = null, $user_id = null, $workspace_id = null)
 	{
-		
-		if (!$this->ion_auth->logged_in()) {
-			redirect('auth', 'refresh');
-		} else {
+		//Lấy thông tin người dùng
+		$data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+		$workspace_ids = explode(',', $user->workspace_id);
 
-			$data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+		// Truy vấn thông tin chi tiết khách hàng dựa trên MaKH
+		$data['rm_detail'] = $this->users_model->get_user_by_id($rm_code);
 
-			if (!empty($id)) {
-				$data['user_detail'] = $user_detail = ($this->ion_auth->logged_in()) ? $this->ion_auth->user($id)->row() : array();
-			} else {
-				$data['user_detail'] =  $user_detail = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
-			}
-
-			if (empty($user_detail)) {
-				redirect('users/detail', 'refresh');
-			}
-
-			$workspace_ids = explode(',', $user->workspace_id);
-
-			$section = array_map('trim', $workspace_ids);
-
-			$workspace_ids = $section;
-
-			$data['workspace'] = $workspace = $this->workspace_model->get_workspace($workspace_ids);
-			if (!empty($workspace)) {
-				if (!$this->session->has_userdata('workspace_id')) {
-					$this->session->set_userdata('workspace_id', $workspace[0]->id);
-				}
-				$data['is_admin'] =  $this->ion_auth->is_admin();
-				$projects = $this->projects_model->get_projects($this->session->userdata('workspace_id'));
-                $data['projects'] = $projects;
-				$data['notifications'] = $this->notifications_model->get_notifications($id, $workspace[0]->id);
-				$this->load->view('user-detail', $data);
-			} else {
-				redirect('home', 'refresh');
-			}
+		// Kiểm tra nếu không tìm thấy khách hàng
+		if (!$data['rm_detail']) {
+			show_404(); // Hiển thị lỗi nếu không tìm thấy khách hàng
 		}
+
+		// Truyền thông tin user_id và workspace_id vào view
+		$data['user_id'] = $user_id;
+		$data['workspace_id'] = $workspace_id;
+
+		// Tải view với dữ liệu chi tiết khách hàng và thông tin người dùng
+		$this->load->view('user-detail', $data);
 	}
 
 	function deactive($id = '')
@@ -143,13 +124,59 @@ class Users extends CI_Controller
 
 		$user = $this->ion_auth->user()->row();
 		$role = $this->ion_auth->get_users_groups($user->id)->row()->name;
-		$data = $this->users_model->get_rms_list($user, $role);
+		// Lấy workspace_id từ session
+		$workspace_id = $this->session->userdata('workspace_id');
+		$data = $this->users_model->get_rms_list($user, $role, $workspace_id);
 	
 		header('Content-Type: application/json');
 		echo json_encode($data);
 	}
 
-	public function view_details($id)
+	public function view_assign_history() {
+		// Lấy giá trị rm_code từ POST request
+		$rm_code = $this->input->post('rm_code');  
+	
+		if (empty($rm_code)) {
+			echo "Mã RM không hợp lệ.";
+			return;
+		}
+	
+		// Truy vấn lịch sử phân giao từ bảng LSPG_KHHH
+		$history = $this->users_model->get_assign_history($rm_code);
+	
+		// Kiểm tra xem có dữ liệu không
+		if (empty($history)) {
+			echo "Không có lịch sử phân giao cho RM này.";
+			return;
+		}
+	
+		// Tạo HTML cần thiết để hiển thị trong modal
+		$output = '';
+		foreach ($history as $key => $item) {
+			$output .= '<tr>';
+			$output .= '<td>' . ($key + 1) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['MaKH']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['TenKH']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['NgayPFG']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['NgayKFG']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['NguoiPFG']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['NguoiPFG']) . '</td>';
+			$output .= '<td>' . htmlspecialchars($item['NgayCậpNhật']) . '</td>';
+			$output .= '</tr>';
+		}
+	
+		// Trả về HTML cho AJAX
+		echo $output;
+	}
+	
+	
+	
+	
+	
+	
+	
+
+/* 	public function detail($id)
 {
     if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
 
@@ -159,7 +186,7 @@ class Users extends CI_Controller
     // Hiển thị thông tin người dùng (có thể sử dụng view để hiển thị)
     $data['user_details'] = $user_details;
     $this->load->view('user-detail', $data);
-}
+} */
 
 
 	public function import()

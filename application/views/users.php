@@ -164,6 +164,7 @@
             </thead>
         </table>
 
+
                         </div>
                     </div>
                 </div>
@@ -467,6 +468,77 @@ function actionFormatter(value, row, index) {
     <?= form_close(); ?>
   </div>
 </div>
+
+<!-- Modal Lịch sử phân giao -->
+<div class="modal fade" id="assignHistoryModal" tabindex="-1" role="dialog" aria-labelledby="assignHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignHistoryModalLabel">Lịch sử phân giao RM</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <!-- Tạo bảng hiển thị lịch sử phân giao -->
+        <table class='table-striped' data-toggle="table" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true" data-show-refresh="true" data-sort-name="MaKH" data-sort-order="asc" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
+        "fileName": "clients-list",
+                "ignoreColumn": ["state"] 
+            }' 
+            data-query-params="queryParams"> 
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Mã KH</th>
+              <th>Tên KH</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Người phân giao</th>
+              <th>Ngày cập nhật</th>
+            </tr>
+          </thead>
+          <tbody id="historyContent">
+          <tr>
+      <td>1</td>
+      <td>KH001</td>
+      <td>Nguyễn Văn A</td>
+      <td>2025-04-08</td>
+      <td>2025-12-31</td>
+      <td>Linh</td>
+      <td>2025-04-08</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>KH002</td>
+      <td>Trần Thị B</td>
+      <td>2025-04-10</td>
+      <td>2025-11-30</td>
+      <td>Hùng</td>
+      <td>2025-04-10</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>KH003</td>
+      <td>Phạm Văn C</td>
+      <td>2025-04-12</td>
+      <td>2025-12-15</td>
+      <td>Mai</td>
+      <td>2025-04-12</td>
+    </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bỏ qua</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+
+
+</script>
+
+
 
 </body>
 

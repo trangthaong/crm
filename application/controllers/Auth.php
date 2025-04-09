@@ -700,7 +700,7 @@ class Auth extends CI_Controller
      * Redirect a user checking if is admin
      */
 
-     public function search_user()
+    /*  public function search_user()
      {
          // Kiểm tra quyền truy cập
          if (!$this->ion_auth->logged_in()) {
@@ -745,7 +745,7 @@ class Auth extends CI_Controller
          // Trả về kết quả dưới dạng JSON
          echo json_encode($response);
      }
-
+ */
     
     public function redirectUser()
     {

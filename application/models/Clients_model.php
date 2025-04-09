@@ -65,21 +65,13 @@ class Clients_model extends CI_Model
         $bulkData['rows'] = array();
 
         foreach ($res as $row) {
-<<<<<<< HEAD
-            // Gắn liên kết vào Mã KH và truyền user_id vào trang detail
-            $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
-            $bulkData['rows'][] = $row;
-        }
-        
-=======
+
             // Gắn liên kết vào Mã KH và truyền MaKH, user_id, workspace_id vào trang detail theo pretty URL
             $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
             $bulkData['rows'][] = $row;
         }
         
             
->>>>>>> 8f06337cd73de344f5f30fc44e4febbab8ad9e5a
-
         return $bulkData;
     }
 
