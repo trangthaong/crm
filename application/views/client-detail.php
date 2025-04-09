@@ -49,7 +49,61 @@ if (isset($path_parts[5])) {
         $client_details = null;
     }
 
+    // Khởi tạo mảng để lưu số lượng sản phẩm cho mỗi loại sản phẩm
+    $product_counts = [
+        'Tài khoản thanh toán' => 0,
+        'Tiết kiệm' => 0,
+        'Tín dụng' => 0,
+        'Bảo lãnh' => 0,
+        'Trái phiếu' => 0,
+        'Tài trợ thương mại' => 0,
+        'Thẻ' => 0,
+        'Ebanking' => 0,
+        'SMS' => 0
+    ];
+
+    // Truy vấn số lượng sản phẩm cho từng loại sản phẩm theo MaKH
+    $sql = "SELECT LoaiSP, COUNT(*) AS product_count FROM product WHERE MaKH = ? GROUP BY LoaiSP";
+    $stmt_product_count = $conn->prepare($sql);
+
+    if ($stmt_product_count === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
+    $stmt_product_count->bind_param("s", $maKH);
+    $stmt_product_count->execute();
+    $result_product_count = $stmt_product_count->get_result();
+
+    if ($result_product_count->num_rows > 0) {
+        while ($row = $result_product_count->fetch_assoc()) {
+            $product_counts[$row['LoaiSP']] = $row['product_count'];
+        }
+    }
+
+    // Xử lý loại sản phẩm khi tab được chọn
+    $loaiSP = isset($_GET['loaiSP']) ? $_GET['loaiSP'] : 'Tai khoan thanh toan'; // Mặc định là 'Tài khoản thanh toán'
+
+    // Truy vấn danh sách sản phẩm cho loại sản phẩm đã chọn theo MaKH
+    $sql_product = "SELECT * FROM product WHERE LoaiSP = ? AND MaKH = ?";
+    $stmt_product = $conn->prepare($sql_product);
+
+    if ($stmt_product === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
+    $stmt_product->bind_param("ss", $loaiSP, $maKH);
+    $stmt_product->execute();
+    $result_product = $stmt_product->get_result();
+
+    // Lưu danh sách sản phẩm vào biến $product_details
+    $product_details = [];
+    while ($row = $result_product->fetch_assoc()) {
+        $product_details[] = $row;
+    }
+
     // Đóng kết nối
+    $stmt_product->close();
+    $stmt_product_count->close();
     $stmt->close();
     $conn->close();
 } else {
@@ -65,43 +119,6 @@ if (isset($path_parts[5])) {
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>Quản lý KHHH</title>
     <?php include('include-css.php'); ?>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .tab-disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .tab-enabled {
-            position: relative;
-        }
-        .tab-enabled::after {
-            content: attr(data-count);
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-        .modal {
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .highlight-row {
-            background-color: #f0f9ff;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -326,149 +343,153 @@ if (isset($path_parts[5])) {
                                 <!-- Tên khách hàng -->
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></label>
+                                        <label>Họ và tên khách hàng</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'client_name', 'placeholder' => 'Nhập tên khách hàng', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'TenKH', 'value' => $client_details['TenKH'] ?? '', 'placeholder' => 'Nhập tên khách hàng', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Ngày sinh -->
                                 <div class="col-md-3" id="date_of_birth">
                                     <div class="form-group">
                                         <label>Ngày sinh</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'date_of_birth', 'type' => 'date', 'placeholder' => 'Nhập ngày sinh', 'class' => 'form-control']) ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Email -->
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                    <label><?= !empty($this->lang->line('label_email')) ? $this->lang->line('label_email') : 'Email' ?></label>
-                                        <div class="input-group">
-                                            <?= form_input(['name' => 'client_name', 'placeholder' => 'Nhập email', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'Ngaysinh', 'value' => $client_details['Ngaysinh'] ?? '', 'type' => 'date', 'placeholder' => 'Nhập ngày sinh', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- Email -->
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <div class="input-group">
+                                            <?= form_input(['name' => 'Email', 'value' => $client_details['Email'] ?? '', 'placeholder' => 'Nhập email', 'class' => 'form-control']) ?>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Quốc tịch -->
                                 <div class="col-md-3">
                                     <div class="form-group" id="country">
                                         <label>Quốc tịch</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'nationality', 'placeholder' => 'Nhập quốc tịch', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'Quoctich', 'value' => $client_details['Quoctich'] ?? '', 'placeholder' => 'Nhập quốc tịch', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Số CMT/Hộ chiếu -->
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Số CMT/Hộ chiếu</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'identity', 'placeholder' => 'Nhập số CMT/Hộ chiếu', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'CMT_Hochieu', 'value' => $client_details['CMT/Hochieu'] ?? '', 'placeholder' => 'Nhập số CMT/Hộ chiếu', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Ngày cấp -->
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Ngày cấp</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'issue_date', 'type' => 'date', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'Ngaycap', 'value' => $client_details['Ngaycap'] ?? '', 'type' => 'date', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Nơi cấp -->
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Nơi cấp</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'issue_place', 'placeholder' => 'Nơi cấp', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'Noicap', 'value' => $client_details['Noicap'] ?? '', 'placeholder' => 'Nơi cấp', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <!-- Số điện thoại -->
                                 <div class="col-md-4" id="phone">
                                     <div class="form-group">
-                                        <label><?= !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Số điện thoại'; ?></label>
+                                        <label>Số điện thoại</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'phone', 'placeholder' => !empty($this->lang->line('label_phone')) ? $this->lang->line('label_phone') : 'Phone', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'SDT', 'value' => $client_details['SDT'] ?? '', 'placeholder' => 'Số điện thoại', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
-                                    <!-- Địa chỉ-->
-                                    <div class="col-md-8">
-                                        <div class="form-group">
+
+                                <!-- Địa chỉ-->
+                                <div class="col-md-8">
+                                    <div class="form-group">
                                         <label>Địa chỉ</label>
-                                            <div class="input-group">
-                                                <?= form_input(['name' => '', 'placeholder' => 'Nhập địa chỉ', 'class' => 'form-control']) ?>
-                                            </div>
+                                        <div class="input-group">
+                                            <?= form_input(['name' => 'Diachi', 'value' => $client_details['Diachi'] ?? '', 'placeholder' => 'Nhập địa chỉ', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
+                                </div>
 
                                 <!-- Nghề nghiệp -->
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Nghề nghiệp</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => '', 'placeholder' => 'Nhập nghề nghiệp', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'Nghenghiep', 'value' => $client_details['Nghenghiep'] ?? '', 'placeholder' => 'Nhập nghề nghiệp', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
-                                    <!-- Thu nhập-->
-                                    <div class="col-md-5">
-                                        <div class="form-group">
+
+                                <!-- Thu nhập-->
+                                <div class="col-md-5">
+                                    <div class="form-group">
                                         <label>Thu nhập</label>
-                                            <div class="input-group">
-                                                <?= form_input(['name' => '', 'placeholder' => 'Nhập thu nhập TB hàng tháng', 'class' => 'form-control']) ?>
-                                            </div>
+                                        <div class="input-group">
+                                            <?= form_input(['name' => 'Thunhap', 'value' => $client_details['Thunhap'] ?? '', 'placeholder' => 'Nhập thu nhập TB hàng tháng', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
+                                </div>
 
                                 <!-- Khối khách hàng -->
                                 <div class="form-group col-md-4">
                                     <label for="customer_block">Khối khách hàng</label>
-                                    <?= form_dropdown('customer_block', ['Khách hàng cá nhân', 'Khách hàng doanh nghiệp'], null, ['class' => 'form-control']) ?>
+                                    <?= form_dropdown('Khoi', ['Khách hàng cá nhân', 'Khách hàng doanh nghiệp'], $client_details['Khoi'] ?? null, ['class' => 'form-control']) ?>
                                 </div>
+
                                 <!-- Trạng thái -->
                                 <div class="form-group col-md-3">
                                     <label for="status">Trạng thái</label>
-                                    <?= form_dropdown('status', ['Active', 'Inactive'], null, ['class' => 'form-control']) ?>
+                                    <?= form_dropdown('Trangthai', ['Active', 'Inactive'], $client_details['Trangthai'] ?? null, ['class' => 'form-control']) ?>
                                 </div>
+
                                 <!-- Tần suất giao dịch -->
                                 <div class="form-group col-md-5">
                                     <label for="transaction_frequency">Tần suất giao dịch</label>
-                                    <?= form_dropdown('tansuat', ['Chưa phân nhóm', 'Không hoạt động', 'Giao dịch ít'], null, ['class' => 'form-control']) ?>
+                                    <?= form_dropdown('Tansuatgiaodich', ['Chưa phân nhóm', 'Không hoạt động', 'Giao dịch ít'], $client_details['Tansuatgiaodich'] ?? null, ['class' => 'form-control']) ?>
                                 </div>
 
                                 <!-- Mã Khách hàng -->
                                 <div class="form-group col-md-4">
                                     <label for="">Mã khách hàng</label>
-                                    <?= form_input(['name' => '', 'value' => '$generated_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                                    <?= form_input(['name' => 'MaKH', 'value' => $client_details['MaKH'] ?? '', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                                 </div>
+
                                 <!-- RM quản lý -->
                                 <div class="form-group col-md-4">
                                     <label for="rm_manager">RM quản lý</label>
-                                    <?= form_input(['name' => '', 'value' => '$user_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                                    <?= form_input(['name' => 'RMquanly', 'value' => $client_details['RMquanly'] ?? '', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                                 </div>
+
                                 <!-- Chi nhánh quản lý -->
                                 <div class="form-group col-md-4">
                                     <label for="branch">Chi nhánh quản lý</label>
-                                    <?= form_input(['name' => 'branch',  'value' => '$branch_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                                    <?= form_input(['name' => 'branch', 'value' => $client_details['ChiNhanh'] ?? '', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                                 </div>
 
                                 <!-- Ngày upload -->
                                 <div class="form-group col-md-3">
                                     <label for="upload_date">Ngày upload</label>
-                                    <?= form_input(['name' => 'upload_date', 'type' => 'date', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
-                                </div>
-                                <!-- Đơn vị upload -->
-                                <div class="form-group col-md-4">
-                                    <label for="branch">Chi nhánh quản lý</label>
-                                    <?= form_input(['name' => 'donvi',  'value' => '$donvi_code', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
+                                    <?= form_input(['name' => 'upload_date', 'value' => $client_details['Ngayupload'] ?? '', 'type' => 'date', 'class' => 'form-control', 'readonly' => 'readonly']) ?>
                                 </div>
                                 </div>
                             </div>
@@ -496,248 +517,134 @@ if (isset($path_parts[5])) {
               <div class="card-body">
                 <h5 style= "margin-bottom: 40px;">Danh sách sản phẩm </h5>
                 
-<!-- Product Tabs -->
-<div class="bg-white rounded-lg shadow-md p-4 mb-6">
-            <div class="flex flex-wrap gap-4 mb-6">
-                <button id="payment-account-tab" class="tab-enabled px-4 py-2 rounded-lg bg-blue-100 text-blue-800 font-medium flex items-center" data-count="2">
-                    <i class="fas fa-wallet mr-2"></i>Tài khoản thanh toán
-                </button>
-                <button id="saving-account-tab" class="tab-enabled px-4 py-2 rounded-lg bg-green-100 text-green-800 font-medium flex items-center" data-count="3">
-                    <i class="fas fa-piggy-bank mr-2"></i>Tiết kiệm
-                </button>
-                <button id="credit-tab" class="tab-enabled px-4 py-2 rounded-lg bg-purple-100 text-purple-800 font-medium flex items-center" data-count="1">
-                    <i class="fas fa-hand-holding-usd mr-2"></i>Tín dụng
-                </button>
-                <button id="guarantee-tab" class="tab-enabled px-4 py-2 rounded-lg bg-yellow-100 text-yellow-800 font-medium flex items-center" data-count="2">
-                    <i class="fas fa-file-signature mr-2"></i>Bảo lãnh
-                </button>
-                <button id="bond-tab" class="tab-disabled px-4 py-2 rounded-lg bg-gray-100 text-gray-500 font-medium flex items-center">
-                    <i class="fas fa-certificate mr-2"></i>Trái phiếu
-                </button>
-                <button id="trade-finance-tab" class="tab-disabled px-4 py-2 rounded-lg bg-gray-100 text-gray-500 font-medium flex items-center">
-                    <i class="fas fa-exchange-alt mr-2"></i>Tài trợ thương mại
-                </button>
-                <button id="card-tab" class="tab-enabled px-4 py-2 rounded-lg bg-red-100 text-red-800 font-medium flex items-center" data-count="1">
-                    <i class="fas fa-credit-card mr-2"></i>Thẻ
-                </button>
-                <button id="ebanking-tab" class="tab-enabled px-4 py-2 rounded-lg bg-indigo-100 text-indigo-800 font-medium flex items-center" data-count="1">
-                    <i class="fas fa-globe mr-2"></i>Ebanking
-                </button>
-                <button id="sms-tab" class="tab-disabled px-4 py-2 rounded-lg bg-gray-100 text-gray-500 font-medium flex items-center">
-                    <i class="fas fa-sms mr-2"></i>SMS
-                </button>
-            </div>
+                <!-- Product Tabs -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Tai khoan thanh toan') ? 'active' : ''; ?>" href="?loaiSP=Tai khoan thanh toan&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="payment" aria-selected="true">
+                            <i class="fas fa-wallet mr-2"></i>Tài khoản thanh toán (<span><?php echo $product_counts['Tài khoản thanh toán']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Tiet kiem') ? 'active' : ''; ?>" href="?loaiSP=Tiet kiem&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="saving" aria-selected="false">
+                            <i class="fas fa-piggy-bank mr-2"></i>Tiết kiệm (<span><?php echo $product_counts['Tiết kiệm']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Tin dung') ? 'active' : ''; ?>" href="?loaiSP=Tin dung&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="credit" aria-selected="false">
+                            <i class="fas fa-hand-holding-usd mr-2"></i>Tín dụng (<span><?php echo $product_counts['Tín dụng']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Bao lanh') ? 'active' : ''; ?>" href="?loaiSP=Bao lanh&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="guarantee" aria-selected="false">
+                            <i class="fas fa-file-signature mr-2"></i>Bảo lãnh (<span><?php echo $product_counts['Bảo lãnh']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Trai phieu') ? 'active' : ''; ?>" href="?loaiSP=Trai phieu&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="bond" aria-selected="false">
+                            <i class="fas fa-certificate mr-2"></i>Trái phiếu (<span><?php echo $product_counts['Trái phiếu']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Tai tro thuong mai') ? 'active' : ''; ?>" href="?loaiSP=Tai tro thuong mai&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="trade" aria-selected="false">
+                            <i class="fas fa-exchange-alt mr-2"></i>Tài trợ thương mại (<span><?php echo $product_counts['Tài trợ thương mại']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'The') ? 'active' : ''; ?>" href="?loaiSP=The&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="card" aria-selected="false">
+                            <i class="fas fa-credit-card mr-2"></i>Thẻ (<span><?php echo $product_counts['Thẻ']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'Ebanking') ? 'active' : ''; ?>" href="?loaiSP=Ebanking&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="ebanking" aria-selected="false">
+                            <i class="fas fa-globe mr-2"></i>Ebanking (<span><?php echo $product_counts['Ebanking']; ?></span>)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo ($loaiSP == 'SMS') ? 'active' : ''; ?>" href="?loaiSP=SMS&MaKH=<?php echo $maKH; ?>" role="tab" aria-controls="sms" aria-selected="false">
+                            <i class="fas fa-sms mr-2"></i>SMS (<span><?php echo $product_counts['SMS']; ?></span>)</a>
+                    </li>
+                </ul>
 
-            <!-- Summary Info -->
-            <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                <div class="grid grid-cols-4 gap-4">
-                    <div class="bg-white p-3 rounded-lg shadow-sm">
-                        <div class="text-gray-500 text-sm">Tổng số sản phẩm</div>
-                        <div class="text-2xl font-bold text-blue-600">10</div>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm">
-                        <div class="text-gray-500 text-sm">Tổng dư nợ</div>
-                        <div class="text-2xl font-bold text-blue-600">1,245,000,000 VND</div>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm">
-                        <div class="text-gray-500 text-sm">Tổng tiền gửi</div>
-                        <div class="text-2xl font-bold text-blue-600">3,567,890,000 VND</div>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm">
-                        <div class="text-gray-500 text-sm">Ngày dữ liệu</div>
-                        <div class="text-2xl font-bold text-blue-600">15/07/2023</div>
-                    </div>
-                </div>
-            </div>
 
+           
             <!-- Product Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                    <thead class="bg-gray-100 text-gray-700">
-                        <tr>
-                            <th class="py-3 px-4 text-left">STT</th>
-                            <th class="py-3 px-4 text-left">Nhóm sản phẩm</th>
-                            <th class="py-3 px-4 text-left">Mã sản phẩm</th>
-                            <th class="py-3 px-4 text-left">Tên sản phẩm</th>
-                            <th class="py-3 px-4 text-left">Số hợp đồng/Tài khoản</th>
-                            <th class="py-3 px-4 text-left">Loại tiền tệ</th>
-                            <th class="py-3 px-4 text-right">Số dư nguyên tệ</th>
-                            <th class="py-3 px-4 text-right">Số dư quy đổi</th>
-                            <th class="py-3 px-4 text-left">Ngày mở</th>
-                            <th class="py-3 px-4 text-left">Ngày đáo hạn</th>
-                            <th class="py-3 px-4 text-left">Ngày dữ liệu</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-600" id="product-table-body">
-                        <!-- Payment Account Data -->
-                        <tr class="border-t hover:bg-gray-50 cursor-pointer payment-account-row" onclick="showDetailModal('payment')">
-                            <td class="py-3 px-4">1</td>
-                            <td class="py-3 px-4">Tài khoản thanh toán</td>
-                            <td class="py-3 px-4">PA001</td>
-                            <td class="py-3 px-4">Tài khoản thanh toán cá nhân</td>
-                            <td class="py-3 px-4">1234567890</td>
-                            <td class="py-3 px-4">VND</td>
-                            <td class="py-3 px-4 text-right">245,000,000.00</td>
-                            <td class="py-3 px-4 text-right">245,000,000.00</td>
-                            <td class="py-3 px-4">15/05/2020</td>
-                            <td class="py-3 px-4">-</td>
-                            <td class="py-3 px-4">14/07/2023</td>
-                        </tr>
-                        <tr class="border-t hover:bg-gray-50 cursor-pointer payment-account-row" onclick="showDetailModal('payment')">
-                            <td class="py-3 px-4">2</td>
-                            <td class="py-3 px-4">Tài khoản thanh toán</td>
-                            <td class="py-3 px-4">PA002</td>
-                            <td class="py-3 px-4">Tài khoản thanh toán USD</td>
-                            <td class="py-3 px-4">9876543210</td>
-                            <td class="py-3 px-4">USD</td>
-                            <td class="py-3 px-4 text-right">15,000.00</td>
-                            <td class="py-3 px-4 text-right">345,000,000.00</td>
-                            <td class="py-3 px-4">20/08/2021</td>
-                            <td class="py-3 px-4">-</td>
-                            <td class="py-3 px-4">14/07/2023</td>
-                        </tr>
-                        <!-- Add other rows here as needed -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="bg-white rounded-lg shadow-md">
+            <!-- Table Header, remains the same for all tabs -->
+            <table class="table-striped" id="product-table" data-toggle="table" data-click-to-select="true" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-search="false" data-show-columns="false" data-show-refresh="false" data-trim-on-search="false" data-sort-name="id" data-sort-order="desc" data-mobile-responsive="true" data-toolbar="" data-maintain-selected="true" data-query-params="queryParams">
+                <thead>
+                    <tr>
+                        <th class="py-3 px-4 text-left">STT</th>
+                        <th class="py-3 px-4 text-left">Tên sản phẩm</th>
+                        <th class="py-3 px-4 text-left">Số hợp đồng/Tài khoản</th>
+                        <th class="py-3 px-4 text-left">Loại tiền tệ</th>
+                        <th class="py-3 px-4 text-right">Số dư nguyên tệ</th>
+                        <th class="py-3 px-4 text-right">Số dư quy đổi</th>
+                        <th class="py-3 px-4 text-left">Ngày mở</th>
+                        <th class="py-3 px-4 text-left">Ngày đáo hạn</th>
+                        <th class="py-3 px-4 text-left">Ngày dữ liệu</th>
+                    </tr>
+                </thead>
+                <tbody id="product-data">
+                    <?php
+                    $stt = 1;
+                    // Lấy danh sách sản phẩm theo loại sản phẩm từ PHP và hiển thị chúng trong bảng
+                    foreach ($product_details as $product) {
+                        echo "<tr>";
+                        echo "<td>" . $stt++ . "</td>";
+                        echo "<td>" . htmlspecialchars($product['MaSP'] . '-' . $product['LoaiSP']) . "</td>";
+                        echo "<td>" . htmlspecialchars($product['SoHD']) . "</td>";
+                        echo "<td>" . htmlspecialchars($product['Loaitien']) . "</td>";
+                        echo "<td class='text-right'>" . number_format($product['Sodu'], 2) . "</td>";
+                        echo "<td class='text-right'>" . number_format($product['Sodu'] * $product['Tygia'], 2) . "</td>";
+                        echo "<td>" . htmlspecialchars($product['Ngaymo']) . "</td>";
+                        echo "<td>" . htmlspecialchars($product['Ngaydaohan']) . "</td>";
+                        echo "<td>" . htmlspecialchars($product['Ngayupload']) . "</td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
 
     </div>
 </div>
-<!-- Detail Modal -->
-<div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden modal">
-        <div class="bg-white rounded-lg shadow-xl w-11/12 max-w-4xl modal-content">
-            <div class="flex justify-between items-center border-b p-4">
-                <h3 class="text-xl font-semibold text-gray-800" id="modal-title">Chi tiết sản phẩm</h3>
-                <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-6" id="modal-content">
-                <!-- Content will be dynamically inserted here -->
-            </div>
-            <div class="flex justify-end p-4 border-t">
-                <button onclick="closeDetailModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Đóng</button>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Tab switching functionality
-        document.querySelectorAll('[id$="-tab"]').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const productType = this.id.replace('-tab', '');
-                showProductType(productType);
+<script>
+// Khi tab được thay đổi, gửi yêu cầu AJAX để truy vấn dữ liệu của loại sản phẩm
+$('#myTab a').on('shown.bs.tab', function (e) {
+    var tab = $(e.target).attr('id');  // Lấy ID tab đang được chọn
+    var loaiSP = tab.split('-')[0]; // Loại sản phẩm là phần đầu của ID tab (ví dụ: payment-tab => payment)
+
+    // Gửi yêu cầu AJAX để lấy sản phẩm theo loại sản phẩm
+    $.ajax({
+        url: "get_product_data.php",  // Đường dẫn đến file PHP xử lý dữ liệu
+        method: "GET",
+        data: { loaiSP: loaiSP },  // Truyền loại sản phẩm
+        success: function(response) {
+            var products = JSON.parse(response);
+            var tableBody = $("#product-data");
+            tableBody.empty();  // Xóa dữ liệu cũ trong bảng
+
+            // Lặp qua danh sách sản phẩm và hiển thị vào bảng
+            products.forEach(function(product, index) {
+                var row = "<tr>" +
+                    "<td>" + (index + 1) + "</td>" +
+                    "<td>" + product.LoaiSP + "</td>" +
+                    "<td>" + product.MaSP + "</td>" +
+                    "<td>" + product.TenSP + "</td>" +
+                    "<td>" + product.SoHD + "</td>" +
+                    "<td>" + product.Loaitien + "</td>" +
+                    "<td class='text-right'>" + product.Sodu.toFixed(2) + "</td>" +
+                    "<td class='text-right'>" + (product.Sodu * product.Tygia).toFixed(2) + "</td>" +
+                    "<td>" + product.Ngaymo + "</td>" +
+                    "<td>" + product.Ngaydaohan + "</td>" +
+                    "<td>" + product.Ngayupload + "</td>" +
+                    "</tr>";
+
+                tableBody.append(row);  // Thêm dòng vào bảng
             });
-        });
-
-        function showProductType(productType) {
-            // Hide all rows
-            document.querySelectorAll('#product-table-body tr').forEach(row => {
-                row.classList.add('hidden');
-            });
-            
-            // Show only rows of the selected product type
-            document.querySelectorAll(`.${productType}-row`).forEach(row => {
-                row.classList.remove('hidden');
-            });
-            
-            // Update active tab styling
-            document.querySelectorAll('[id$="-tab"]').forEach(tab => {
-                tab.classList.remove('ring-2', 'ring-blue-500');
-            });
-            document.getElementById(`${productType}-tab`).classList.add('ring-2', 'ring-blue-500');
         }
+    });
+});
 
-        // Show payment account by default
-        document.addEventListener('DOMContentLoaded', function() {
-            showProductType('payment-account');
-            document.getElementById('payment-account-tab').classList.add('ring-2', 'ring-blue-500');
-        });
+// Mặc định tải dữ liệu cho loại sản phẩm đầu tiên (Tài khoản thanh toán)
+$(document).ready(function() {
+    $('#payment-tab').click();
+});
+</script>
 
-        // Modal functions
-        function showDetailModal(productType) {
-            const modal = document.getElementById('detail-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalContent = document.getElementById('modal-content');
-            
-            // Set title based on product type
-            let title = '';
-            let content = '';
-            
-            switch(productType) {
-                case 'payment':
-                    title = 'Chi tiết tài khoản thanh toán';
-                    content = generatePaymentAccountDetail();
-                    break;
-                case 'saving':
-                    title = 'Chi tiết tài khoản tiết kiệm';
-                    content = generateSavingAccountDetail();
-                    break;
-                case 'credit':
-                    title = 'Chi tiết tài khoản tín dụng';
-                    content = generateCreditDetail();
-                    break;
-                case 'guarantee':
-                    title = 'Chi tiết bảo lãnh';
-                    content = generateGuaranteeDetail();
-                    break;
-                case 'card':
-                    title = 'Chi tiết thẻ';
-                    content = generateCardDetail();
-                    break;
-                case 'ebanking':
-                    title = 'Chi tiết Ebanking';
-                    content = generateEbankingDetail();
-                    break;
-                default:
-                    title = 'Chi tiết sản phẩm';
-                    content = '<p>Thông tin chi tiết sản phẩm</p>';
-            }
-            
-            modalTitle.textContent = title;
-            modalContent.innerHTML = content;
-            modal.classList.remove('hidden');
-        }
-
-        function closeDetailModal() {
-            document.getElementById('detail-modal').classList.add('hidden');
-        }
-
-        // Generate detail content for each product type
-        function generatePaymentAccountDetail() {
-            return `/* Add your details here */`;
-        }
-
-        function generateSavingAccountDetail() {
-            return `/* Add your details here */`;
-        }
-
-        function generateCreditDetail() {
-            return `/* Add your details here */`;
-        }
-
-        function generateGuaranteeDetail() {
-            return `/* Add your details here */`;
-        }
-
-        function generateCardDetail() {
-            return `/* Add your details here */`;
-        }
-
-        function generateEbankingDetail() {
-            return `/* Add your details here */`;
-        }
-
-        // Highlight row on hover
-        document.querySelectorAll('#product-table-body tr').forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.classList.add('highlight-row');
-            });
-            row.addEventListener('mouseleave', function() {
-                this.classList.remove('highlight-row');
-            });
-        });
-    </script>
 
               </div>
             </div>
