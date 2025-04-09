@@ -1104,4 +1104,26 @@ class Auth extends CI_Controller
             return $view_html;
         }
     }
+    public function search_user()
+{
+    // Load the model if necessary
+    $this->load->model('Clients_model');
+
+    // Get search parameters from the form
+    $customer_code = $this->input->get('customer_code');
+    $customer_name = $this->input->get('customer_name');
+    $phone = $this->input->get('phone');
+    $identity = $this->input->get('identity');
+    $block = $this->input->get('block');
+    $frequency = $this->input->get('frequency');
+    $unit = $this->input->get('unit');
+    $rm_manager = $this->input->get('rm_manager');
+
+    // Call a model method to fetch results based on the parameters
+    $data['results'] = $this->Clients_model->search_users($customer_code, $customer_name, $phone, $identity, $block, $frequency, $unit, $rm_manager);
+
+    // Load the view and pass the results
+    $this->load->view('auth/search_user', $data);
+}
+
 }

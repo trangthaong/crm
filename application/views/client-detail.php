@@ -1,3 +1,14 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Quản lý KHHH</title>
+    <?php include('include-css.php'); ?>
+</head>
+<body>
+<?php include "include-header.php"; ?>
 <?php
 // client-detail.php
 
@@ -15,7 +26,7 @@ echo "Các phần trong URL: <br>";
 print_r($path_parts);  // In ra tất cả các phần của URL đã phân tách */
 
 // Kiểm tra nếu có ít nhất 4 phần trong URL (index.php/clients/detail/MaKH)
-if (isset($path_parts[5])) {
+if (isset($path_parts[6])) {
     // MaKH nằm ở phần thứ 4 trong URL (0-indexed)
     $maKH = $path_parts[5];
     
