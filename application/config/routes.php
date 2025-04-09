@@ -53,3 +53,5 @@ $route['default_controller'] = 'auth';
 $route['projects/(:num)'] = 'projects';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
+
+

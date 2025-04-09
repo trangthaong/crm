@@ -72,15 +72,26 @@ class Projects_model extends CI_Model
         } else {
             $query = $this->db->query("SELECT COUNT(id) as total FROM projects WHERE FIND_IN_SET($user_id,client_id) AND workspace_id=$workspace_id " . $where);
         }
-
+        // Truy vấn danh sách clients
+        $query = $this->db->query("SELECT Machiendich, Tenchiendich, Mucdich, Ngaybd, Ngaykt, Trangthai
+        FROM campaigns
+        WHERE 1=1 " . $where . " 
+        ORDER BY " . $sort . " " . $order . " 
+        LIMIT " . $offset . ", " . $limit);
         $res = $query->result_array();
 
-
+        // Chuẩn bị dữ liệu trả về
+        $bulkData = array();
+        $bulkData['total'] = $total;
+        $bulkData['rows'] = array();
 
         foreach ($res as $row) {
-            $total = $row['total'];
+            // Gắn liên kết vào Mã CD
+            $row['Machiendich'] = '<a href="' . base_url('index.php/projects/detail/' . $row['Machiendich']) . '" target="_blank">' . $row['MaKH'] . '</a>';
+            $bulkData['rows'][] = $row;
         }
 
+        return $bulkData;
         if ($this->ion_auth->is_admin($user_id)) {
 
             $query = $this->db->query("SELECT * FROM projects WHERE  workspace_id= $workspace_id " . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit);
@@ -449,7 +460,7 @@ class Projects_model extends CI_Model
         $query = $this->db->query('SELECT * FROM project_media WHERE type="' . $type . '" AND type_id=' . $type_id . '');
         return $query->result_array();
     }
-    function get_project_users($id)
+    /* function get_project_users($id)
     {
         $query = $this->db->query('SELECT user_id FROM projects WHERE id=' . $id);
         return $query->result_array();
@@ -459,7 +470,7 @@ class Projects_model extends CI_Model
         $query = $this->db->query('SELECT client_id FROM projects WHERE id=' . $id);
         // print_r($this->db->last_query());
         return $query->result_array();
-    }
+    } */
     function send_email($user_ids, $project_id, $admin_id, $subject = "")
     {
 
@@ -623,8 +634,7 @@ class Projects_model extends CI_Model
 
         if (isset($get['search']) &&  !empty($get['search'])) {
             $search = strip_tags($get['search']);
-            $where .= " where (id like '%" . $search . "%' OR user_id LIKE '%" . $search . "%' OR user_name LIKE '%" . $search . "%' OR type LIKE '%" . $search . "%' OR activity LIKE '%" . $search . "%'  OR date_created LIKE '%" . $search . "%' OR project_title LIKE '%" . $search . "%' OR task_title LIKE '%" . $search . "%' OR comment LIKE '%" . $search . "%')";
-        }
+            $where .= empty($where) ? " WHERE (message LIKE '%" . $search . "%' OR user_name LIKE '%" . $search . "%' OR activity LIKE '%" . $search . "%')" : " AND (message LIKE '%" . $search . "%' OR user_name LIKE '%" . $search . "%' OR activity LIKE '%" . $search . "%')";}
         if (isset($get['activity']) && !empty($get['activity'])) {
             $where .= empty($where) ? " WHERE activity = '" . $get['activity'] . "'" : " AND activity = '" . $get['activity'] . "'";
         }

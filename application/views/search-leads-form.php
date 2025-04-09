@@ -78,9 +78,7 @@
             <?php if (isset($context) && $context === 'client_page') { ?>
                 <div>
                     <?php if (check_permissions("leads", "create")) { ?>
-                        <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-from-file" style="margin-right: 10px;">
-                            <?= !empty($this->lang->line('label_add_client_2')) ? $this->lang->line('label_add_client_2') : 'Thêm từ file'; ?>
-                        </i>
+                        <i class="btn btn-primary btn-rounded no-shadow" id="modal-add-from-file" style="margin-right: 10px;">Thêm từ file</i>
                     <?php } ?>
                     <?php if (check_permissions("leads", "create")) { ?>
                         <button class="btn btn-primary btn-rounded no-shadow" id="modal-add-user">
@@ -96,35 +94,43 @@
 
         <!-- Bảng kết quả tìm kiếm -->
         <div class="table-responsive mt-4">
-        <table class='table-striped' id='leads_list' data-toggle="table" data-url="<?= base_url('leads/get_leads_list') ?>" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true" data-show-refresh="true" data-sort-name="MaKH" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
-        "fileName": "leads-list",
-                "ignoreColumn": ["state"] 
-            }' 
-            data-query-params="queryParams">            
-                    <thead>
-                        <tr>
-                            <th data-field="stt" data-sortable="false">STT</th>
-                            <th data-field="MaKH" data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
+            <table class="table-striped" id="clients_list" data-toggle="table"
+                    data-url="<?= base_url('clients/get_clients_list') ?>"
+                    data-side-pagination="server"
+                    data-pagination="true"
+                    data-page-list="[5, 10, 20, 50, 100, 200]"
+                    data-show-columns="true"
+                    data-show-refresh="true"
+                    data-sort-name="MaKH"
+                    data-sort-order="asc"
+                    data-mobile-responsive="true"
+                    data-toolbar=""
+                    data-show-export="true"
+                    data-maintain-selected="true"
+                    data-export-options='{
+                        "fileName": "clients-list",
+                        "ignoreColumn": ["state"]
+                    }'
+                    data-query-params="queryParams">
+                <thead>
+                    <tr>
+                        <th data-field="stt" data-sortable="false">STT</th>
+                        <th data-field="MaKH" data-sortable="true">ID</th>
+                        <th data-field="TenKH" data-sortable="true">Tên khách hàng</th>
+                        <th data-field="SDT" data-sortable="true">Số điện thoại</th>
+                        <th data-field="Email" data-sortable="true">Email</th>
+                        <th data-field="mucdotiemnang" data-sortable="false">Mức độ tiềm năng</th>
+                        <th data-field="nguonKH" data-sortable="false">Nguồn KH</th>
+                        <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
+                        <th data-field="MaDV" data-sortable="false">Mã đơn vị quản lý</th>
+                        <th data-field="TenDV" data-sortable="false">Tên đơn vị quản lý</th>
+                        <?php if (check_permissions("clients", "delete")) { ?>
+                            <th data-field="action" data-sortable="false">Hành động</th>
+                        <?php } ?>
+                    </tr>
+                </thead>
+            </table>
 
-                            <th data-field="TenKH" data-sortable="true"><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></th>
-
-                            <th data-field="SDT" data-sortable="true">Số điện thoại</th>
-                            <th data-field="Email" data-sortable="true">Email</th>
-
-                            <th data-field="mucdotiemnang" data-sortable="false">Mức độ tiềm năng</th>
-                            <th data-field="nguonKH" data-sortable="false">Nguồn KH</th>
-                            <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
-                            <th data-field="MaDV" data-sortable="false">Mã đơn vị quản lý</th>
-                            <th data-field="TenDV" data-sortable="false">Tên đơn vị quản lý</th>
-                            <?php if (check_permissions("clients", "delete")) { ?>
-                                <th data-field="action" data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?></th>
-                                <?php //} 
-                                ?>
-                            <?php }
-                            ?>
-                        </tr>   
-                    </thead>
-                </table>
                 </div>
             </div>
         </div>

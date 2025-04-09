@@ -9,7 +9,7 @@ class Projects extends CI_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model(['users_model', 'workspace_model', 'statuses_model', 'projects_model', 'milestones_model', 'tasks_model', 'activity_model', 'notifications_model', 'ion_auth_model']);
+        $this->load->model(['users_model', 'workspace_model', 'statuses_model', 'projects_model', 'milestones_model', 'tasks_model', 'notifications_model', 'ion_auth_model']);
         $this->load->library(['ion_auth', 'form_validation', 'pagination']);
         $this->load->helper(['url', 'language']);
         $this->load->library('session');

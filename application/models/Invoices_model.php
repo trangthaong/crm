@@ -90,15 +90,7 @@ class Invoices_model extends CI_Model
         $bulkData['rows'] = $rows;
         print_r(json_encode($bulkData));
     }
-    function get_invoice_by_id($invoice_id)
-    {
-        $this->db->select('i.*,p.title as project_title');
-        $this->db->from('invoices i');
-        $this->db->join('projects p', 'i.project_id = p.id', 'left');
-        $this->db->where('i.id', $invoice_id);
-        $query = $this->db->get();
-        return $query->result_array();
-    }
+    
     function get_invoices($workspace_id)
     {
         $this->db->select('id');

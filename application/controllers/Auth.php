@@ -699,6 +699,54 @@ class Auth extends CI_Controller
     /**
      * Redirect a user checking if is admin
      */
+
+     public function search_user()
+     {
+         // Kiểm tra quyền truy cập
+         if (!$this->ion_auth->logged_in()) {
+             $response = [
+                 'error' => true,
+                 'message' => 'Bạn cần đăng nhập để thực hiện chức năng này.'
+             ];
+             echo json_encode($response);
+             return;
+         }
+     
+         // Lấy dữ liệu từ form
+         $search_query = $this->input->get('query', true); // Lấy từ khóa tìm kiếm
+         $workspace_id = $this->session->userdata('workspace_id'); // Lấy workspace hiện tại
+     
+         // Kiểm tra nếu không có từ khóa tìm kiếm
+         if (empty($search_query)) {
+             $response = [
+                 'error' => true,
+                 'message' => 'Vui lòng nhập từ khóa tìm kiếm.'
+             ];
+             echo json_encode($response);
+             return;
+         }
+     
+         // Gọi model để tìm kiếm người dùng
+         $users = $this->users_model->search_users($search_query, $workspace_id);
+     
+         // Kiểm tra kết quả tìm kiếm
+         if (!empty($users)) {
+             $response = [
+                 'error' => false,
+                 'data' => $users
+             ];
+         } else {
+             $response = [
+                 'error' => true,
+                 'message' => 'Không tìm thấy người dùng nào phù hợp.'
+             ];
+         }
+     
+         // Trả về kết quả dưới dạng JSON
+         echo json_encode($response);
+     }
+
+    
     public function redirectUser()
     {
         if ($this->ion_auth->is_admin()) {

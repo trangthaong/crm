@@ -470,19 +470,6 @@ function get_user_name()
     }
 }
 
-function get_project_title($id)
-{
-    $CI = &get_instance();
-    $CI->db->from('projects');
-    $CI->db->where(['id' => $id]);
-    $query = $CI->db->get();
-    $data = $query->result_array();
-    if (!empty($data[0]['title'])) {
-        return $data[0]['title'];
-    } else {
-        return false;
-    }
-}
 
 function get_project_id_by_file_id($file_id)
 {

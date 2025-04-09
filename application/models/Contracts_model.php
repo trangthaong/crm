@@ -289,7 +289,5 @@ class Contracts_model extends CI_Model
 
     function contracts_sign($contracts_id)
     {
-        $query = $this->db->query("SELECT c.*, p.title AS project_title, ct.type AS contracts_type, u.first_name AS user_first_name, u.last_name AS user_last_name FROM contracts c LEFT JOIN projects p ON c.project_id = p.id LEFT JOIN users u ON c.users_id = u.id LEFT JOIN contracts_type ct ON c.contract_type_id = ct.id where c.id=" . $contracts_id . ' ');
-        return $query->result();
     }
 }

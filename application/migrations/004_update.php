@@ -36,11 +36,6 @@ class Migration_update extends CI_Migration {
 				'null' => TRUE,
 				'constraint'     => '11'
             ],
-            'project_title' => [
-				'type'           => 'VARCHAR',
-				'null' => TRUE,
-				'constraint'     => '1024'
-            ],
             'task_id' => [
                 'type'           => 'INT',
                 'null' => TRUE,
