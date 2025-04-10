@@ -145,8 +145,8 @@
 
                         <!-- Bảng kết quả tìm kiếm -->
                         <div class="table-responsive mt-4">
-                            <table class='table-striped' id='clients_list' data-toggle="table" data-url="<?= base_url('clients/get_clients_list') ?>" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true" data-show-refresh="true" data-sort-name="MaKH" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
-                            "fileName": "clients-list",
+                            <table class='table-striped' id='projects_list' data-toggle="table" data-url="<?= base_url('projects/get_projects_list') ?>" data-side-pagination="server" data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true" data-show-refresh="true" data-sort-name="Machiendich" data-sort-order="asc" data-mobile-responsive="true" data-toolbar="" data-show-export="true" data-maintain-selected="true" data-export-options='{
+                            "fileName": "projects-list",
                                     "ignoreColumn": ["state"] 
                                 }' 
                                 data-query-params="queryParams">            

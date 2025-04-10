@@ -17,73 +17,50 @@ class Projects extends CI_Controller
         $this->lang->load('auth');
     }
 
-    public function lists()
-    {
-
-        if (!$this->ion_auth->logged_in()) {
-            redirect('auth', 'refresh');
-        } else {
-
-            $filter = (isset($_GET['filter']) && !empty($_GET['filter'])) ? $_GET['filter'] : '';
-            $sort = (isset($_GET['sort']) && !empty($_GET['sort'])) ? $_GET['sort'] : '';
-            $order = (isset($_GET['order']) && !empty($_GET['order'])) ? $_GET['order'] : '';
-
-            $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
-
-            $project_ids = explode(',', $user->workspace_id);
-
-            $section = array_map('trim', $project_ids);
-
-            $project_ids = $section;
-
-            $data['workspace'] = $workspace = $this->workspace_model->get_workspace($project_ids);
-            if (!empty($workspace)) {
-                if (!$this->session->has_userdata('workspace_id')) {
-                    $this->session->set_userdata('workspace_id', $workspace[0]->id);
-                }
-            }
-            $data['is_admin'] =  $this->ion_auth->is_admin();
-            $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
-            $user_ids = explode(',', $current_workspace_id[0]->user_id);
-            $section = array_map('trim', $user_ids);
-            $user_ids = $section;
-            $data['all_user'] = $this->users_model->get_user($user_ids);
-            $data['client_ids'] = $client_ids = fetch_details('users', ['id' => $this->session->userdata('user_id')]);
-            $admin_ids = explode(',', $current_workspace_id[0]->admin_id);
-            $section = array_map('trim', $admin_ids);
-            $data['admin_ids'] = $admin_ids = $section;
-
-            $this->config->load('taskhub');
-            $data['progress_bar_classes'] = $this->config->item('progress_bar_classes');
-
-            $data['projects'] = $projects = $this->projects_model->get_project($this->session->userdata('workspace_id'), $this->session->userdata('user_id'), $filter, $sort, $order);
-            $i = 0;
-            foreach ($projects as $row) {
-                $projects_user_ids = explode(',', $row['user_id']);
-                $data['projects'][$i] = $row;
-                $data['projects'][$i]['project_progress'] = $this->projects_model->get_project_progress($this->session->userdata('workspace_id'), $row['id']);
-                $data['projects'][$i]['projects_users'] = $this->users_model->get_user_array_responce($projects_user_ids);
-                $i++;
-            }
-            $workspace_id = $this->session->userdata('workspace_id');
-            $data['statuses_project'] =  $this->statuses_model->get_statuses_project($workspace_id);
-            $data['statuses'] = $this->statuses_model->get_statuses($workspace_id);
-            $data['notifications'] = $this->notifications_model->get_notifications($this->session->userdata['user_id'], $workspace_id);
-            $this->load->view('projects-list', $data);
-        }
-    }
 
     public function get_projects_list($id = '')
     {
-        if (!$this->ion_auth->logged_in()) {
-            redirect('auth', 'refresh');
-        } else {
-            $workspace_id = $this->session->userdata('workspace_id');
-            // 			$user_id = !empty($id && is_numeric($id)) ? $id : !empty($this->uri->segment(3) && is_numeric($this->uri->segment(3))) ? $this->uri->segment(3) : $this->session->userdata('user_id');
-            $user_id = !empty($id && is_numeric($id)) ? $id : (!empty($this->uri->segment(3) && is_numeric($this->uri->segment(3))) ? $this->uri->segment(3) : $this->session->userdata('user_id'));
+        // Kiểm tra quyền truy cập
+		if (!check_permissions("projects", "read", "", true)) {
+			return redirect(base_url(), 'refresh');
+		}
 
-            return $this->projects_model->get_projects_list($workspace_id);
+		// Kiểm tra trạng thái đăng nhập
+		if (!$this->ion_auth->logged_in()) {
+			redirect('auth', 'refresh');
+		} else {
+			// Lấy workspace_id từ session
+			$workspace_id = $this->session->userdata('workspace_id');
+
+			// Gọi model để lấy danh sách clients
+			$this->load->model('Projects_model');
+			$projects = $this->Projects_model->get_projects_list($workspace_id);
+
+			// Trả về dữ liệu dưới dạng JSON
+			echo json_encode($projects);
+		}
+    }
+
+    public function detail($maCD = null, $user_id = null, $workspace_id = null)
+    {
+        //Lấy thông tin người dùng
+        $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+        $workspace_ids = explode(',', $user->workspace_id);
+    
+        // Truy vấn thông tin chi tiết dựa trên Machiendich
+        $data['project_detail'] = $this->projects_model->get_project_by_id($maCD);
+    
+        // Kiểm tra nếu không tìm thấy khách hàng
+        if (!$data['project_detail']) {
+            show_404(); // Hiển thị lỗi nếu không tìm thấy khách hàng
         }
+    
+        // Truyền thông tin user_id và workspace_id vào view
+        $data['user_id'] = $user_id;
+        $data['workspace_id'] = $workspace_id;
+    
+        // Tải view với dữ liệu chi tiết khách hàng và thông tin người dùng
+        $this->load->view('project-detail', $data);
     }
 
     public function index()

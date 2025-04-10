@@ -422,7 +422,7 @@ class Clients_model extends CI_Model
         $this->db->where('SDT', $phone);
     }
     if ($identity) {
-        $this->db->where('CMT/Hochieu', $identity);
+        $this->db->where('CMT_Hochieu', $identity);
     }
     if ($block) {
         $this->db->where('Khoi', $block);

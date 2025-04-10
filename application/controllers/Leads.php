@@ -129,7 +129,7 @@ class Leads extends CI_Controller
             echo json_encode($response);
         }
     }
-    public function lists()
+   /*  public function lists()
     {
         if (!check_permissions("leads", "read", "", true)) {
             return redirect(base_url(), 'refresh');
@@ -182,7 +182,74 @@ class Leads extends CI_Controller
                 redirect('home', 'refresh');
             }
         }
+    } */
+
+    public function assign_leads()
+{
+    if (!check_permissions("leads", "read", "", true) || !check_permissions("users", "read", "", true)) {
+        return redirect(base_url(), 'refresh');
     }
+    if (!$this->ion_auth->logged_in()) {
+        redirect('auth', 'refresh');
+    } else {
+        $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+
+        $workspace_ids = explode(',', $user->workspace_id);
+        $section = array_map('trim', $workspace_ids);
+        $workspace_ids = $section;
+
+        $data['workspace'] = $workspace = $this->workspace_model->get_workspace($workspace_ids);
+        if (!empty($workspace)) {
+            if (!$this->session->has_userdata('workspace_id')) {
+                $this->session->set_userdata('workspace_id', $workspace[0]->id);
+            }
+        }
+        $data['is_admin'] =  $this->ion_auth->is_admin();
+
+        $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
+        $user_ids = explode(',', $current_workspace_id[0]->user_id);
+        $section = array_map('trim', $user_ids);
+        $user_ids = $section;
+
+        $data['all_user'] = $this->users_model->get_user($user_ids);
+        $data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
+
+        $admin_ids = explode(',', $current_workspace_id[0]->admin_id);
+        $section = array_map('trim', $admin_ids);
+        $data['admin_ids'] = $admin_ids = $section;
+
+        $super_admin_ids = $this->users_model->get_all_super_admins_id(1);
+        $data['system_modules'] = $this->config->item('system_modules');
+        $data['modules'] = $this->users_model->modules($this->session->userdata('user_id'));
+
+        foreach ($super_admin_ids as $super_admin_id) {
+            $temp_ids[] = $super_admin_id['user_id'];
+        }
+        $data['super_admin_ids'] = $temp_ids;
+        $workspace_id = $this->session->userdata('workspace_id');
+        if (!empty($workspace_id)) {
+            $this->load->model('leads_model');
+            // Lấy dữ liệu từ model (nếu cần)
+            $data['leads'] = $this->leads_model->get_all_leads(); // Lấy danh sách khách hàng
+
+            // Kiểm tra tham số 'module' để phân biệt loại phân giao
+            $module = $this->input->get('module');  // Lấy tham số module từ URL
+
+            if ($module === 'unit') {
+                // Xử lý phân giao cho đơn vị
+                $this->load->view('assign-leads-unit', $data);  // Hiển thị trang phân giao cho đơn vị
+            } elseif ($module === 'rm') {
+                // Xử lý phân giao cho RM
+                $this->load->view('assign-leads-rm', $data);  // Hiển thị trang phân giao cho RM
+            } else {
+                // Nếu không có tham số 'module', có thể quay lại trang mặc định hoặc thông báo lỗi
+                redirect('home', 'refresh');
+            }
+        } else {
+            redirect('home', 'refresh');
+        }
+    }
+}
 
     public function create()
     {

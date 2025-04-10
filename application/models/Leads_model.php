@@ -197,6 +197,12 @@ class Leads_model extends CI_Model
         }
     }
 
+    public function get_all_leads()
+    {
+        $query = $this->db->get('leads'); // Lấy tất cả dữ liệu từ bảng `client`
+        return $query->result_array();
+    }
+
     function get_leads_by_id($lead_id)
     {
         $query = $this->db->query('SELECT * FROM leads WHERE id=' . $lead_id . ' ');

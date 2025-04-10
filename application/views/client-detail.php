@@ -1,14 +1,4 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Quản lý KHHH</title>
-    <?php include('include-css.php'); ?>
-</head>
-<body>
-<?php include "include-header.php"; ?>
 <?php
 // client-detail.php
 
@@ -204,7 +194,7 @@ if (isset($path_parts[6])) {
                       <table class="profile-table w-75" style="width: 100%;">
                         <tr>
                           <td style="color:rgba(87, 12, 14, 0.68)" class="font-weight-600">Số CMT/hộ chiếu</td>
-                          <td><?= htmlspecialchars($client_details['CMT/Hochieu']); ?></td>
+                          <td><?= htmlspecialchars($client_details['CMT_Hochieu']); ?></td>
                         </tr>
                         <tr>
                           <td style="color:rgba(87, 12, 14, 0.68)" class="font-weight-600">Ngày cấp</td>
@@ -396,7 +386,7 @@ if (isset($path_parts[6])) {
                                     <div class="form-group">
                                         <label>Số CMT/Hộ chiếu</label>
                                         <div class="input-group">
-                                            <?= form_input(['name' => 'CMT_Hochieu', 'value' => $client_details['CMT/Hochieu'] ?? '', 'placeholder' => 'Nhập số CMT/Hộ chiếu', 'class' => 'form-control']) ?>
+                                            <?= form_input(['name' => 'CMT_Hochieu', 'value' => $client_details['CMT_Hochieu'] ?? '', 'placeholder' => 'Nhập số CMT/Hộ chiếu', 'class' => 'form-control']) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -611,57 +601,11 @@ if (isset($path_parts[6])) {
 
     </div>
 </div>
-
-<script>
-// Khi tab được thay đổi, gửi yêu cầu AJAX để truy vấn dữ liệu của loại sản phẩm
-$('#myTab a').on('shown.bs.tab', function (e) {
-    var tab = $(e.target).attr('id');  // Lấy ID tab đang được chọn
-    var loaiSP = tab.split('-')[0]; // Loại sản phẩm là phần đầu của ID tab (ví dụ: payment-tab => payment)
-
-    // Gửi yêu cầu AJAX để lấy sản phẩm theo loại sản phẩm
-    $.ajax({
-        url: "get_product_data.php",  // Đường dẫn đến file PHP xử lý dữ liệu
-        method: "GET",
-        data: { loaiSP: loaiSP },  // Truyền loại sản phẩm
-        success: function(response) {
-            var products = JSON.parse(response);
-            var tableBody = $("#product-data");
-            tableBody.empty();  // Xóa dữ liệu cũ trong bảng
-
-            // Lặp qua danh sách sản phẩm và hiển thị vào bảng
-            products.forEach(function(product, index) {
-                var row = "<tr>" +
-                    "<td>" + (index + 1) + "</td>" +
-                    "<td>" + product.LoaiSP + "</td>" +
-                    "<td>" + product.MaSP + "</td>" +
-                    "<td>" + product.TenSP + "</td>" +
-                    "<td>" + product.SoHD + "</td>" +
-                    "<td>" + product.Loaitien + "</td>" +
-                    "<td class='text-right'>" + product.Sodu.toFixed(2) + "</td>" +
-                    "<td class='text-right'>" + (product.Sodu * product.Tygia).toFixed(2) + "</td>" +
-                    "<td>" + product.Ngaymo + "</td>" +
-                    "<td>" + product.Ngaydaohan + "</td>" +
-                    "<td>" + product.Ngayupload + "</td>" +
-                    "</tr>";
-
-                tableBody.append(row);  // Thêm dòng vào bảng
-            });
-        }
-    });
-});
-
-// Mặc định tải dữ liệu cho loại sản phẩm đầu tiên (Tài khoản thanh toán)
-$(document).ready(function() {
-    $('#payment-tab').click();
-});
-</script>
-
-
               </div>
             </div>
+            </div>
 
-
-            
+            </div>
       
 
     <?php include('include-footer.php'); ?>

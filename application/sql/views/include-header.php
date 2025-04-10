@@ -70,48 +70,7 @@
                   </a>
                 </li>
               
-                <div class="dropdown-menu">
-                  <?php 
-                    if(!empty($workspace)){
-                    $workspace_id = $this->session->userdata('workspace_id');
-                    foreach($workspace as $row){ ?>
-                        <a href="<?= base_url('workspace/change/'.$row->id); ?>" class="dropdown-item has-icon">
-    
-                          <?php if($row->id == $workspace_id){ ?>
-                            <i class="fas fa-check"></i>
-                          <?php } ?>
-                        
-                          <?= $row->title ?>
-    
-                          <?php if($row->created_by == $user->id){ ?>
-                            <span class="badge badge-info projects-badge">
-                            <?= !empty($this->lang->line('label_owner'))?$this->lang->line('label_owner'):'Owner'; ?>
-                            </span>
-                          <?php } ?>
-                        </a>
-                  <?php } }else{ echo'<a href="#" class="dropdown-item has-icon">No Workspace Found.</a>'; } ?>
-                  <div class="dropdown-divider"></div>
-                  <?php if($is_admin){ ?>
-                    <a href="#" id="modal-add-workspace" class="dropdown-item has-icon">
-                      <i class="fas fa-plus"></i> 
-    
-                      <?= !empty($this->lang->line('label_create_new_workspace'))?$this->lang->line('label_create_new_workspace'):'Create New Workspace'; ?>
-                      
-                    </a>
-                    <a href="#" id="modal-edit-workspace" class="dropdown-item has-icon">
-                      <i class="fas fa-edit"></i> 
-                        <?= !empty($this->lang->line('label_edit_workspace'))?$this->lang->line('label_edit_workspace'):'Edit Workspace'; ?>
-                    </a>
-                  <?php } ?> 
-                  <?php if(!empty($this->session->has_userdata('workspace_id'))){ ?>
-                  <a href="<?= base_url('users/remove-user-from-workspace/'.$user->id); ?>" class="dropdown-item has-icon">
-                    <i class="fas fa-times"></i> 
-    
-                    <?= !empty($this->lang->line('label_remove_me_from_workspace'))?$this->lang->line('label_remove_me_from_workspace'):'Remove Me From Workspace'; ?>
-                    
-                  </a>
-                  <?php } ?>
-                </div>
+                
           
           
           
@@ -144,7 +103,6 @@
           <?= !empty($this->lang->line('label_notes'))?$this->lang->line('label_notes'):'Notes'; ?>
           </span></a></li>
           
-          <?php } ?>
           
           <?php if($is_admin){ ?>
           <li <?= (current_url()== base_url('settings/setting-detail'))?'class="active"':''; ?> ><a class="nav-link" href="<?= base_url('settings/setting-detail'); ?>"><i class="fas fa-cog"></i> <span> 

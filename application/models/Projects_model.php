@@ -8,6 +8,7 @@ class Projects_model extends CI_Model
     {
         parent::__construct();
         $this->load->database();
+        $this->load->model(['projects_model']);
         $this->load->library(['ion_auth', 'form_validation']);
         $this->load->helper(['url', 'language', 'file']);
     }
@@ -16,7 +17,7 @@ class Projects_model extends CI_Model
     {
         $offset = 0;
         $limit = 10;
-        $sort = 'id';
+        $sort = 'Machiendich';
         $order = 'ASC';
         $where = '';
         $get = $this->input->get();
@@ -87,12 +88,12 @@ class Projects_model extends CI_Model
 
         foreach ($res as $row) {
             // Gắn liên kết vào Mã CD
-            $row['Machiendich'] = '<a href="' . base_url('index.php/projects/detail/' . $row['Machiendich']) . '" target="_blank">' . $row['MaKH'] . '</a>';
+            $row['Machiendich'] = '<a href="' . base_url('index.php/projects/detail/' . $row['Machiendich']) . '" target="_blank">' . $row['Machiendich'] . '</a>';
             $bulkData['rows'][] = $row;
         }
 
         return $bulkData;
-        if ($this->ion_auth->is_admin($user_id)) {
+        /* if ($this->ion_auth->is_admin($user_id)) {
 
             $query = $this->db->query("SELECT * FROM projects WHERE  workspace_id= $workspace_id " . $where . " ORDER BY " . $sort . " " . $order . " LIMIT " . $offset . ", " . $limit);
         } else if (!is_client($user_id)) {
@@ -286,9 +287,15 @@ class Projects_model extends CI_Model
 
             $rows[] = $tempRow;
         }
-
+ */
         $bulkData['rows'] = $rows;
         print_r(json_encode($bulkData));
+    }
+
+    public function get_project_by_id($id)
+    {
+        $query = $this->db->get_where('campaigns', ['Machiendich' => $id]);
+        return $query->row_array();
     }
 
     function create_project($data)
@@ -445,7 +452,7 @@ class Projects_model extends CI_Model
         }
     }
 
-    function get_project_by_id($project_id)
+   /*  function get_project_by_id($project_id)
     {
         // $query = $this->db->query('SELECT * FROM projects WHERE id=' . $project_id . ' ');
         $query = $this->db->query('SELECT projects.*, IF(favourite_projects.project_id IS NOT NULL, 1, 0) AS is_favourite
@@ -453,7 +460,7 @@ class Projects_model extends CI_Model
                            LEFT JOIN favourite_projects ON projects.id =  favourite_projects.project_id AND favourite_projects.user_id = ' . $this->session->userdata('user_id') . '
                            WHERE projects.id = ' . $project_id);
         return $query->result_array();
-    }
+    } */
 
     function get_files($type_id, $type)
     {

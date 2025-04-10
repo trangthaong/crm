@@ -170,46 +170,56 @@ $response = get_system_settings('general');
                     href="<?= base_url('home'); ?>"><i class="fas fa-fire text-danger"></i> <span>
                         <?= !empty($this->lang->line('label_dashboard')) ? $this->lang->line('label_dashboard') : 'Dashboard'; ?>
                     </span></a></li>
-            
 
-                <?php if (check_permissions("clients", "read")) { ?>
-                    <!-- <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('clients'); ?>"><i class="fas fa-users text-info"></i> <span>
-                                <?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?>
-                            </span></a>
-                    </li>  -->
-                <li class="dropdown <?= (current_url() == base_url('clients') ||
-                        current_url() == base_url('clients') ||
-                        current_url() == base_url('clients/assign_clients')) ? ' active' : ''; ?>">
-                        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
-                                class="fas fa-users text-info"></i><span><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?></span></a>
-                        <ul class="dropdown-menu">
-                            <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('clients'); ?>">
-                                    <span>Quản lý KHHH</span>
-                                </a>
-                            </li>
-                            <li <?= (current_url() == base_url('clients/assign_clients')) ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('clients/assign_clients'); ?>">
-                                    <span>Phân giao KH</span>
-                                </a>
-                            </li>
-                            </ul>
-                    </li>
-                <?php } ?>
+
+            <?php if (check_permissions("clients", "read")) { ?>
+            <li class="dropdown <?= (current_url() == base_url('clients') ||
+                    current_url() == base_url('clients') ||
+                    current_url() == base_url('clients/assign_clients')) ? ' active' : ''; ?>">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                            class="fas fa-users text-info"></i><span><?= !empty($this->lang->line('label_clients')) ? $this->lang->line('label_clients') : 'Clients'; ?></span></a>
+                    <ul class="dropdown-menu">
+                        <li <?= (current_url() == base_url('clients')) ? 'class="active"' : ''; ?>>
+                            <a class="nav-link" href="<?= base_url('clients'); ?>">
+                                <span>Quản lý KHHH</span>
+                            </a>
+                        </li>
+                        <li <?= (current_url() == base_url('clients/assign_clients')) ? 'class="active"' : ''; ?>>
+                            <a class="nav-link" href="<?= base_url('clients/assign_clients'); ?>">
+                                <span>Phân giao KH</span>
+                            </a>
+                        </li>
+                        </ul>
+                </li>
+            <?php } ?>
 
                 <?php if (check_permissions("leads", "read")) { ?>
-                    <li <?= (current_url() == base_url('leads')) ? 'class="active"' : ''; ?>><a class="nav-link"
-                            href="<?= base_url('leads'); ?>"><i class="fas fa-tty text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_leads')) ? $this->lang->line('label_leads') : 'Leads'; ?>
-                            </span></a>
-                    </li>
+                <li class="dropdown <?= (current_url() == base_url('leads') ||
+                    current_url() == base_url('leads') ||
+                    current_url() == base_url('leads/unit') ||
+                    current_url() == base_url('leads/assign_leads?module=rm')) ? ' active' : ''; ?>">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                            class="fas fa-tty text-danger"></i><span>Khách hàng tiềm năng</span></a>
+                    <ul class="dropdown-menu">
+                        <li <?= (current_url() == base_url('leads')) ? 'class="active"' : ''; ?>>
+                            <a class="nav-link" href="<?= base_url('leads'); ?>">
+                                <span>Quản lý KHTN</span>
+                            </a>
+                        </li>
+                        <li <?= (current_url() == base_url('leads/assign_leads_unit')) ? 'class="active"' : ''; ?>>
+                            <a class="nav-link" href="<?= base_url('leads/assign_leads?module=unit'); ?>">
+                                <span>Phân giao cho đơn vị</span>
+                            </a>
+                        </li>
+                        <li <?= (current_url() == base_url('leads/assign_leads?module=rm')) ? 'class="active"' : ''; ?>>
+                            <a class="nav-link" href="<?= base_url('leads/assign_leads?module=rm'); ?>">
+                                <span>Phân giao cho RM</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <?php } ?>
-                <!-- <li <?= (current_url() == base_url('screenshot')) ? 'class="active"' : ''; ?>><a class="nav-link" href="<?= base_url('screenshot'); ?>"><i class="fas fa-phone text-danger"></i> <span>
-                                <?= !empty($this->lang->line('label_screenshot')) ? $this->lang->line('label_screenshot') : 'screenshot'; ?>
-                            </span></a>
-                    </li> -->
-                
+
                 
                 <?php if (check_permissions("users", "read")) { ?>
                     <li <?= (current_url() == base_url('users')) ? 'class="active"' : ''; ?>><a class="nav-link"
@@ -219,66 +229,14 @@ $response = get_system_settings('general');
                     </li>
                 <?php } ?>
                 
-                
-
-                <?php if (!empty($this->session->has_userdata('workspace_id'))) { ?>
-                <?php if (check_permissions("projects", "read")) {
-                    ?>
-                    <li class="dropdown <?= (current_url() == base_url('projects') ||
-                        current_url() == base_url('projects/calendar') ||
-                        current_url() == base_url('projects/favorite_projects') ||
-                        current_url() == base_url('projects/lists') ||
-                        current_url() == base_url('gantt_chart') ||
-                        current_url() == base_url('bulk-projects')) ? ' active' : ''; ?>">
-                        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
-                                class="far fa-file-alt text-info"></i><span><?= !empty($this->lang->line('label_projects')) ? $this->lang->line('label_projects') : 'Projects'; ?></span></a>
-                        <ul class="dropdown-menu">
-                            <li <?= (current_url() == base_url('projects') || $this->uri->segment(2) == 'projects') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('projects'); ?>"><i
-                                        class="far fa-file-alt text-success"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_projects')) ? $this->lang->line('label_projects') : 'Projects'; ?>
-                                    </span></a>
-                            </li>
-                            <li <?= (current_url() == base_url('projects/favorite_projects') || $this->uri->segment(2) == 'projects/favorite_projects') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('projects/favorite_projects'); ?>"><i
-                                        class="fas fa-star text-golden"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_favorite_projects')) ? $this->lang->line('label_favorite_projects') : 'Favorite Projects'; ?>
-                                    </span></a>
-                            </li>
-                            <li <?= (current_url() == base_url('projects/calendar') || $this->uri->segment(2) == 'projects/calendar') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('projects/calendar'); ?>"><i
-                                        class="fas fa-calendar-alt text-info"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_calender_view')) ? $this->lang->line('label_calender_view') : 'Calender View'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                            <li <?= (current_url() == base_url('/gantt_chart') || $this->uri->segment(2) == 'gantt_chart') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('/gantt_chart'); ?>"> <i
-                                        class="fas fa-layer-group text-warning"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_gantt_chart')) ? $this->lang->line('label_gantt_chart') : 'Gantt chart'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                            <li <?= (current_url() == base_url('projects/bulk_project_upload') || $this->uri->segment(2) == 'projects/bulk_project_upload') ? 'class="active"' : ''; ?>>
-                                <a class="nav-link" href="<?= base_url('projects/bulk_project_upload'); ?>"> <i
-                                        class="fas fa-upload text-danger"></i>
-                                    <span>
-                                        <?= !empty($this->lang->line('label_bulk_upload')) ? $this->lang->line('label_bulk_upload') : 'Bulk Upload'; ?>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
+                <?php if (check_permissions("projects", "read")) {?>
+                    <li <?= (current_url() == base_url('projects')) ? 'class="active"' : ''; ?>><a class="nav-link"
+                            href="<?= base_url('projects'); ?>"><i class="far fa-file-alt text-info"></i> <span>
+                                Chiến dịch
+                            </span></a>
                     </li>
                 <?php } ?>
-                
 
-            <?php } ?>
-            
-            
             <?php if (is_admin()) { ?>
                 <li
                     class="dropdown <?= (current_url() == base_url('settings/setting-detail') || current_url() == base_url('email-templates') || current_url() == base_url('permissions')) ? ' active' : ''; ?>">

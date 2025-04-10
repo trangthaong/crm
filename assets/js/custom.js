@@ -1347,10 +1347,10 @@ $("#modal-delete-client").fireModal({
     }]
 });
 
-$(".modal-edit-user").fireModal({
+$("#modal-edit-user").fireModal({
     size: 'modal-lg',
-    title: 'Edit User',
-    body: $("#modal-edit-user-part"),
+    title: 'Sửa thông tin RM',
+    body: $("#modal-add-user-part"),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {
@@ -1391,13 +1391,74 @@ $(".modal-edit-user").fireModal({
         //   console.log(form)
     },
     buttons: [{
-        text: modal_footer_edit_title,
+        text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        id: 'updateuserbtn',
+        id: 'adduserbtn',
         handler: function (modal) { }
     }]
 });
+
+$("#modal-delete-user").fireModal({
+    size: 'modal-lg',
+    title: 'Xác nhận xóa',
+    body: $("#modal-add-user-part"),
+    footerClass: 'bg-whitesmoke',
+    autoFocus: false,
+    onFormSubmit: function (modal, e, form) {
+        // Form Data
+        let form_data = $(e.target).serialize();
+
+        var formData = new FormData(this);
+        formData.append(csrfName, csrfHash);
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (result) {
+
+                csrfName = result['csrfName'];
+                csrfHash = result['csrfHash'];
+
+                if (result['error'] == false) {
+                    form.stopProgress();
+                    location.reload();
+                } else {
+                    form.stopProgress();
+                    modal.find('.modal-body').prepend('<div class="alert alert-danger">' + result['message'] + '</div>')
+                    modal.find('.alert-danger').delay(4000).fadeOut();
+                }
+
+            }
+        });
+
+        e.preventDefault();
+    },
+    shown: function (modal, form) {
+        //   console.log(form)
+    },
+    buttons: [{
+        text: 'Hủy',  // Text của button mới
+        class: 'btn btn-secondary btn-shadow',  // Class CSS khác cho button Hủy
+        id: 'cancelbtn',  // ID của button Hủy
+        handler: function (modal) {
+            // Hành động khi button Hủy được nhấn (Ví dụ: đóng modal)
+            modal.close(); // Đóng modal khi nhấn button Hủy
+        }
+    },{
+        text: 'Xóa',
+        submit: true,
+        class: 'btn btn-primary btn-shadow',
+        id: 'adduserbtn',
+        handler: function (modal) { }
+    }]
+});
+
 
 var add_event_modal_title = ($('#modal-event-title')) ? $('#modal-event-title').html() : "Add Event";
 $("#modal-add-event").fireModal({
