@@ -32,19 +32,7 @@ $config['type'] = array(
 
 $config['system_modules'] = [
     'projects' =>  array('create', 'read', 'update', 'delete'),
-    'statuses' =>  array('create', 'read', 'update', 'delete'),
-    'milestone' =>  array('create', 'read', 'update', 'delete'),
-    'tasks' =>  array('create', 'read', 'update', 'delete'),
-    'calendar' =>  array('create', 'read', 'update'),
     'users' =>  array('create', 'read', 'update', 'delete'),
     'clients' =>  array('create', 'read', 'update', 'delete'),
-    'leave_requests' =>  array('create', 'read', 'update'),
-    'notes' =>  array('create', 'read', 'update', 'delete'),
-    'announcements' =>  array('create', 'read', 'update', 'delete'),
-    'time_tracker' =>  array('create', 'read'),
-    'leads' =>  array('create', 'read', 'update', 'delete'),
-    'contracts' =>  array('create', 'read', 'update', 'delete'),
-    'upcoming_birthdays' =>  array('read'),
-    'upcoming_work_anniversaries' =>  array('read'),
-    'members_on_leave' =>  array('read'),
+    'leads' =>  array('create', 'read', 'update', 'delete')
 ];

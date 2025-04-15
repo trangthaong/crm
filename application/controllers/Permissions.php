@@ -79,51 +79,13 @@ class Permissions extends CI_Controller
             
             $data = $this->db->set($permission_data)->where(['group_id' => '1', 'user_id' => $this->session->userdata('user_id')])->update('users_groups');
             if ($data) {
-                $this->session->set_flashdata('message', 'Members permissions updated successfully.');
+                $this->session->set_flashdata('message', 'Cập nhật quyền người dùng thành công');
                 $this->session->set_flashdata('message_type', 'success');
             } else {
-                $this->session->set_flashdata('message', 'Members permissions could not updated! Try again!');
+                $this->session->set_flashdata('message', 'Không cập nhật được quyền người dùng! Vui lòng thử lại!');
                 $this->session->set_flashdata('message_type', 'error');
             }
 
-            $response['error'] = false;
-
-            $response['csrfName'] = $this->security->get_csrf_token_name();
-            $response['csrfHash'] = $this->security->get_csrf_hash();
-            $response['message'] = 'Successful';
-            echo json_encode($response);
-        }
-    }
-
-    public function update_clients_permissions()
-    {
-        if (!$this->ion_auth->logged_in()) {
-            redirect('auth', 'refresh');
-        } else {
-            if (defined('ALLOW_MODIFICATION') && ALLOW_MODIFICATION == 0) {
-                $response['error'] = true;
-                $response['message'] = "This operation not allowed in demo version.";
-                echo json_encode($response);
-                redirect('home', 'refresh');
-                return false;
-            }
-            if ($data['name'] = 'clients') {
-                $permission_data = [
-                    'client_permissions' => json_encode($this->input->post('client_permissions', true))
-                ];
-            } else {
-                $permission_data = [
-                    'client_permissions' => NULL
-                ];
-            }
-            $data = $this->db->set($permission_data)->where(['group_id' => '1', 'user_id' => $this->session->userdata('user_id')])->update('users_groups');
-            if ($data) {
-                $this->session->set_flashdata('message', 'Client permissions updated successfully.');
-                $this->session->set_flashdata('message_type', 'success');
-            } else {
-                $this->session->set_flashdata('message', 'Client permissions could not updated! Try again!');
-                $this->session->set_flashdata('message_type', 'error');
-            }
             $response['error'] = false;
 
             $response['csrfName'] = $this->security->get_csrf_token_name();

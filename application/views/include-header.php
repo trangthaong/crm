@@ -242,7 +242,7 @@ $response = get_system_settings('general');
                     class="dropdown <?= (current_url() == base_url('settings/setting-detail') || current_url() == base_url('email-templates') || current_url() == base_url('permissions')) ? ' active' : ''; ?>">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-cog"></i>
                         <span><?= !empty($this->lang->line('label_settings')) ? $this->lang->line('label_settings') : 'Settings'; ?></span></a>
-                    <ul class="dropdown-menu" style="display: block;">
+                    <ul class="dropdown-menu">
                         <li <?= (current_url() == base_url('settings/setting-detail') || current_url() == base_url('settings/setting-detail')) ? 'class="active"' : ''; ?>>
                             <a class="nav-link" href="<?= base_url('settings/setting-detail'); ?>">
                                 <span>
@@ -253,14 +253,14 @@ $response = get_system_settings('general');
                         <li <?= (current_url() == base_url('email-templates') || current_url() == base_url('email-templates')) ? 'class="active"' : ''; ?>>
                             <a class="nav-link" href="<?= base_url('email-templates'); ?>">
                                 <span>
-                                    <?= !empty($this->lang->line('label_email_templates')) ? $this->lang->line('label_email_templates') : 'Email Templates'; ?>
+                                    Mẫu Email
                                 </span>
                             </a>
                         </li>
                         <li <?= (current_url() == base_url('permissions') || current_url() == base_url('permissions')) ? 'class="active"' : ''; ?>>
                             <a class="nav-link" href="<?= base_url('permissions'); ?>">
                                 <span>
-                                    <?= !empty($this->lang->line('label_user_group_permissions')) ? $this->lang->line('label_user_group_permissions') : 'User Permissions'; ?>
+                                    Phân quyền
                                 </span>
                             </a>
                         </li>
