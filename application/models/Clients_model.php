@@ -52,6 +52,13 @@ class Clients_model extends CI_Model
                 $where .= " AND RMquanly = '" . $get['rmQuanLy'] . "'";
             }
         }
+        if (isset($get['unitQuanLy'])) {
+            if ($get['unitQuanLy'] == 'IS NULL') {
+                $where .= " AND Unitquanly IS NULL";
+            } else {
+                $where .= " AND Unitquanly = '" . $get['unitQuanLy'] . "'";
+            }
+        }
 
         // Truy vấn tổng số bản ghi
         $query = $this->db->query("SELECT COUNT(MaKH) as total FROM client WHERE 1=1 " . $where);
@@ -59,7 +66,7 @@ class Clients_model extends CI_Model
         $total = $res[0]['total'];
 
         // Truy vấn danh sách clients
-        $query = $this->db->query("SELECT MaKH, TenKH, Khoi, SDT, RMquanly
+        $query = $this->db->query("SELECT MaKH, TenKH, Khoi, SDT, RMquanly, Unitquanly
                                 FROM client
                                 WHERE 1=1 " . $where . " 
                                 ORDER BY " . $sort . " " . $order . " 

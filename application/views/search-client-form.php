@@ -193,10 +193,15 @@ $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_de
 
 <script>
     function queryParamsScope(params) {
+        if (!window.clientFilter) {
+            window.clientFilter = {};
+        }
+
         console.log("Sending params to server:", params);
+
         return {
             ...queryParams(params),
-            rmQuanLy: "IS NULL"
+            ...window.clientFilter
         };
     }
 </script>

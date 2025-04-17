@@ -235,6 +235,10 @@
         </div>
 
         <script>
+            window.clientFilter = {
+                rmQuanLy: "IS NULL"
+            }
+
             not_in_workspace_user = <?php echo json_encode(array_values($not_in_workspace_user)); ?>;
 
             function queryParams(p) {
@@ -318,18 +322,6 @@
                 resetTableSTT();
             }
 
-            function selectClientFormatter(value, row, index) {
-                return `
-                    <button type="button" class="btn btn-success btn-sm" onclick='addClientToLeadsTable({
-                        MaKH: "${row.MaKH}",
-                        TenKH: "${row.TenKH}",
-                        SDT: "${row.SDT}",
-                        Email: "${row.Email || ''}",
-                        CNquanly: "${row.CNquanly || ''}"
-                    })'>Chọn</button>
-                `;
-            }
-
             $('#search-form').on('submit', function (e) {
                 e.preventDefault();
 
@@ -397,7 +389,11 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                        alert('Đã có lỗi xảy ra khi phân giao.');
+                        iziToast.success({
+                            title: 'Đã có lỗi xảy ra khi phân giao.',
+                            message: '',
+                            position: 'topRight'
+                        });
                     }
                 });
             });

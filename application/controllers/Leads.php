@@ -291,6 +291,42 @@ class Leads extends CI_Controller
         }
     }
 
+    public function assign_leads_unit_to_user()
+    {
+        if (!check_permissions("leads", "update", "", true)) {
+            return response(PERMISSION_ERROR_MESSAGE);
+        }
+        if (!$this->ion_auth->logged_in()) {
+            redirect('auth', 'refresh');
+        }
+        $this->form_validation->set_rules('pgd', str_replace(':', '', 'pgd is empty.'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('assigned_clients', str_replace(':', '', 'assigned_clients is empty.'), 'trim|required|xss_clean');
+
+        if ($this->form_validation->run() === TRUE) {
+            $pgd = $this->input->post('pgd');
+            $assigned_clients = $this->input->post('assigned_clients');
+            $assigned_clients = json_decode($assigned_clients, true);
+            foreach ($assigned_clients as $client) {
+                // Update RMquanly in table client
+                $data = [
+                    'Unitquanly' => $pgd
+                ];
+                $this->clients_model->update_client($client, $data);
+            }
+            $response['error'] = false;
+            $response['csrfName'] = $this->security->get_csrf_token_name();
+            $response['csrfHash'] = $this->security->get_csrf_hash();
+            $response['message'] = 'Successful';
+            echo json_encode($response);
+        } else {
+            $response['error'] = true;
+            $response['csrfName'] = $this->security->get_csrf_token_name();
+            $response['csrfHash'] = $this->security->get_csrf_hash();
+            $response['message'] = validation_errors();
+            echo json_encode($response);
+        }
+    }
+
     public function create()
     {
         if (!check_permissions("leads", "create", "", true)) {
