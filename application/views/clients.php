@@ -255,7 +255,7 @@
         <?php if (check_permissions("clients", "create")) { ?>
         <div class="card mt-4">
             <div class="card-body">
-            <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+            <?= form_open_multipart('clients/create_bulk_client', ['id' => 'modal-add-user-part', 'class' => 'modal-part']); ?>
             <div class="row">
                 <div class="col-md-12">
                     <div id="modal-title" class="d-none">Thêm khách hàng từ file</div>
@@ -265,7 +265,7 @@
                         <label for="file" class="mr-3"><?= !empty($this->lang->line('label_file')) ? $this->lang->line('label_file') : 'Upload file danh sách khách hàng (Định dạng .csv)'; ?> <span class='text-danger text-sm'>*</span></label>
                         <div class="form-group d-flex align-items-center">
                             <input type="file" name="upload_file" class="form-control mr-3" accept=".csv" style="max-width: 300px;" />
-                            <a href="<?= base_url('assets/project/upload/project-bulk-upload-sample.csv') ?>" class="btn btn-info" download="project-bulk-upload-sample.csv">
+                            <a href="<?= base_url('assets/project/upload/bulk_khhh_sample.csv') ?>" class="btn btn-info" download="bulk_khhh_sample.csv">
                                 <?= !empty($this->lang->line('label_bulk_upload_sample_file')) ? $this->lang->line('label_bulk_upload_sample_file') : 'Tải file mẫu'; ?> <i class="fas fa-download"></i>
                             </a>
                         </div>
