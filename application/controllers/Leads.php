@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 defined('BASEPATH') or exit('No direct script access allowed');
+
 class Leads extends CI_Controller
 {
 
@@ -8,7 +9,7 @@ class Leads extends CI_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model(['users_model', 'leads_model', 'workspace_model', 'projects_model', 'notifications_model']);
+        $this->load->model(['users_model', 'leads_model', 'workspace_model', 'projects_model', 'notifications_model', 'clients_model']);
         $this->load->library(['ion_auth', 'form_validation']);
         $this->load->helper(['url', 'language']);
         $this->load->library('session');
@@ -27,6 +28,7 @@ class Leads extends CI_Controller
             redirect('auth', 'refresh');
         }
     }
+
     public function index()
     {
         if (!check_permissions("leads", "read", "", true)) {
@@ -58,7 +60,7 @@ class Leads extends CI_Controller
                 return false;
                 exit();
             }
-            $data['is_admin'] =  $this->ion_auth->is_admin();
+            $data['is_admin'] = $this->ion_auth->is_admin();
             $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
             $user_ids = explode(',', $current_workspace_id[0]->user_id);
             $section = array_map('trim', $user_ids);
@@ -103,6 +105,7 @@ class Leads extends CI_Controller
             }
         }
     }
+
     public function lead_status_update()
     {
         if (!$this->ion_auth->logged_in()) {
@@ -129,127 +132,164 @@ class Leads extends CI_Controller
             echo json_encode($response);
         }
     }
-   /*  public function lists()
+
+    /*  public function lists()
+     {
+         if (!check_permissions("leads", "read", "", true)) {
+             return redirect(base_url(), 'refresh');
+         }
+         if (!$this->ion_auth->logged_in()) {
+             redirect('auth', 'refresh');
+         } else {
+             $workspace_id = $this->session->userdata('workspace_id');
+             $user_id = $this->session->userdata('user_id');
+
+             $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+
+             $product_ids = explode(',', $user->workspace_id);
+
+             $section = array_map('trim', $product_ids);
+
+             $product_ids = $section;
+
+             $data['workspace'] = $workspace = $this->workspace_model->get_workspace($product_ids);
+             if (!empty($workspace)) {
+                 if (!$this->session->has_userdata('workspace_id')) {
+                     $this->session->set_userdata('workspace_id', $workspace[0]->id);
+                 }
+             } else {
+                 $this->session->set_flashdata('message', NO_WORKSPACE);
+                 $this->session->set_flashdata('message_type', 'error');
+                 redirect('home', 'refresh');
+                 return false;
+                 exit();
+             }
+             $data['is_admin'] =  $this->ion_auth->is_admin();
+             $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
+             $user_ids = explode(',', $current_workspace_id[0]->user_id);
+             $section = array_map('trim', $user_ids);
+             $user_ids = $section;
+             $data['all_user'] = $this->users_model->get_user($user_ids);
+             $admin_ids = explode(',', $current_workspace_id[0]->admin_id);
+             $section = array_map('trim', $admin_ids);
+             $data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
+             $data['admin_ids'] = $admin_ids = $section;
+
+             $workspace_id = $this->session->userdata('workspace_id');
+
+             if (!empty($workspace_id)) {
+                 $projects = $this->projects_model->get_projects($this->session->userdata('workspace_id'));
+                 $data['projects'] = $projects;
+                 $data['notifications'] = !empty($workspace_id) ? $this->notifications_model->get_notifications($this->session->userdata['user_id'], $workspace_id) : array();
+                 $this->load->view('leads-list', $data);
+             } else {
+                 redirect('home', 'refresh');
+             }
+         }
+     } */
+
+    public function assign_leads()
     {
-        if (!check_permissions("leads", "read", "", true)) {
+        if (!check_permissions("leads", "read", "", true) || !check_permissions("users", "read", "", true)) {
             return redirect(base_url(), 'refresh');
         }
         if (!$this->ion_auth->logged_in()) {
             redirect('auth', 'refresh');
         } else {
-            $workspace_id = $this->session->userdata('workspace_id');
-            $user_id = $this->session->userdata('user_id');
-
             $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
 
-            $product_ids = explode(',', $user->workspace_id);
+            $workspace_ids = explode(',', $user->workspace_id);
+            $section = array_map('trim', $workspace_ids);
+            $workspace_ids = $section;
 
-            $section = array_map('trim', $product_ids);
-
-            $product_ids = $section;
-
-            $data['workspace'] = $workspace = $this->workspace_model->get_workspace($product_ids);
+            $data['workspace'] = $workspace = $this->workspace_model->get_workspace($workspace_ids);
             if (!empty($workspace)) {
                 if (!$this->session->has_userdata('workspace_id')) {
                     $this->session->set_userdata('workspace_id', $workspace[0]->id);
                 }
-            } else {
-                $this->session->set_flashdata('message', NO_WORKSPACE);
-                $this->session->set_flashdata('message_type', 'error');
-                redirect('home', 'refresh');
-                return false;
-                exit();
             }
-            $data['is_admin'] =  $this->ion_auth->is_admin();
+            $data['is_admin'] = $this->ion_auth->is_admin();
+
             $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
             $user_ids = explode(',', $current_workspace_id[0]->user_id);
             $section = array_map('trim', $user_ids);
             $user_ids = $section;
+
             $data['all_user'] = $this->users_model->get_user($user_ids);
+            $data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
+
             $admin_ids = explode(',', $current_workspace_id[0]->admin_id);
             $section = array_map('trim', $admin_ids);
-            $data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
             $data['admin_ids'] = $admin_ids = $section;
 
+            $super_admin_ids = $this->users_model->get_all_super_admins_id(1);
+            $data['system_modules'] = $this->config->item('system_modules');
+            $data['modules'] = $this->users_model->modules($this->session->userdata('user_id'));
+
+            foreach ($super_admin_ids as $super_admin_id) {
+                $temp_ids[] = $super_admin_id['user_id'];
+            }
+            $data['super_admin_ids'] = $temp_ids;
             $workspace_id = $this->session->userdata('workspace_id');
-
             if (!empty($workspace_id)) {
-                $projects = $this->projects_model->get_projects($this->session->userdata('workspace_id'));
-                $data['projects'] = $projects;
-                $data['notifications'] = !empty($workspace_id) ? $this->notifications_model->get_notifications($this->session->userdata['user_id'], $workspace_id) : array();
-                $this->load->view('leads-list', $data);
+                $this->load->model('leads_model');
+                // Lấy dữ liệu từ model (nếu cần)
+                $data['leads'] = $this->leads_model->get_all_leads(); // Lấy danh sách khách hàng
+
+                // Kiểm tra tham số 'module' để phân biệt loại phân giao
+                $module = $this->input->get('module');  // Lấy tham số module từ URL
+
+                if ($module === 'unit') {
+                    // Xử lý phân giao cho đơn vị
+                    $this->load->view('assign-leads-unit', $data);  // Hiển thị trang phân giao cho đơn vị
+                } elseif ($module === 'rm') {
+                    // Xử lý phân giao cho RM
+                    $this->load->view('assign-leads-rm', $data);  // Hiển thị trang phân giao cho RM
+                } else {
+                    // Nếu không có tham số 'module', có thể quay lại trang mặc định hoặc thông báo lỗi
+                    redirect('home', 'refresh');
+                }
             } else {
                 redirect('home', 'refresh');
             }
         }
-    } */
-
-    public function assign_leads()
-{
-    if (!check_permissions("leads", "read", "", true) || !check_permissions("users", "read", "", true)) {
-        return redirect(base_url(), 'refresh');
     }
-    if (!$this->ion_auth->logged_in()) {
-        redirect('auth', 'refresh');
-    } else {
-        $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
 
-        $workspace_ids = explode(',', $user->workspace_id);
-        $section = array_map('trim', $workspace_ids);
-        $workspace_ids = $section;
-
-        $data['workspace'] = $workspace = $this->workspace_model->get_workspace($workspace_ids);
-        if (!empty($workspace)) {
-            if (!$this->session->has_userdata('workspace_id')) {
-                $this->session->set_userdata('workspace_id', $workspace[0]->id);
-            }
+    public function assign_leads_to_user()
+    {
+        if (!check_permissions("leads", "update", "", true)) {
+            return response(PERMISSION_ERROR_MESSAGE);
         }
-        $data['is_admin'] =  $this->ion_auth->is_admin();
-
-        $current_workspace_id = $this->workspace_model->get_workspace($this->session->userdata('workspace_id'));
-        $user_ids = explode(',', $current_workspace_id[0]->user_id);
-        $section = array_map('trim', $user_ids);
-        $user_ids = $section;
-
-        $data['all_user'] = $this->users_model->get_user($user_ids);
-        $data['not_in_workspace_user'] = $this->users_model->get_user_not_in_workspace($user_ids);
-
-        $admin_ids = explode(',', $current_workspace_id[0]->admin_id);
-        $section = array_map('trim', $admin_ids);
-        $data['admin_ids'] = $admin_ids = $section;
-
-        $super_admin_ids = $this->users_model->get_all_super_admins_id(1);
-        $data['system_modules'] = $this->config->item('system_modules');
-        $data['modules'] = $this->users_model->modules($this->session->userdata('user_id'));
-
-        foreach ($super_admin_ids as $super_admin_id) {
-            $temp_ids[] = $super_admin_id['user_id'];
+        if (!$this->ion_auth->logged_in()) {
+            redirect('auth', 'refresh');
         }
-        $data['super_admin_ids'] = $temp_ids;
-        $workspace_id = $this->session->userdata('workspace_id');
-        if (!empty($workspace_id)) {
-            $this->load->model('leads_model');
-            // Lấy dữ liệu từ model (nếu cần)
-            $data['leads'] = $this->leads_model->get_all_leads(); // Lấy danh sách khách hàng
+        $this->form_validation->set_rules('rm_id', str_replace(':', '', 'rm_id is empty.'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('assigned_clients', str_replace(':', '', 'assigned_clients is empty.'), 'trim|required|xss_clean');
 
-            // Kiểm tra tham số 'module' để phân biệt loại phân giao
-            $module = $this->input->get('module');  // Lấy tham số module từ URL
-
-            if ($module === 'unit') {
-                // Xử lý phân giao cho đơn vị
-                $this->load->view('assign-leads-unit', $data);  // Hiển thị trang phân giao cho đơn vị
-            } elseif ($module === 'rm') {
-                // Xử lý phân giao cho RM
-                $this->load->view('assign-leads-rm', $data);  // Hiển thị trang phân giao cho RM
-            } else {
-                // Nếu không có tham số 'module', có thể quay lại trang mặc định hoặc thông báo lỗi
-                redirect('home', 'refresh');
+        if ($this->form_validation->run() === TRUE) {
+            $rm_id = $this->input->post('rm_id');
+            $assigned_clients = $this->input->post('assigned_clients');
+            $assigned_clients = json_decode($assigned_clients, true);
+            foreach ($assigned_clients as $client) {
+                // Update RMquanly in table client
+                $data = [
+                    'RMquanly' => $rm_id
+                ];
+                $this->clients_model->update_client($client, $data);
             }
+            $response['error'] = false;
+            $response['csrfName'] = $this->security->get_csrf_token_name();
+            $response['csrfHash'] = $this->security->get_csrf_hash();
+            $response['message'] = 'Successful';
+            echo json_encode($response);
         } else {
-            redirect('home', 'refresh');
+            $response['error'] = true;
+            $response['csrfName'] = $this->security->get_csrf_token_name();
+            $response['csrfHash'] = $this->security->get_csrf_hash();
+            $response['message'] = validation_errors();
+            echo json_encode($response);
         }
     }
-}
 
     public function create()
     {
@@ -310,6 +350,7 @@ class Leads extends CI_Controller
             echo json_encode($response);
         }
     }
+
     public function edit()
     {
         if (!check_permissions("leads", "update", "", true)) {
@@ -383,7 +424,7 @@ class Leads extends CI_Controller
             $response['csrfHash'] = $this->security->get_csrf_hash();
             $response['message'] = 'Successful';
             $response['data'] = $data;
-            $lists =  json_encode($response);
+            $lists = json_encode($response);
             return $lists;
         }
     }
@@ -409,6 +450,7 @@ class Leads extends CI_Controller
             echo json_encode($data[0]);
         }
     }
+
     public function delete()
     {
         if (!check_permissions("leads", "delete", "", true)) {
@@ -419,7 +461,7 @@ class Leads extends CI_Controller
         }
 
         $id = $this->uri->segment(3);
-        if (!empty($id) && is_numeric($id)  && $id > 0) {
+        if (!empty($id) && is_numeric($id) && $id > 0) {
             if ($this->leads_model->delete_leads($id)) {
                 $this->session->set_flashdata('message', 'Leads deleted successfully.');
                 $this->session->set_flashdata('message_type', 'success');

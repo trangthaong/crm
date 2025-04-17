@@ -21,50 +21,67 @@ class Users_model extends CI_Model
     }
     public function get_rms_list($user, $role)
     {
+//        $this->db->select('
+//            rm.id,
+//            rm.rm_code,
+//            rm.hris_code,
+//            rm.full_name,
+//            rm.phone AS phone_number,
+//            rm.email,
+//            rm.position,
+//            rm.branch_lv2_code AS branch_level_2_code,
+//            rm.branch_lv2_name AS branch_level_2_name,
+//            rm.branch_lv1_code AS branch_level_1_code,
+//            rm.branch_lv1_name AS branch_level_1_name
+//        ');
+//        $this->db->from('rms as rm');
         $this->db->select('
-            rm.id,
-            rm.rm_code,
-            rm.hris_code,
-            rm.full_name,
+            rm.id AS id,
+            CONCAT("CODE-", rm.id) AS rm_code,
+            "" AS hris_code,
+            CONCAT(rm.last_name, " ", rm.first_name) AS full_name,
             rm.phone AS phone_number,
-            rm.email,
-            rm.position,
-            rm.branch_lv2_code AS branch_level_2_code,
-            rm.branch_lv2_name AS branch_level_2_name,
-            rm.branch_lv1_code AS branch_level_1_code,
-            rm.branch_lv1_name AS branch_level_1_name
+            rm.email AS email,
+            "" AS position,
+            "" AS branch_level_2_code,
+            "" AS branch_level_2_name,
+            "" AS branch_level_1_code,
+            "" AS branch_level_1_name
         ');
-        $this->db->from('rms as rm');
-    
-    
+        $this->db->from('users as rm');
+
+
         $get = $this->input->get();
         if (isset($get['search']) && !empty($get['search'])) {
             $search = strip_tags($get['search']);
             $this->db->group_start();
-            $this->db->like('rm.full_name', $search);
+//            $this->db->like('rm.full_name', $search);
+//            $this->db->or_like('rm.email', $search);
+//            $this->db->or_like('rm.rm_code', $search);
+            $this->db->like('rm.last_name', $search);
+            $this->db->like('rm.first_name', $search);
             $this->db->or_like('rm.email', $search);
-            $this->db->or_like('rm.rm_code', $search);
             $this->db->group_end();
         }
-    
+
         $total_query = clone $this->db;
         $total = $total_query->count_all_results('', false);
-    
+
         $offset = isset($get['offset']) ? (int)$get['offset'] : 0;
         $limit = isset($get['limit']) ? (int)$get['limit'] : 10;
         $sort = isset($get['sort']) ? $get['sort'] : 'rm.id';
         $order = isset($get['order']) ? $get['order'] : 'ASC';
-    
+
         $this->db->order_by($sort, $order);
         $this->db->limit($limit, $offset);
-    
+
         $query = $this->db->get();
         $rows = $query->result_array();
 
         // Lấy user_id và workspace_id (ví dụ: từ session hoặc từ dữ liệu có sẵn)
         $user_id = $user->id;  // Giả sử bạn đã có thông tin user_id từ $user
-        $workspace_id = isset($get['workspace_id']) ? $get['workspace_id'] : null; 
-    
+        $workspace_id = isset($get['workspace_id']) ? $get['workspace_id'] : null;
+
         // Thêm cột action
         foreach ($rows as &$row) {
             // Tạo liên kết cho mã RM
@@ -76,7 +93,7 @@ class Users_model extends CI_Model
 
         }
 
-    
+
         return [
             'total' => $total,
             'rows' => $rows
@@ -88,7 +105,13 @@ class Users_model extends CI_Model
         $query = $this->db->get_where('rms', ['rm_code' => $rm_code]);
             return $query->row_array();
     }
-    
+
+    public function get_user_by_id_2($rm_id)
+    {
+        $query = $this->db->get_where('users', ['id' => $rm_id]);
+        return $query->row_array() ?? [];
+    }
+
 
     public function get_user_details($id)
     {
@@ -98,7 +121,7 @@ class Users_model extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
-    
+
 
     public function get_assign_history($rm_code) {
         // Truy vấn lấy dữ liệu từ bảng LSPG_KHHH theo mã RM
@@ -113,14 +136,14 @@ class Users_model extends CI_Model
         $this->db->from('LSPG_KHHH');  // Tên bảng lịch sử phân giao
         $this->db->where('MaRM', $rm_code);  // Lọc theo mã RM
         $query = $this->db->get();
-    
+
         return $query->result_array();  // Trả về mảng kết quả
     }
 
 
     function get_users_list($workspace_id, $user_id = '')
     {
-       
+
         $offset = 0;
         $limit = 10;
         $sort = 'id';
@@ -580,7 +603,7 @@ class Users_model extends CI_Model
         return $query->result_array();
     }
 
-    
+
 
     function get_user_by_email($email)
     {
@@ -591,7 +614,7 @@ class Users_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
- 
+
 
     function get_all_client_ids($group_id)
     {

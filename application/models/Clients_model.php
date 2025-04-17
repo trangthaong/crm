@@ -70,8 +70,8 @@ class Clients_model extends CI_Model
             $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
             $bulkData['rows'][] = $row;
         }
-        
-            
+
+
         return $bulkData;
     }
 
@@ -441,5 +441,12 @@ class Clients_model extends CI_Model
 
     return $query->result(); // Return the query result
 }
+
+    public function update_client($maKH, $data)
+    {
+        // Update the client data in the database
+        $this->db->where('MaKH', $maKH);
+        return $this->db->update('client', $data);
+    }
 
 }
