@@ -45,6 +45,20 @@ class Clients_model extends CI_Model
                             OR phone LIKE '%" . $search . "%' 
                             OR email LIKE '%" . $search . "%')";
         } */
+        if (isset($get['rmQuanLy'])) {
+            if ($get['rmQuanLy'] == 'IS NULL') {
+                $where .= " AND RMquanly IS NULL";
+            } else {
+                $where .= " AND RMquanly = '" . $get['rmQuanLy'] . "'";
+            }
+        }
+        if (isset($get['unitQuanLy'])) {
+            if ($get['unitQuanLy'] == 'IS NULL') {
+                $where .= " AND Unitquanly IS NULL";
+            } else {
+                $where .= " AND Unitquanly = '" . $get['unitQuanLy'] . "'";
+            }
+        }
 
         // Truy vấn tổng số bản ghi
         $query = $this->db->query("SELECT COUNT(MaKH) as total FROM client WHERE 1=1 " . $where);
@@ -52,7 +66,7 @@ class Clients_model extends CI_Model
         $total = $res[0]['total'];
 
         // Truy vấn danh sách clients
-        $query = $this->db->query("SELECT MaKH, TenKH, Khoi, SDT, RMquanly
+        $query = $this->db->query("SELECT MaKH, TenKH, Khoi, SDT, RMquanly, Unitquanly
                                 FROM client
                                 WHERE 1=1 " . $where . " 
                                 ORDER BY " . $sort . " " . $order . " 
@@ -67,11 +81,12 @@ class Clients_model extends CI_Model
         foreach ($res as $row) {
 
             // Gắn liên kết vào Mã KH và truyền MaKH, user_id, workspace_id vào trang detail theo pretty URL
+            $row['MaKH_raw'] = $row['MaKH'];
             $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
             $bulkData['rows'][] = $row;
         }
-        
-            
+
+
         return $bulkData;
     }
 
@@ -441,5 +456,12 @@ class Clients_model extends CI_Model
 
     return $query->result(); // Return the query result
 }
+
+    public function update_client($maKH, $data)
+    {
+        // Update the client data in the database
+        $this->db->where('MaKH', $maKH);
+        return $this->db->update('client', $data);
+    }
 
 }

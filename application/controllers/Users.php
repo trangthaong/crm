@@ -718,4 +718,18 @@ class Users extends CI_Controller
         }
 
     }
+
+    public function get_user_for_assign()
+    {
+        if (!$this->ion_auth->logged_in()) redirect('auth', 'refresh');
+
+        $user = $this->ion_auth->user()->row();
+        $role = $this->ion_auth->get_users_groups($user->id)->row()->name;
+        // Lấy workspace_id từ session
+        $workspace_id = $this->session->userdata('workspace_id');
+        $data = $this->users_model->get_user_for_assign([]);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
 }

@@ -13,7 +13,7 @@ class Units_model extends CI_Model
         $this->load->helper(['url', 'language']);
     }
 
-    function get_units_list($workspace_id)
+    function get_units_list_object($workspace_id)
     {
         $offset = 0;
         $limit = 10;
@@ -71,7 +71,12 @@ class Units_model extends CI_Model
         }
 
         $bulkData['rows'] = $rows;
-        print_r(json_encode($bulkData));
+        return $bulkData;
+    }
+
+    function get_units_list($workspace_id)
+    {
+        print_r(json_encode($this->get_units_list_object($workspace_id)));
     }
     function get_units($workspace_id)
     {
