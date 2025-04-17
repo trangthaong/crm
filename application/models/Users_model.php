@@ -19,48 +19,32 @@ class Users_model extends CI_Model
         $result = $query->result_array();
         return $result[0]['role'];
     }
+
     public function get_rms_list($user, $role)
     {
-//        $this->db->select('
-//            rm.id,
-//            rm.rm_code,
-//            rm.hris_code,
-//            rm.full_name,
-//            rm.phone AS phone_number,
-//            rm.email,
-//            rm.position,
-//            rm.branch_lv2_code AS branch_level_2_code,
-//            rm.branch_lv2_name AS branch_level_2_name,
-//            rm.branch_lv1_code AS branch_level_1_code,
-//            rm.branch_lv1_name AS branch_level_1_name
-//        ');
-//        $this->db->from('rms as rm');
         $this->db->select('
-            rm.id AS id,
-            CONCAT("CODE-", rm.id) AS rm_code,
-            "" AS hris_code,
-            CONCAT(rm.last_name, " ", rm.first_name) AS full_name,
+            rm.id,
+            rm.rm_code,
+            rm.hris_code,
+            rm.full_name,
             rm.phone AS phone_number,
-            rm.email AS email,
-            "" AS position,
-            "" AS branch_level_2_code,
-            "" AS branch_level_2_name,
-            "" AS branch_level_1_code,
-            "" AS branch_level_1_name
+            rm.email,
+            rm.position,
+            rm.branch_lv2_code AS branch_level_2_code,
+            rm.branch_lv2_name AS branch_level_2_name,
+            rm.branch_lv1_code AS branch_level_1_code,
+            rm.branch_lv1_name AS branch_level_1_name
         ');
-        $this->db->from('users as rm');
+        $this->db->from('rms as rm');
 
 
         $get = $this->input->get();
         if (isset($get['search']) && !empty($get['search'])) {
             $search = strip_tags($get['search']);
             $this->db->group_start();
-//            $this->db->like('rm.full_name', $search);
-//            $this->db->or_like('rm.email', $search);
-//            $this->db->or_like('rm.rm_code', $search);
-            $this->db->like('rm.last_name', $search);
-            $this->db->like('rm.first_name', $search);
+            $this->db->like('rm.full_name', $search);
             $this->db->or_like('rm.email', $search);
+            $this->db->or_like('rm.rm_code', $search);
             $this->db->group_end();
         }
 
@@ -86,10 +70,10 @@ class Users_model extends CI_Model
         foreach ($rows as &$row) {
             // Tạo liên kết cho mã RM
 
-            $row['rm_code'] = '<a href="' . base_url('index.php/users/detail/' . $row['rm_code']. '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['rm_code'] . '</a>';
+            $row['rm_code'] = '<a href="' . base_url('index.php/users/detail/' . $row['rm_code'] . '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['rm_code'] . '</a>';
             /* $row['action'] = '<a href="' . base_url('users/assign_hist/' . $row['id']) . '" target="_blank"><i class="fas fa-edit"></i></a>'; */
             // Thay thế nút chỉnh sửa thành nút mở pop-up
-            $row['action'] = '<button class="btn btn-info view-history" data-id="' . htmlspecialchars($row['id']) . '" data-rm_code="' . htmlspecialchars($row['rm_code']).'" data-toggle="modal" data-target="#assignHistoryModal"><i class="fas fa-history"></i> Lịch sử phân giao</button>';
+            $row['action'] = '<button class="btn btn-info view-history" data-id="' . htmlspecialchars($row['id']) . '" data-rm_code="' . htmlspecialchars($row['rm_code']) . '" data-toggle="modal" data-target="#assignHistoryModal"><i class="fas fa-history"></i> Lịch sử phân giao</button>';
 
         }
 
@@ -689,5 +673,53 @@ class Users_model extends CI_Model
         $this->db->select('last_name');
         $query = $this->db->get('users');
         return $query->result_array();
+    }
+
+    public function get_user_for_assign($data)
+    {
+        $this->db->select([
+            'rm.id AS id',
+            'CONCAT("CODE-", rm.id) AS rm_code',
+            'CONCAT(rm.last_name, " ", rm.first_name) AS full_name',
+            'rm.phone AS phone_number',
+            'rm.email AS email',
+        ]);
+        $this->db->from('users as rm');
+
+        $get = $this->input->get();
+        if (isset($get['search']) && !empty($get['search'])) {
+            $search = strip_tags($get['search']);
+            $this->db->group_start();
+            $this->db->like('rm.last_name', $search);
+            $this->db->like('rm.first_name', $search);
+            $this->db->or_like('rm.email', $search);
+            $this->db->group_end();
+        }
+
+        // loop $data with $key is column and $value is value
+        foreach ($data as $key => $value) {
+            if (!empty($value)) {
+                $this->db->where($key, $value);
+            }
+        }
+
+        $total_query = clone $this->db;
+        $total = $total_query->count_all_results('', false);
+
+        $offset = isset($get['offset']) ? (int)$get['offset'] : 0;
+        $limit = isset($get['limit']) ? (int)$get['limit'] : 10;
+        $sort = isset($get['sort']) ? $get['sort'] : 'rm.id';
+        $order = isset($get['order']) ? $get['order'] : 'ASC';
+
+        $this->db->order_by($sort, $order);
+        $this->db->limit($limit, $offset);
+
+        $query = $this->db->get();
+        $rows = $query->result_array();
+
+        return [
+            'total' => $total,
+            'rows' => $rows
+        ];
     }
 }

@@ -45,6 +45,13 @@ class Clients_model extends CI_Model
                             OR phone LIKE '%" . $search . "%' 
                             OR email LIKE '%" . $search . "%')";
         } */
+        if (isset($get['rmQuanLy'])) {
+            if ($get['rmQuanLy'] == 'IS NULL') {
+                $where .= " AND RMquanly IS NULL";
+            } else {
+                $where .= " AND RMquanly = '" . $get['rmQuanLy'] . "'";
+            }
+        }
 
         // Truy vấn tổng số bản ghi
         $query = $this->db->query("SELECT COUNT(MaKH) as total FROM client WHERE 1=1 " . $where);
@@ -67,6 +74,7 @@ class Clients_model extends CI_Model
         foreach ($res as $row) {
 
             // Gắn liên kết vào Mã KH và truyền MaKH, user_id, workspace_id vào trang detail theo pretty URL
+            $row['MaKH_raw'] = $row['MaKH'];
             $row['MaKH'] = '<a href="' . base_url('index.php/clients/detail/' . $row['MaKH'] . '/' . $user_id . '/' . $workspace_id) . '" target="_blank">' . $row['MaKH'] . '</a>';
             $bulkData['rows'][] = $row;
         }

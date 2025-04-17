@@ -111,7 +111,7 @@
                 <div class="table-responsive mt-4">
                     <table class='table-striped' id='clients_list'
                            data-toggle="table"
-                           data-url="<?= base_url('users/get_users_list') ?>"
+                           data-url="<?= base_url('users/get_user_for_assign') ?>"
                            data-side-pagination="server"
                            data-pagination="true"
                            data-page-list="[5, 10, 20, 50, 100, 200]"

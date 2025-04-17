@@ -142,11 +142,12 @@
                                 "fileName": "clients-list",
                                 "ignoreColumn": ["state"]
                            }'
-                           data-query-params="queryParams"
+                           data-query-params="queryParamsScope"
                            data-click-to-select="true"
                     >
                         <thead>
                         <tr>
+                            <th data-field="MaKH_raw" data-visible="false">Mã KH raw</th>
                             <?php if (isset($context) && $context !== 'client_page') { ?>
                                 <th data-field="action" data-checkbox="true">Click chọn</th>
                             <?php } ?>
@@ -189,3 +190,25 @@ $user_permissions = (!empty($modules[0]['member_permissions'])) ? json_decode($m
 $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_decode($modules[0]['client_permissions'], 1) : [];
 
 ?>
+
+<script>
+    function queryParamsScope(params) {
+        console.log("Sending params to server:", params);
+        return {
+            ...queryParams(params),
+            rmQuanLy: "IS NULL"
+        };
+    }
+</script>
+
+<!--✅ 3. Kích hoạt reload bảng khi form được submit:-->
+<!--$('#search-form').on('submit', function (e) {-->
+<!--e.preventDefault();-->
+<!--$('#clients_list').bootstrapTable('refresh'); // gọi lại dữ liệu mới với queryParams()-->
+<!--});-->
+<!--🔁 Nếu muốn reset form:-->
+<!--$('#search-form').on('reset', function () {-->
+<!--setTimeout(() => {-->
+<!--$('#clients_list').bootstrapTable('refresh');-->
+<!--}, 100); // chờ form reset xong-->
+<!--});-->

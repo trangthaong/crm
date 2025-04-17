@@ -82,15 +82,15 @@
 
                                     <!-- Bảng kết quả tìm kiếm -->
                                     <div class="table-responsive mt-4">
-                                        <table class='table-striped' id='leads_list' data-toggle="table"
-                                               data-url="<?= base_url('leads/get_leads_list') ?>"
-                                               data-side-pagination="server" data-pagination="true"
+                                        <table class='table-striped'
+                                               id='leads_list'
+                                               data-toggle="table"
+                                               data-pagination="true"
                                                data-page-list="[5, 10, 20, 50, 100, 200]" data-show-columns="true"
                                                data-show-refresh="true" data-sort-name="MaKH" data-sort-order="asc"
                                                data-mobile-responsive="true" data-toolbar="" data-show-export="true"
                                                data-maintain-selected="true"
                                                data-export-options='{"fileName": "leads-list","ignoreColumn": ["state"]}'
-                                               data-query-params="queryParams"
                                                data-unique-id="MaKH_raw"
                                         >
                                             <thead>
@@ -265,28 +265,13 @@
                 }
 
                 selectedClients.forEach(client => {
-                    addClientToLeadsTable({
-                        MaKH: client.MaKH,
-                        TenKH: client.TenKH,
-                        SDT: client.SDT || '',
-                        Email: client.Email || '',
-                        CNquanly: client.CNquanly || ''
-                    });
+                    addClientToLeadsTable(client);
                 });
             }
 
-            // Tách text thuần từ MaKH nếu nó là thẻ <a>
-            function getPlainMaKH(maKH) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = maKH;
-                return tempDiv.textContent || tempDiv.innerText || '';
-            }
-
             function addClientToLeadsTable(client) {
-                const plainMaKH = getPlainMaKH(client.MaKH);
-
                 // Check trùng theo MaKH_raw
-                const exists = $('#leads_list').bootstrapTable('getData').some(row => row.MaKH_raw === plainMaKH);
+                const exists = $('#leads_list').bootstrapTable('getData').some(row => row.MaKH_raw === client.MaKH_raw);
                 if (exists) return;
 
                 const currentData = $('#leads_list').bootstrapTable('getData');
@@ -294,14 +279,16 @@
 
                 $('#leads_list').bootstrapTable('append', {
                     stt: newIndex,
-                    MaKH_raw: plainMaKH, // dùng làm uniqueId
+                    MaKH_raw: client.MaKH_raw, // dùng làm uniqueId
                     MaKH: client.MaKH,   // hiển thị link HTML nếu có
                     TenKH: client.TenKH,
                     SDT: client.SDT,
                     Email: client.Email,
                     CNquanly: client.CNquanly,
-                    action: `<button class="btn btn-danger btn-sm" data-makh="${plainMaKH}" onclick="removeClientFromLeadsTable(this)">Xóa</button>`
+                    action: `<button class="btn btn-danger btn-sm" data-makh="${client.MaKH_raw}" onclick="removeClientFromLeadsTable(this)">Xóa</button>`
                 });
+                // ✅ Đánh lại STT
+                resetTableSTT();
             }
 
             function resetTableSTT() {
@@ -315,13 +302,14 @@
 
             function removeClientFromLeadsTable(button) {
                 const maKH = $(button).data('makh');
+                console.log("%c 1 --> Line: 305||assign-leads-rm.php\n maKH: ","color:#f0f;", maKH);
 
                 // Xóa dòng khỏi bảng chính
                 $('#leads_list').bootstrapTable('removeByUniqueId', maKH);
 
                 // ✅ Bỏ chọn checkbox trong bảng popup nếu tồn tại
                 $('#clients_list').bootstrapTable('uncheckBy', {
-                    field: 'MaKH',
+                    field: 'MaKH_raw',
                     values: [maKH]
                 });
 
@@ -394,6 +382,9 @@
 
                             // ✅ Xóa toàn bộ dữ liệu KH đã chọn trong bảng
                             $('#leads_list').bootstrapTable('removeAll');
+
+                            // ✅ Làm mới bảng KH trong popup
+                            $('#clients_list').bootstrapTable('refresh');
                         } else {
                             iziToast.success({
                                 title: response['message'],
