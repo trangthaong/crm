@@ -54,7 +54,8 @@ $("#modal-add-fonts").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'formBtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -106,7 +107,8 @@ $("#modal-leave-editors").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'formBtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -159,7 +161,8 @@ $("#modal-edit-leave").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'formBtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -212,7 +215,8 @@ $("#modal-add-leave").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'formBtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -259,7 +263,8 @@ $("#modal-add-language").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -277,7 +282,8 @@ $("#modal-search-msg").fireModal({
         e.preventDefault();
 
     },
-    shown: function (modal, form) { },
+    shown: function (modal, form) {
+    },
 
 });
 
@@ -324,7 +330,8 @@ $(".modal-edit-workspace").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'workspacebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -379,7 +386,8 @@ $("#modal-add-workspace").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'workspacebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -448,12 +456,13 @@ $("#modal-edit-group").fireModal({
         id: 'delete_group',
 
     },
-    {
-        text: modal_footer_edit_title,
-        submit: true,
-        class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
-    }
+        {
+            text: modal_footer_edit_title,
+            submit: true,
+            class: 'btn btn-primary btn-shadow',
+            handler: function (modal) {
+            }
+        }
     ]
 });
 
@@ -503,7 +512,8 @@ $(".modal-add-group").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -552,7 +562,8 @@ $(".modal-add-task-details").fireModal({
         text: modal_footer_submit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -603,7 +614,8 @@ $(".modal-edit-task").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -654,7 +666,8 @@ $("#modal-add-task").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -705,7 +718,8 @@ $("#modal-add-task-list").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -756,7 +770,8 @@ $(".modal-edit-milestone").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -807,7 +822,8 @@ $("#modal-add-milestone").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -859,7 +875,8 @@ $(".modal-edit-project").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -911,7 +928,8 @@ $("#modal-add-project").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -965,12 +983,13 @@ $(".modal-edit-note").fireModal({
         id: 'delete_note',
 
     },
-    {
-        text: modal_footer_edit_title,
-        submit: true,
-        class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
-    }
+        {
+            text: modal_footer_edit_title,
+            submit: true,
+            class: 'btn btn-primary btn-shadow',
+            handler: function (modal) {
+            }
+        }
     ]
 });
 
@@ -1022,7 +1041,8 @@ $("#modal-add-note").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addnotebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1075,7 +1095,8 @@ $("#modal-add-user").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1127,14 +1148,15 @@ $("#modal-add-from-file").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
 $("#modal-search-user").fireModal({
     size: 'modal-lg',
     title: 'Tìm kiếm RM phân giao',
-    body: $("#modal-add-user-part"),
+    body: $('#modal-part-search-client').html(),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {
@@ -1171,68 +1193,69 @@ $("#modal-search-user").fireModal({
 
         e.preventDefault();
     },
-    shown: function (modal, form) {
-        //   console.log(form)
-    },
     buttons: [{
-        text: modal_footer_add_title,
+        text: "Submit",
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+            // Lấy bảng trong modal
+            const table = modal.find('#rm_clients_list');
+
+            // Lấy dòng đã chọn
+            const selected = table.bootstrapTable('getSelections');
+
+            if (selected.length === 0) {
+                alert('Vui lòng chọn 1 RM!');
+                return;
+            }
+
+            const selectedRM = selected[0];
+
+            // Lọc text từ HTML nếu có <a>
+            const plainRM = $('<div>').html(selectedRM.rm_code).text();
+
+            // Gán vào input chính
+            $('#rm-code').val(plainRM);
+            // Gán id thật để submit
+            $('#rm-id').val(selectedRM.id);
+
+            modal.modal('hide');
+        }
     }]
 });
 
 $("#modal-search-client").fireModal({
     size: 'modal-lg',
     title: 'Tìm kiếm Khách hàng phân giao',
-    body: $("#modal-add-user-part"),
+    body: $("#modal-add-user-part"), // ✅ lấy nội dung HTML, không DOM node
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
-    onFormSubmit: function (modal, e, form) {
-        // Form Data
-        let form_data = $(e.target).serialize();
-
-        var formData = new FormData(this);
-        formData.append(csrfName, csrfHash);
-
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: "json",
-            success: function (result) {
-
-                csrfName = result['csrfName'];
-                csrfHash = result['csrfHash'];
-
-                if (result['error'] == false) {
-                    form.stopProgress();
-                    location.reload();
-                } else {
-                    form.stopProgress();
-                    modal.find('.modal-body').prepend('<div class="alert alert-danger">' + result['message'] + '</div>')
-                    modal.find('.alert-danger').delay(4000).fadeOut();
-                }
-
-            }
-        });
-
-        e.preventDefault();
-    },
     shown: function (modal, form) {
-        //   console.log(form)
+        console.log("abc")
+        // ✅ Khởi tạo lại bảng trong popup sau khi modal hiển thị
+        $('#clients_list', modal).bootstrapTable('refreshOptions', {
+            search: true,
+            pagination: true
+        });
     },
-    buttons: [{
-        text: modal_footer_add_title,
-        submit: true,
-        class: 'btn btn-primary btn-shadow',
-        id: 'adduserbtn',
-        handler: function (modal) { }
-    }]
+    buttons: [
+        {
+            text: "Hủy",
+            class: 'btn btn-secondary',
+            handler: function (modal) {
+                modal.modal('hide');
+            }
+        },
+        {
+            text: "Xác nhận chọn",
+            class: 'btn btn-primary btn-shadow',
+            handler: function (modal) {
+                submitSelectedClients();
+                modal.modal('hide');
+            }
+        }
+    ]
 });
 
 $("#modal-edit-client").fireModal({
@@ -1283,7 +1306,8 @@ $("#modal-edit-client").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1338,12 +1362,13 @@ $("#modal-delete-client").fireModal({
             // Hành động khi button Hủy được nhấn (Ví dụ: đóng modal)
             modal.close(); // Đóng modal khi nhấn button Hủy
         }
-    },{
+    }, {
         text: 'Xóa',
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1395,11 +1420,10 @@ $("#modal-edit-user").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
-
-
 
 $("#modal-delete-user").fireModal({
     size: 'modal-lg',
@@ -1452,12 +1476,13 @@ $("#modal-delete-user").fireModal({
             // Hành động khi button Hủy được nhấn (Ví dụ: đóng modal)
             modal.close(); // Đóng modal khi nhấn button Hủy
         }
-    },{
+    }, {
         text: 'Xóa',
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1515,7 +1540,8 @@ $("#modal-add-event").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addeventbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -1567,7 +1593,8 @@ $(".modal-edit-event").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editeventbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1620,7 +1647,8 @@ $("#modal-add-announcement").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1672,7 +1700,8 @@ $(".modal-edit-announcement").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editannouncementtbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1729,7 +1758,8 @@ $("#modal-add-expense").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addexpensebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -1787,7 +1817,8 @@ $(".modal-edit-expense").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editexpensebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -1839,7 +1870,8 @@ $(".modal-edit-expense-type").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'updateexpensetypebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -1956,7 +1988,8 @@ $("#modal-add-expense-type").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addexpensetypebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2054,7 +2087,8 @@ $("#modal-add-item").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'additembtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -2148,7 +2182,8 @@ $(".modal-edit-item").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'edititembtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -2198,7 +2233,8 @@ $("#modal-add-tax").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addtaxbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2251,7 +2287,8 @@ $(".modal-edit-tax").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'updatetaxbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2300,7 +2337,8 @@ $("#modal-add-unit").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addunitbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2353,7 +2391,8 @@ $(".modal-edit-unit").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'updateunitbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2406,7 +2445,8 @@ $(".modal-edit-article-group").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'updateunitbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2463,7 +2503,8 @@ $("#modal-add-payment").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addpaymentbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -2521,7 +2562,8 @@ $(".modal-edit-payment-mode").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editpaymentmodebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -2600,7 +2642,8 @@ $("#modal-add-payment-mode").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addpaymentmodebtn2',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2656,7 +2699,8 @@ $(".modal-edit-payment").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editpaymentbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -2706,7 +2750,8 @@ $("#modal-add-article-group").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addunitbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2789,7 +2834,8 @@ $("#modal-add-meeting").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addnotebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2841,7 +2887,8 @@ $(".modal-edit-meeting").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addnotebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2891,7 +2938,8 @@ $("#modal-add-work").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addnotebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2944,7 +2992,8 @@ $("#modal-add-lead").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'adduserbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -2996,7 +3045,8 @@ $(".modal-edit-leads").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -3075,7 +3125,8 @@ $(".modal-edit-client").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -3125,7 +3176,8 @@ $(".modal-edit-client-leads").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -3466,7 +3518,7 @@ $(".modal-edit-client-leads").fireModal({
 
         colorMarker.style.left = `${(colorAreaDims.width * hsva.s) / 100}px`;
         colorMarker.style.top = `${colorAreaDims.height - (colorAreaDims.height * hsva.v) / 100
-            }px`;
+        }px`;
 
         alphaSlider.value = hsva.a * 100;
         alphaMarker.style.left = `${hsva.a * 100}%`;
@@ -4131,13 +4183,17 @@ $('#update_members_permissions_form').on('submit', function (e) {
             type: 'POST',
             url: $(this).attr('action'),
             data: formData,
-            beforeSend: function () { $('#submit_button').html('Please Wait..'); $('#submit_button').attr('disabled', true); },
+            beforeSend: function () {
+                $('#submit_button').html('Please Wait..');
+                $('#submit_button').attr('disabled', true);
+            },
             cache: false,
             contentType: false,
             processData: false,
             dataType: "json",
             success: function (result) {
-                $('#submit_button').html('Submit'); $('#submit_button').attr('disabled', false);
+                $('#submit_button').html('Submit');
+                $('#submit_button').attr('disabled', false);
                 csrfName = result['csrfName'];
                 csrfHash = result['csrfHash'];
                 if (result['error'] == false) {
@@ -4163,13 +4219,17 @@ $('#update_clients_permissions_form').on('submit', function (e) {
             type: 'POST',
             url: $(this).attr('action'),
             data: formData,
-            beforeSend: function () { $('#submit_button_update').html('Please Wait..'); $('#submit_button_update').attr('disabled', true); },
+            beforeSend: function () {
+                $('#submit_button_update').html('Please Wait..');
+                $('#submit_button_update').attr('disabled', true);
+            },
             cache: false,
             contentType: false,
             processData: false,
             dataType: "json",
             success: function (result) {
-                $('#submit_button_update').html('Submit'); $('#submit_button_update').attr('disabled', false);
+                $('#submit_button_update').html('Submit');
+                $('#submit_button_update').attr('disabled', false);
                 csrfName = result['csrfName'];
                 csrfHash = result['csrfHash'];
                 if (result['error'] == false) {
@@ -4186,6 +4246,7 @@ $('#update_clients_permissions_form').on('submit', function (e) {
         });
     }
 })
+
 function un_fav(id) {
     var test = document.getElementById(id);
     if ($(test).hasClass('fas')) {
@@ -4216,6 +4277,7 @@ function un_fav(id) {
         alert('well you can not remove the this project from favorite list as it was not favored');
     }
 }
+
 function fav(id) {
     var test = document.getElementById(id);
     test.classList.add('fas');
@@ -4385,6 +4447,7 @@ function setUrlParameter(url, paramName, paramValue) {
     url = url.replace(/[?#]$/, '');
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
 }
+
 $('#project_sort_by').on('change', function (e) {
     var sort = $(this).val();
     location.href = setUrlParameter(location.href, 'sort', sort);
@@ -4440,7 +4503,8 @@ $("#modal-add-contracts").fireModal({
         text: modal_footer_add_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -4492,7 +4556,8 @@ $(".modal-edit-contracts").fireModal({
         text: modal_footer_edit_title,
         submit: true,
         class: 'btn btn-primary btn-shadow',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 var contracts_type_modal_title = ($('#modal-title')) ? $('#modal-title').html() : "Add Contracts Type";
@@ -4584,7 +4649,8 @@ $("#modal-add-contracts-type").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'additembtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -4641,7 +4707,8 @@ $(".modal-edit-contracts-type").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editcontracttypebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -4908,7 +4975,8 @@ $("#modal-add-projects-status").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'additembtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -4965,7 +5033,8 @@ $(".modal-edit-projects-type").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editcontracttypebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -5131,7 +5200,8 @@ $("#modal-add-statuses").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'additembtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -5188,7 +5258,8 @@ $(".modal-edit-statuses").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'editcontracttypebtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 
 });
@@ -5240,7 +5311,8 @@ $("#modal-add-time-tracker").fireModal({
         submit: true,
         class: 'btn btn-primary btn-shadow',
         id: 'addtimetrackerbtn',
-        handler: function (modal) { }
+        handler: function (modal) {
+        }
     }]
 });
 
@@ -5292,10 +5364,12 @@ $(".modal-edit-time-tracker").fireModal({
             text: modal_footer_edit_title,
             submit: true,
             class: 'btn btn-primary btn-shadow',
-            handler: function (modal) { }
+            handler: function (modal) {
+            }
         }
     ]
 });
+
 function get_task_milestone_data() {
     var option = "";
     $("#task_id").html(option);
@@ -5364,7 +5438,6 @@ $(".filepond").filepond({
         }
     },
 });
-
 
 
 $(function () {
