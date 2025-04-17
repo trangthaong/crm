@@ -234,7 +234,6 @@
                 </div>
         </div>
 
-        <?php include('include-js.php'); ?>
         <script>
             not_in_workspace_user = <?php echo json_encode(array_values($not_in_workspace_user)); ?>;
 
@@ -248,7 +247,9 @@
                     search: p.search
                 };
             }
-
+        </script>
+        <?php include('include-js.php'); ?>
+        <script>
             function submitSelectedClients() {
                 // Tìm modal đang mở
                 const modal = $('.modal:visible');
@@ -385,6 +386,7 @@
 
                             // ✅ Làm mới bảng KH trong popup
                             $('#clients_list').bootstrapTable('refresh');
+                            $('#rm_clients_list').bootstrapTable('refresh');
                         } else {
                             iziToast.success({
                                 title: response['message'],

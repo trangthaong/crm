@@ -1200,7 +1200,7 @@ $("#modal-search-user").fireModal({
         id: 'adduserbtn',
         handler: function (modal) {
             // Lấy bảng trong modal
-            const table = modal.find('#clients_list');
+            const table = modal.find('#rm_clients_list');
 
             // Lấy dòng đã chọn
             const selected = table.bootstrapTable('getSelections');
@@ -1232,6 +1232,7 @@ $("#modal-search-client").fireModal({
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     shown: function (modal, form) {
+        console.log("abc")
         // ✅ Khởi tạo lại bảng trong popup sau khi modal hiển thị
         $('#clients_list', modal).bootstrapTable('refreshOptions', {
             search: true,
