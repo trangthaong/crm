@@ -286,7 +286,8 @@ CREATE TABLE `client` (
   `Thunhap` decimal(10,2) NOT NULL,
   `Trangthai` enum('Active','Inactive','Dormant','Chưa xác định') NOT NULL,
   `Tansuatgiaodich` enum('Chưa phân nhóm','Không hoạt động','Giao dịch ít','Giao dịch thường xuyên','Giao dịch lớn') NOT NULL,
-  `RMquanly` varchar(50) NOT NULL,
+  `RMquanly` varchar(50) NULL DEFAULT NULL,
+  `Unitquanly` varchar(50) NULL DEFAULT NULL,
   `Email` varchar(100) NOT NULL,
   `Khoi` enum('Khách hàng cá nhân') NOT NULL,
   `Ngayupload` date NOT NULL,
@@ -297,17 +298,17 @@ CREATE TABLE `client` (
 -- Đang đổ dữ liệu cho bảng `client`
 --
 
-INSERT INTO `client` (`MaKH`, `TenKH`, `CMT_Hochieu`, `Ngaycap`, `Noicap`, `Quoctich`, `Ngaysinh`, `Diachi`, `SDT`, `Nghenghiep`, `Thunhap`, `Trangthai`, `Tansuatgiaodich`, `RMquanly`, `Email`, `Khoi`, `Ngayupload`, `workspace_id`) VALUES
-('KHHH001', 'Nguyễn Văn A', '123456789', '1985-03-15', 'Hà Nội', 'Việt Nam', '1985-03-15', 'Số 10, Phố ABC, Hà Nội', '0912345678', 0, 15000000.00, 'Active', 'Giao dịch thường xuyên', 'RM001', 'nguyenvana@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH002', 'Trần Thị B', '987654321', '1990-07-22', 'TP. Hồ Chí Minh', 'Việt Nam', '1990-07-22', 'Số 20, Đường XYZ, TP. Hồ Chí Minh', '0987654321', 0, 12000000.00, 'Inactive', 'Giao dịch ít', 'RM002', 'tranb@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH003', 'Lê Minh C', '112233445', '1982-12-05', 'Đà Nẵng', 'Việt Nam', '1982-12-05', 'Số 30, Khu vực ABC, Đà Nẵng', '0912233445', 0, 18000000.00, 'Dormant', 'Giao dịch thường xuyên', 'RM003', 'leminhc@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH004', 'Phạm Thị D', '223344556', '1995-01-01', 'Hải Phòng', 'Việt Nam', '1995-01-01', 'Số 40, Đường DEF, Hải Phòng', '0945678899', 0, 22000000.00, 'Active', 'Giao dịch lớn', 'RM004', 'phamtd@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH005', 'Ngô Tuấn E', '334455667', '1992-06-11', 'Cần Thơ', 'Việt Nam', '1992-06-11', 'Số 50, Phố GHI, Cần Thơ', '0913344556', 0, 11000000.00, 'Inactive', 'Không hoạt động', 'RM005', 'ngotuan@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH006', 'Bùi Lan F', '445566778', '1998-09-30', 'Quảng Ninh', 'Việt Nam', '1998-09-30', 'Số 60, Đường HIJ, Quảng Ninh', '0935678901', 0, 25000000.00, 'Chưa xác định', 'Giao dịch ít', 'RM006', 'builan@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH007', 'Vũ Đức G', '556677889', '1988-03-10', 'Hà Nội', 'Việt Nam', '1988-03-10', 'Số 70, Đường KLM, Hà Nội', '0946789012', 0, 16000000.00, 'Active', 'Giao dịch thường xuyên', 'RM007', 'vuducg@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH008', 'Đỗ Ngọc H', '667788990', '1993-02-20', 'TP. Hồ Chí Minh', 'Việt Nam', '1993-02-20', 'Số 80, Đường NOP, TP. Hồ Chí Minh', '0977890123', 0, 13000000.00, 'Inactive', 'Giao dịch ít', 'RM008', 'dongoch@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH009', 'Lương Minh I', '778899001', '1984-08-15', 'Đà Nẵng', 'Việt Nam', '1984-08-15', 'Số 90, Đường QRS, Đà Nẵng', '0912345678', 0, 21000000.00, 'Dormant', 'Giao dịch thường xuyên', 'RM009', 'luongm@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
-('KHHH010', 'Hoàng Thị J', '889900112', '1991-05-25', 'Hải Phòng', 'Việt Nam', '1991-05-25', 'Số 100, Phố TUV, Hải Phòng', '0923456789', 0, 20000000.00, 'Active', 'Giao dịch lớn', 'RM010', 'hoangtj@example.com', 'Khách hàng cá nhân', '2025-04-09', '1');
+INSERT INTO `client` (`MaKH`, `TenKH`, `CMT_Hochieu`, `Ngaycap`, `Noicap`, `Quoctich`, `Ngaysinh`, `Diachi`, `SDT`, `Nghenghiep`, `Thunhap`, `Trangthai`, `Tansuatgiaodich`, `RMquanly`, `Unitquanly`, `Email`, `Khoi`, `Ngayupload`, `workspace_id`) VALUES
+('KHHH001', 'Nguyễn Văn A', '123456789', '1985-03-15', 'Hà Nội', 'Việt Nam', '1985-03-15', 'Số 10, Phố ABC, Hà Nội', '0912345678', 0, 15000000.00, 'Active', 'Giao dịch thường xuyên', 'RM001', NULL, 'nguyenvana@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH002', 'Trần Thị B', '987654321', '1990-07-22', 'TP. Hồ Chí Minh', 'Việt Nam', '1990-07-22', 'Số 20, Đường XYZ, TP. Hồ Chí Minh', '0987654321', 0, 12000000.00, 'Inactive', 'Giao dịch ít', 'RM002', NULL, 'tranb@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH003', 'Lê Minh C', '112233445', '1982-12-05', 'Đà Nẵng', 'Việt Nam', '1982-12-05', 'Số 30, Khu vực ABC, Đà Nẵng', '0912233445', 0, 18000000.00, 'Dormant', 'Giao dịch thường xuyên', 'RM003', NULL, 'leminhc@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH004', 'Phạm Thị D', '223344556', '1995-01-01', 'Hải Phòng', 'Việt Nam', '1995-01-01', 'Số 40, Đường DEF, Hải Phòng', '0945678899', 0, 22000000.00, 'Active', 'Giao dịch lớn', 'RM004', NULL, 'phamtd@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH005', 'Ngô Tuấn E', '334455667', '1992-06-11', 'Cần Thơ', 'Việt Nam', '1992-06-11', 'Số 50, Phố GHI, Cần Thơ', '0913344556', 0, 11000000.00, 'Inactive', 'Không hoạt động', 'RM005', NULL, 'ngotuan@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH006', 'Bùi Lan F', '445566778', '1998-09-30', 'Quảng Ninh', 'Việt Nam', '1998-09-30', 'Số 60, Đường HIJ, Quảng Ninh', '0935678901', 0, 25000000.00, 'Chưa xác định', 'Giao dịch ít', 'RM006', NULL, 'builan@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH007', 'Vũ Đức G', '556677889', '1988-03-10', 'Hà Nội', 'Việt Nam', '1988-03-10', 'Số 70, Đường KLM, Hà Nội', '0946789012', 0, 16000000.00, 'Active', 'Giao dịch thường xuyên', 'RM007', NULL, 'vuducg@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH008', 'Đỗ Ngọc H', '667788990', '1993-02-20', 'TP. Hồ Chí Minh', 'Việt Nam', '1993-02-20', 'Số 80, Đường NOP, TP. Hồ Chí Minh', '0977890123', 0, 13000000.00, 'Inactive', 'Giao dịch ít', 'RM008', NULL, 'dongoch@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH009', 'Lương Minh I', '778899001', '1984-08-15', 'Đà Nẵng', 'Việt Nam', '1984-08-15', 'Số 90, Đường QRS, Đà Nẵng', '0912345678', 0, 21000000.00, 'Dormant', 'Giao dịch thường xuyên', 'RM009', NULL, 'luongm@example.com', 'Khách hàng cá nhân', '2025-04-09', '1'),
+('KHHH010', 'Hoàng Thị J', '889900112', '1991-05-25', 'Hải Phòng', 'Việt Nam', '1991-05-25', 'Số 100, Phố TUV, Hải Phòng', '0923456789', 0, 20000000.00, 'Active', 'Giao dịch lớn', 'RM010', NULL, 'hoangtj@example.com', 'Khách hàng cá nhân', '2025-04-09', '1');
 
 -- --------------------------------------------------------
 
