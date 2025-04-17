@@ -103,6 +103,30 @@ class Leads extends CI_Controller
             }
         }
     }
+
+
+    public function get_leads_list()
+	{
+		// Kiểm tra quyền truy cập
+		if (!check_permissions("leads", "read", "", true)) {
+			return redirect(base_url(), 'refresh');
+		}
+
+		// Kiểm tra trạng thái đăng nhập
+		if (!$this->ion_auth->logged_in()) {
+			redirect('auth', 'refresh');
+		} else {
+			// Lấy workspace_id từ session
+			$workspace_id = $this->session->userdata('workspace_id');
+
+			// Gọi model để lấy danh sách clients
+			$leads = $this->Leads_model->get_leads_list($workspace_id);
+
+			// Trả về dữ liệu dưới dạng JSON
+			echo json_encode($leads);
+		}
+	}
+
     public function lead_status_update()
     {
         if (!$this->ion_auth->logged_in()) {
@@ -361,32 +385,6 @@ class Leads extends CI_Controller
         }
     }
 
-    public function get_leads_list()
-    {
-        if (!check_permissions("leads", "read", "", true)) {
-            return redirect(base_url(), 'refresh');
-        }
-        if (!$this->ion_auth->logged_in()) {
-            redirect('auth', 'refresh');
-        } else {
-            $workspace_id = $this->session->userdata('workspace_id');
-            $user_id = $this->session->userdata('user_id');
-            if (!is_admin() && !is_member() && !is_client() && !is_workspace_admin($user_id, $workspace_id)) {
-                $this->session->set_flashdata('message_type', 'error');
-                redirect('home', 'refresh');
-                return false;
-                exit();
-            }
-            $data = $this->leads_model->get_leads_list('list', $workspace_id, $user_id);
-            $response['error'] = false;
-            $response['csrfName'] = $this->security->get_csrf_token_name();
-            $response['csrfHash'] = $this->security->get_csrf_hash();
-            $response['message'] = 'Successful';
-            $response['data'] = $data;
-            $lists =  json_encode($response);
-            return $lists;
-        }
-    }
 
     public function get_leads_by_id()
     {

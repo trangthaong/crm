@@ -215,7 +215,7 @@
                 </div>
                 <p class="text-sm text-gray-500 mb-4">Phân quyền đã được cập nhật thành công.</p>
                 <div class="flex justify-end">
-                    <button id="closeSuccessModal" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    <button id="closeSuccessModal" class="btn btn-primary">
                         Đóng
                     </button>
                 </div>

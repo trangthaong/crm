@@ -1399,6 +1399,8 @@ $("#modal-edit-user").fireModal({
     }]
 });
 
+
+
 $("#modal-delete-user").fireModal({
     size: 'modal-lg',
     title: 'Xác nhận xóa',

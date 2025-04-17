@@ -19,7 +19,7 @@
             <div class="main-content">
                 <section class="section">
                     <div class="section-header">
-                        <h1><?= !empty($this->lang->line('label_client')) ? $this->lang->line('label_client') : 'Quản lý Khách hàng tiềm năng'; ?></h1>
+                        <h1>Quản lý Khách hàng tiềm năng</h1>
                         <div class="section-header-breadcrumb">
                             
                         </div>

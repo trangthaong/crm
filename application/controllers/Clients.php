@@ -159,6 +159,250 @@ class Clients extends CI_Controller
 			
     }
 
+	public function create_bulk_client()
+{
+    if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
+        if (!check_permissions("clients", "create", "", true)) {
+            return response(PERMISSION_ERROR_MESSAGE);
+        }
+        $this->form_validation->set_rules('bulk_upload', '', 'xss_clean');
+        if (empty($_FILES['upload_file']['name'])) {
+            $this->form_validation->set_rules('upload_file', 'File', 'trim|required|xss_clean', array('required' => 'Please choose file'));
+        }
+
+        if (!$this->form_validation->run()) {
+            $this->response['error'] = true;
+            $this->response['csrfName'] = $this->security->get_csrf_token_name();
+            $this->response['csrfHash'] = $this->security->get_csrf_hash();
+            $this->response['message'] = validation_errors();
+            print_r(json_encode($this->response));
+        } else {
+            $allowed_mime_type_arr = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv');
+            $mime = get_mime_by_extension($_FILES['upload_file']['name']);
+            if (!in_array($mime, $allowed_mime_type_arr)) {
+                $this->response['error'] = true;
+                $this->response['csrfName'] = $this->security->get_csrf_token_name();
+                $this->response['csrfHash'] = $this->security->get_csrf_hash();
+                $this->response['message'] = 'Invalid file format!';
+                print_r(json_encode($this->response));
+                return false;
+            }
+            $csv = $_FILES['upload_file']['tmp_name'];
+            $temp = 0;
+            $temp1 = 0;
+            $handle = fopen($csv, "r");
+            $this->response['message'] = '';
+            while (($row = fgetcsv($handle, 10000, ",")) != FALSE) { // get row values
+                if ($temp != 0) {
+                    if (empty($row[0])) { // TenKH
+						$this->response['error'] = true;
+						$this->response['message'] = 'Tên khách hàng (TenKH) không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[1])) { // CMT_Hochieu
+						$this->response['error'] = true;
+						$this->response['message'] = 'CMT/HoChieu không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[2])) { // Ngaycap
+						$this->response['error'] = true;
+						$this->response['message'] = 'Ngày cấp không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[3])) { // Noicap
+						$this->response['error'] = true;
+						$this->response['message'] = 'Nơi cấp không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[4])) { // Quoctich
+						$this->response['error'] = true;
+						$this->response['message'] = 'Quốc tịch không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[5])) { // Ngaysinh
+						$this->response['error'] = true;
+						$this->response['message'] = 'Ngày sinh không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[6])) { // Diachi
+						$this->response['error'] = true;
+						$this->response['message'] = 'Địa chỉ không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[7])) { // SDT
+						$this->response['error'] = true;
+						$this->response['message'] = 'Số điện thoại không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[8])) { // Nghenghiep
+						$this->response['error'] = true;
+						$this->response['message'] = 'Nghề nghiệp không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[9])) { // Thunhap
+						$this->response['error'] = true;
+						$this->response['message'] = 'Thu nhập không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[10])) { // Trangthai
+						$this->response['error'] = true;
+						$this->response['message'] = 'Trạng thái không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[11])) { // Tansuatgiaodich
+						$this->response['error'] = true;
+						$this->response['message'] = 'Tần suất giao dịch không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[12])) { // Email
+						$this->response['error'] = true;
+						$this->response['message'] = 'Email không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[13])) { // Khoi
+						$this->response['error'] = true;
+						$this->response['message'] = 'Khối không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+					if (empty($row[14])) { // workspace_id
+						$this->response['error'] = true;
+						$this->response['message'] = 'Workspace ID không được để trống tại dòng ' . $temp;
+						$this->response['csrfName'] = $this->security->get_csrf_token_name();
+						$this->response['csrfHash'] = $this->security->get_csrf_hash();
+						print_r(json_encode($this->response));
+						return false;
+					}
+                }
+                $temp++;
+            }
+            $handle = fopen($csv, "r");
+            while (($row = fgetcsv($handle, 10000, ",")) != FALSE) { // get row values
+                if ($temp1 != 0) {
+                    $data['TenKH'] = $row[0];
+                    $data['CMT_Hochieu'] = $row[1];
+                    $data['Ngaycap'] = $row[2];
+                    $data['Noicap'] = $row[3];
+                    $data['Quoctich'] = $row[4];
+                    $data['Ngaysinh'] = $row[5];
+                    $data['Diachi'] = $row[6];
+                    $data['SDT'] = $row[7];
+                    $data['Nghenghiep'] = $row[8];
+                    $data['Thunhap'] = $row[9];
+                    $data['Trangthai'] = $row[10];
+                    $data['Tansuatgiaodich'] = $row[11];
+                    $data['Email'] = $row[12];
+                    $data['Khoi'] = $row[13];
+                    $data['workspace_id'] = $row[14];
+
+                    $data['MaKH'] = $this->generate_client_id(); // Gán mã KH mới cho khách hàng
+					$this->db->insert('client', $data); // Lưu dữ liệu vào bảng clients
+                }
+                $temp1++;
+            }
+
+            $this->response['error'] = false;
+            $this->response['csrfName'] = $this->security->get_csrf_token_name();
+            $this->response['csrfHash'] = $this->security->get_csrf_hash();
+            $this->response['message'] = 'Clients uploaded successfully!';
+            print_r(json_encode($this->response));
+            return false;
+        }
+    }
+}
+
+public function generate_client_id()
+{
+    // Lấy mã KH lớn nhất hiện có trong bảng clients
+    $this->db->select_max('MaKH');
+    $query = $this->db->get('client');
+    $result = $query->row();
+
+    // Kiểm tra nếu không có dữ liệu (ví dụ bảng rỗng)
+    if (empty($result->MaKH)) {
+        return 'KHHH001'; // Nếu không có, bắt đầu từ KHHH001
+    } else {
+        // Lấy số cuối trong mã KH hiện có
+        $last_id = $result->MaKH;
+        $last_number = (int)substr($last_id, -3); // Lấy 3 chữ số cuối
+        $new_number = str_pad($last_number + 1, 3, '0', STR_PAD_LEFT); // Tăng số cuối lên và đảm bảo 3 chữ số
+        return 'KHHH' . $new_number; // Trả về mã KH mới
+    }
+}
+
+
+    public function bulk_project_download()
+    {
+        if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
+            if (!check_permissions("projects", "create", "", true)) {
+                return response(PERMISSION_ERROR_MESSAGE);
+            }
+            if (defined('ALLOW_MODIFICATION') && ALLOW_MODIFICATION == 0) {
+                $this->session->set_flashdata('message', 'This operation not allowed in demo version.');
+                $this->session->set_flashdata('message_type', 'error');
+                redirect('home', 'refresh');
+                return false;
+                exit();
+            }
+            $this->load->model('projects_model');
+            $projectsData = $this->projects_model->get_projects($this->session->userdata('workspace_id'));
+            $csvHeaders = [
+                'id', 'workspace_id', 'user_id', 'client_id', 'title', 'description', 'status', 'budget', 'class', 'priority', 'task_count', 'comment_count', 'is_favorite', 'start_date', 'end_date'
+            ];
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename=download-data.csv');
+            $output = fopen('php://output', 'w');
+            fputcsv($output, $csvHeaders);
+            foreach ($projectsData as $project) {
+                $data = [
+                    $project['id'], $project['workspace_id'], $project['user_id'], $project['client_id'], $project['title'], $project['description'], $project['status'], $project['budget'], $project['class'], $project['priority'], $project['task_count'], $project['comment_count'], $project['is_favorite'], $project['start_date'], $project['end_date']
+                ];
+                fputcsv($output, $data);
+            }
+        }
+    }
+
 
 	function deactive($id = '')
 	{

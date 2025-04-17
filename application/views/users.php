@@ -251,127 +251,138 @@
             <?php if (check_permissions("users", "create")) { ?>
                 <?= form_open('auth/create_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
                 <div class="row">
-                <div class="col-md-6">
-    <div class="form-group">
-        <label>Mã HRIS <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'ma_hris', 'class' => 'form-control', 'maxlength' => '50', 'required' => true]) ?>
-    </div>
-</div>
+                    <div class="col-md-12">
+                        <div id="modal-title" class="d-none">Thêm mới RM</div>
+                        <div id="modal-footer-add-title" class="d-none"><?= !empty($this->lang->line('label_add')) ? $this->lang->line('label_add') : 'Lưu'; ?></div>
+                            <div class="row" >
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mã HRIS <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'ma_hris', 'class' => 'form-control', 'maxlength' => '50', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Tên RM <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'ten_rm', 'class' => 'form-control', 'maxlength' => '200', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tên RM <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'ten_rm', 'class' => 'form-control', 'maxlength' => '200', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Phòng <span class="text-danger">*</span></label>
-        <?= form_dropdown('phong', $phong_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Phòng <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('phong', $phong_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Vị trí <span class="text-danger">*</span></label>
-        <?= form_dropdown('vi_tri', $vi_tri_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Vị trí <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('vi_tri', $vi_tri_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Chức danh <span class="text-danger">*</span></label>
-        <?= form_dropdown('chuc_danh', $chuc_danh_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Chức danh <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('chuc_danh', $chuc_danh_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Khối HRIS <span class="text-danger">*</span></label>
-        <?= form_dropdown('khoi_hris', $khoi_hris_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Khối HRIS <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('khoi_hris', $khoi_hris_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Ngày sinh <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'ngay_sinh', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày sinh <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'ngay_sinh', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Ngày vào MB <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'ngay_vao_mb', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày vào MB <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'ngay_vao_mb', 'type' => 'text', 'class' => 'form-control datepicker', 'placeholder' => 'DD/MM/YYYY', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Giới tính <span class="text-danger">*</span></label>
-        <?= form_dropdown('gioi_tinh', ['female' => 'Nữ', 'male' => 'Nam'], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Giới tính <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('gioi_tinh', ['female' => 'Nữ', 'male' => 'Nam'], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Số điện thoại <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'so_dien_thoai', 'type' => 'number', 'class' => 'form-control', 'maxlength' => '15', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số điện thoại <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'so_dien_thoai', 'type' => 'number', 'class' => 'form-control', 'maxlength' => '15', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Email <span class="text-danger">*</span></label>
-        <?= form_input(['name' => 'email', 'type' => 'email', 'class' => 'form-control', 'maxlength' => '50', 'required' => true, 'pattern' => '.+@.+\..+']) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email <span class="text-danger">*</span></label>
+                                    <?= form_input(['name' => 'email', 'type' => 'email', 'class' => 'form-control', 'maxlength' => '50', 'required' => true, 'pattern' => '.+@.+\..+']) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Khối <span class="text-danger">*</span></label>
-        <?= form_dropdown('khoi', $khoi_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Khối <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('khoi', $khoi_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Cấp độ RM <span class="text-danger">*</span></label>
-        <?= form_dropdown('cap_do_rm', $rm_level_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Cấp độ RM <span class="text-danger">*</span></label>
+                                    <?= form_dropdown('cap_do_rm', $rm_level_options ?? [], '', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
 
-<!-- Thông tin hệ thống -->
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Mã RM (tự sinh)</label>
-        <?= form_input(['name' => 'ma_rm', 'class' => 'form-control', 'readonly' => true, 'placeholder' => 'Tự sinh sau khi thêm']) ?>
-    </div>
-</div>
+                            <!-- Thông tin hệ thống -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Mã RM (tự sinh)</label>
+                                    <?= form_input(['name' => 'ma_rm', 'class' => 'form-control', 'readonly' => true, 'placeholder' => 'Tự sinh sau khi thêm']) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Chi nhánh quản lý</label>
-        <?= form_dropdown('chi_nhanh', $chi_nhanh_options ?? [], $default_chi_nhanh ?? '', ['class' => 'form-control', 'disabled' => true]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Chi nhánh quản lý</label>
+                                    <?= form_dropdown('chi_nhanh', $chi_nhanh_options ?? [], $default_chi_nhanh ?? '', ['class' => 'form-control', 'disabled' => true]) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Đơn vị upload</label>
-        <?= form_input(['name' => 'don_vi_upload', 'class' => 'form-control', 'readonly' => true, 'value' => $don_vi_upload ?? '']) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Đơn vị upload</label>
+                                    <?= form_input(['name' => 'don_vi_upload', 'class' => 'form-control', 'readonly' => true, 'value' => $don_vi_upload ?? '']) ?>
+                                </div>
+                            </div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Ngày upload</label>
-        <?= form_input(['name' => 'ngay_upload', 'class' => 'form-control', 'readonly' => true, 'value' => date('d/m/Y')]) ?>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày upload</label>
+                                    <?= form_input(['name' => 'ngay_upload', 'class' => 'form-control', 'readonly' => true, 'value' => date('d/m/Y')]) ?>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+</form>                             
+
+
             <?php } ?>
-            </form>
+            
             <?php include('include-footer.php'); ?>
         </div>
     </div>
