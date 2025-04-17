@@ -409,6 +409,39 @@
             }
         });
     });
+
+    function fetchUnitsAndInitSelect() {
+        $.ajax({
+            url: '<?= base_url('units/get_units_by_workspace') ?>',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                console.log("%c 1 --> Line: 419||assign-leads-unit.php\n response: ", "color:#f0f;", response);
+                if (response.error === false && Array.isArray(response.data?.rows)) {
+                    const options = response.data?.rows.map(unit => ({
+                        id: unit.id, // hoặc mã đơn vị: unit.code nếu bạn dùng
+                        text: `${unit.id} - ${unit.title}`
+                    }));
+
+                    $('#pgd').empty().select2({
+                        placeholder: 'Chọn Đơn vị',
+                        data: [
+                            {id: '', text: 'Chọn Đơn vị'}, // Placeholder
+                            ...options
+                        ],
+                        allowClear: true
+                    });
+                } else {
+                    console.warn('Không có dữ liệu đơn vị.');
+                }
+            },
+            error: function () {
+                console.error("Lỗi khi lấy dữ liệu đơn vị.");
+            }
+        });
+    }
+
+    fetchUnitsAndInitSelect();
 </script>
 
 <script>

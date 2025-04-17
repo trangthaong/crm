@@ -223,38 +223,37 @@ class Units extends CI_Controller
 
     public function get_units_by_workspace()
     {
-        if (!$this->ion_auth->logged_in()) {
-            echo json_encode([
-                'error' => true,
-                'message' => 'Bạn chưa đăng nhập.',
-                'csrfName' => $this->security->get_csrf_token_name(),
-                'csrfHash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
+        // Nếu dùng session, lấy workspace_id từ session
         $workspace_id = $this->session->userdata('workspace_id');
 
+        // Nếu vẫn không có thì trả lỗi
         if (empty($workspace_id)) {
-            echo json_encode([
-                'error' => true,
-                'message' => 'Không tìm thấy workspace_id trong session.',
-                'csrfName' => $this->security->get_csrf_token_name(),
-                'csrfHash' => $this->security->get_csrf_hash()
-            ]);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'error' => true,
+                    'message' => 'Missing workspace ID',
+                    'data' => [],
+                    'csrfName' => $this->security->get_csrf_token_name(),
+                    'csrfHash' => $this->security->get_csrf_hash(),
+                ]));
             return;
         }
 
-        $this->load->model('unit_model');
-        $units = $this->units_model->get_units_list($workspace_id);
+        // Load model và lấy dữ liệu
+        $this->load->model('units_model');
+        $units = $this->units_model->get_units_list_object($workspace_id);
 
-        echo json_encode([
-            'error' => false,
-            'message' => 'Lấy danh sách đơn vị thành công.',
-            'data' => $units,
-            'csrfName' => $this->security->get_csrf_token_name(),
-            'csrfHash' => $this->security->get_csrf_hash()
-        ]);
+        // Trả về JSON đúng chuẩn
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'error' => false,
+                'message' => 'Lấy danh sách đơn vị thành công.',
+                'data' => $units,
+                'csrfName' => $this->security->get_csrf_token_name(),
+                'csrfHash' => $this->security->get_csrf_hash(),
+            ]));
     }
 
 }
