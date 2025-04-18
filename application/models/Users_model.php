@@ -48,6 +48,19 @@ class Users_model extends CI_Model
             $this->db->group_end();
         }
 
+        $filters = [
+            'rm_code'      => 'rm.rm_code',
+            'hris_code'    => 'rm.hris_code',
+            'full_name'    => 'rm.full_name',
+            'phone'        => 'rm.phone',
+            'email_search' => 'rm.email'
+        ];
+        foreach ($filters as $param => $column) {
+            if (!empty($get[$param])) {
+                $this->db->like($column, strip_tags($get[$param]));   // LIKE '%value%'
+            }
+        }
+
         $total_query = clone $this->db;
         $total = $total_query->count_all_results('', false);
 

@@ -4,19 +4,34 @@
             <div class="card-body">
                 <div id="rm-search-form">
 <!--                <form id="rm-search-form" method="GET" action="--><?php //= base_url('users/get_users_list') ?><!--">-->
+
                     <div class="row"
                          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px 30px; padding: 0 15px;">
+                        <!-- Search -->
+                        <div class="form-group">
+                            <label for="search">Search</label>
+                            <input type="text" class="form-control" id="search" name="search"
+                                   placeholder="Nhập search">
+                        </div>
+
                         <!-- Mã khách hàng -->
                         <div class="form-group">
-                            <label for="customer_code">Mã khách hàng</label>
-                            <input type="text" class="form-control" id="customer_code" name="customer_code"
+                            <label for="rm_code">Mã khách hàng</label>
+                            <input type="text" class="form-control" id="rm_code" name="rm_code"
                                    placeholder="Nhập mã khách hàng">
+                        </div>
+
+                        <!-- hris code -->
+                        <div class="form-group">
+                            <label for="hris_code">Hris code</label>
+                            <input type="text" class="form-control" id="hris_code" name="hris_code"
+                                   placeholder="Nhập hris code">
                         </div>
 
                         <!-- Tên khách hàng -->
                         <div class="form-group">
-                            <label for="customer_name">Tên khách hàng</label>
-                            <input type="text" class="form-control" id="customer_name" name="customer_name"
+                            <label for="full_name">Tên khách hàng</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name"
                                    placeholder="Nhập tên khách hàng">
                         </div>
 
@@ -27,55 +42,12 @@
                                    placeholder="Nhập số điện thoại">
                         </div>
 
-                        <!-- Số CMT/hộ chiếu -->
+                        <!-- Email -->
                         <div class="form-group">
-                            <label for="identity">Số CMT/Hộ chiếu</label>
-                            <input type="text" class="form-control" id="identity" name="identity"
-                                   placeholder="Nhập số CMT/Hộ chiếu">
+                            <label for="email_search">Email</label>
+                            <input type="text" class="form-control" id="email_search" name="email_search"
+                                   placeholder="Nhập email">
                         </div>
-
-                        <!-- Khối -->
-                        <div class="form-group">
-                            <label for="block">Khối</label>
-                            <select class="form-control" id="block" name="block">
-                                <option value="">Chọn khối</option>
-                                <option value="1">Khối 1</option>
-                                <option value="2">Khối 2</option>
-                            </select>
-                        </div>
-
-                        <!-- Tần suất giao dịch -->
-                        <div class="form-group">
-                            <label for="frequency">Tần suất giao dịch</label>
-                            <select class="form-control" id="frequency" name="frequency">
-                                <option value="">Chọn tần suất</option>
-                                <option value="low">Thấp</option>
-                                <option value="medium">Trung bình</option>
-                                <option value="high">Cao</option>
-                            </select>
-                        </div>
-
-                        <?php if (isset($context) && $context === 'client_page') { ?>
-                            <!-- Đơn vị -->
-                            <div class="form-group">
-                                <label for="unit">Đơn vị</label>
-                                <select class="form-control" id="unit" name="unit">
-                                    <option value="">Chọn đơn vị</option>
-                                    <option value="unit1">Đơn vị 1</option>
-                                    <option value="unit2">Đơn vị 2</option>
-                                </select>
-                            </div>
-
-                            <!-- RM quản lý -->
-                            <div class="form-group">
-                                <label for="rm_manager">RM quản lý</label>
-                                <select class="form-control" id="rm_manager" name="rm_manager">
-                                    <option value="">Chọn RM quản lý</option>
-                                    <option value="rm1">RM 1</option>
-                                    <option value="rm2">RM 2</option>
-                                </select>
-                            </div>
-                        <?php } ?>
                     </div>
 
                     <div class="row">

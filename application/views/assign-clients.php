@@ -229,7 +229,7 @@ $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_de
         <!-- Form tìm kiếm khách hàng -->
         <?php if (check_permissions("leads", "read")) { ?>
             <div id="modal-add-user-part" class="modal-part">
-                <?php $context = 'assign_leads'; ?>
+                <?php $context = 'assign_leads'; $addFilter = ["rmQuanLy" => "IS NULL"] ?>
                 <?php include 'search-client-form.php';  // file này chỉ có input + bảng, không có <form> ?>
             </div>
         <?php } ?>

@@ -1,12 +1,22 @@
+/**
+ * Chuyển mảng [{name, value}] → object { name:value, ... }
+ */
+const toObject = arr =>
+    arr.reduce((o, { name, value }) => {
+        value = $.trim(value);
+        if (value !== '') o[name] = value;   // không đưa key nếu value rỗng
+        return o;
+    }, {});
+
 function searchRmFormQueryParams(p) {
+    const $f   = $('#rm-search-form');              // div bọc vùng lọc
+    // lấy tất cả input/select/textarea có thuộc tính name
+    const data = toObject($f.find(':input[name]').serializeArray());
+    console.log("%c 1 --> Line: 11||components-assign-form-search.js\n data: ","color:#f0f;", data);
+
     return {
-        ...queryParams(p),
-        customer_code: $('#rm-search-form #customer_code').val(),
-        customer_name: $('#rm-search-form #customer_name').val(),
-        phone: $('#rm-search-form #phone').val(),
-        identity: $('#rm-search-form #identity').val(),
-        block: $('#rm-search-form #block').val(),
-        frequency: $('#rm-search-form #frequency').val()
+        ...queryParams(p),    // limit, offset, sort ...
+        ...data               // customer_code, customer_name, phone ...
     };
 }
 
@@ -14,23 +24,16 @@ function rmSearchForm() {
     $('#rm_clients_list').bootstrapTable('refresh');
 }
 
-// Đợi DOM được load
 function searchClientFormQueryParams(p) {
-    const $f = $('#searchClientForm');
-    return {
-        ...queryParams(p),
-        rmQuanLy: "IS NULL",
-        customer_code: $f.find('[name="customer_code"]').val().trim(),
-        customer_name: $f.find('[name="customer_name"]').val().trim(),
-        phone: $f.find('[name="phone"]').val().trim(),
-        identity: $f.find('[name="identity"]').val().trim(),
-        block: $f.find('[name="block"]').val(),
-        frequency: $f.find('[name="frequency"]').val(),
+    const data = toObject(
+        $('#searchClientForm').find(':input[name]').serializeArray()
+    );
+    console.log("%c 1 --> Line: 31||components-assign-form-search.js\n data: ","color:#f0f;", data);
 
-        // ---- các field chỉ tồn tại trong 1 số context ----
-        loaiKH: $f.find('[name="loaiKH"]').val(),   // campaigns_clients
-        unit: $f.find('[name="unit"]').val(),     // client_page
-        rm_manager: $f.find('[name="rm_manager"]').val()// client_page
+    return {
+        ...queryParams(p),   // limit, offset, sort …
+        rmQuanLy : 'IS NULL',
+        ...data              // customer_code, customer_name, phone, ...
     };
 }
 

@@ -59,6 +59,21 @@ class Clients_model extends CI_Model
                 $where .= " AND Unitquanly = '" . $get['unitQuanLy'] . "'";
             }
         }
+         if (isset($get['customer_code'])) {
+            $where .= " AND MaKH LIKE '%" . $get['customer_code'] . "%'";
+        }
+        if (isset($get['customer_name'])) {
+            $where .= " AND TenKH LIKE '%" . $get['customer_name'] . "%'";
+        }
+        if (isset($get['phone'])) {
+            $where .= " AND SDT LIKE '%" . $get['phone'] . "%'";
+        }
+        if (isset($get['identity'])) {
+            $where .= " AND CMT_Hochieu LIKE '%" . $get['identity'] . "%'";
+        }
+        if (isset($get['block'])) {
+            $where .= " AND Khoi LIKE '%" . $get['block'] . "%'";
+        }
 
         // Truy vấn tổng số bản ghi
         $query = $this->db->query("SELECT COUNT(MaKH) as total FROM client WHERE 1=1 " . $where);

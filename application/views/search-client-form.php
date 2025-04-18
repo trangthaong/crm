@@ -5,6 +5,17 @@
                 <div id="searchClientForm">
                     <div class="row"
                          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px 30px; padding: 0 15px;">
+
+                        <?php
+                        if (isset($addFilter)) {
+                            foreach ($addFilter as $key => $value) {
+                        ?>
+                                <input type="hidden" name="<?=$key?>" id="<?=$key?>" value="<?=$value?>"/>
+                        <?php
+                            }
+                        }
+                        ?>
+
                         <!-- Mã khách hàng -->
                         <div class="form-group">
                             <label for="customer_code">Mã khách hàng</label>
@@ -38,8 +49,7 @@
                             <label for="block">Khối</label>
                             <select class="form-control" id="block" name="block">
                                 <option value="">Chọn khối</option>
-                                <option value="1">Khối 1</option>
-                                <option value="2">Khối 2</option>
+                                <option value="Khách hàng cá nhân">Khách hàng cá nhân</option>
                             </select>
                         </div>
 

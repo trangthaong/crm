@@ -236,7 +236,7 @@
         <!-- Form tìm kiếm khách hàng -->
         <?php if (check_permissions("leads", "read")) { ?>
             <div id="modal-add-user-part" class="modal-part">
-                <?php $context = 'assign_leads'; ?>
+                <?php $context = 'assign_leads'; $addFilter = ["unitQuanLy" => "IS NULL"] ?>
                 <?php include 'search-client-form.php';  // file này chỉ có input + bảng, không có <form> ?>
             </div>
         <?php } ?>
