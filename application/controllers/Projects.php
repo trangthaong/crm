@@ -41,12 +41,12 @@ class Projects extends CI_Controller
 		}
     }
 
-    public function detail($maCD = null, $user_id = null, $workspace_id = null)
+    public function detail($maCD = null)
     {
         //Lấy thông tin người dùng
-        $data['user'] = $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
+        $user = ($this->ion_auth->logged_in()) ? $this->ion_auth->user()->row() : array();
         $workspace_ids = explode(',', $user->workspace_id);
-    
+
         // Truy vấn thông tin chi tiết dựa trên Machiendich
         $data['project_detail'] = $this->projects_model->get_project_by_id($maCD);
     
@@ -56,9 +56,16 @@ class Projects extends CI_Controller
         }
     
         // Truyền thông tin user_id và workspace_id vào view
-        $data['user_id'] = $user_id;
-        $data['workspace_id'] = $workspace_id;
-    
+        $data['maCD'] = $maCD;
+        $data['user'] = $user;
+        $data['user_id'] = $user->id;
+        $data['workspace_id'] = $workspace_ids[0];
+
+        $data['get_campaign_with_customers'] = $this->projects_model->get_campaign_with_customers(
+            $maCD,
+            $this->input->get()        // truyền luôn filter GET nếu muốn
+        );
+
         // Tải view với dữ liệu chi tiết khách hàng và thông tin người dùng
         $this->load->view('project-detail', $data);
     }
@@ -2760,5 +2767,28 @@ class Projects extends CI_Controller
                 fputcsv($output, $data);
             }
         }
+    }
+
+    public function update_contact_result()
+    {
+        $id     = $this->input->post('id',     TRUE);
+        $ketqua = $this->input->post('ketqua', TRUE);   // tiếng Việt
+        $ghichu = $this->input->post('ghichu', TRUE);
+
+        if (!$id || !$ketqua) {
+            return $this->output->set_output(json_encode([
+                'error'   => true,
+                'message' => 'Thiếu tham số bắt buộc.'
+            ]));
+        }
+
+        $ok = $this->campaigns_model->update_contact_result($id, $ketqua, $ghichu);
+
+        return $this->output->set_output(json_encode([
+            'csrfName' => $this->security->get_csrf_token_name(),
+            'csrfHash' => $this->security->get_csrf_hash(),
+            'error'   => !$ok,
+            'message' => $ok ? 'Đã cập nhật thành công!' : 'Cập nhật thất bại.'
+        ]));
     }
 }

@@ -719,4 +719,99 @@ class Projects_model extends CI_Model
         $bulkData['rows'] = $rows;
         print_r(json_encode($bulkData));
     }
+
+    /**
+     * Lấy thông tin chiến dịch + danh sách khách hàng của chiến dịch
+     *
+     * @param  string  $maCD                 Mã chiến dịch (ví dụ: CD001)
+     * @param  array   $filters (optional)   Mảng filter GET: customer_code, unit, ...
+     * @return array  [
+     *                  'campaign' => [...],
+     *                  'customers' => [...]
+     *                ]
+     */
+    public function get_campaign_with_customers(string $maCD, array $filters = []): array
+    {
+        /* ===== 1. Thông tin chiến dịch ===== */
+        $campaign = $this->db
+            ->get_where('campaigns', ['Machiendich' => $maCD])
+            ->row_array();
+
+        if (!$campaign) {
+            return ['campaign' => null, 'customers' => []];
+        }
+
+        /* ===== 2. Xây WHERE cho bộ lọc (nếu cần) ===== */
+        // Ví dụ: lọc thêm customer_code, unit ...
+        $this->db->reset_query();                // an toàn, xoá builder trước
+        if (!empty($filters['customer_code'])) {
+            $this->db->where('b.MaKH', trim($filters['customer_code']));
+        }
+        if (!empty($filters['unit'])) {
+            $this->db->where('b.MaDV', trim($filters['unit']));
+        }
+
+        /* ===== 3. Truy vấn danh sách khách hàng (HIỆN HỮU + TIỀM NĂNG) ===== */
+        $sql = "
+            SELECT
+                a.MatiepcanKHHH     AS Matiepcan,
+                a.Tgiantiepcan,
+                a.Machiendich,
+                a.MaKHHH            AS MaKH,
+                a.NgaythemvaoCD,
+                a.Ketquatiepcan,
+                a.RMtiepcan,
+                a.Ghichu,
+                b.MaKH,
+                b.TenKH,
+                b.SDT,
+                b.Email,
+                'Khách hàng hiện hữu' AS LoaiKH,
+                'KHHH' AS CodeLoaiKH
+            FROM cd_khhh a
+            INNER JOIN client b  ON a.MaKHHH = b.MaKH
+            WHERE a.Machiendich = ?
+
+            UNION
+
+            SELECT
+                c.MatiepcanKHTN     AS Matiepcan,
+                c.Tgiantiepcan,
+                c.Machiendich,
+                c.MaKHTN            AS MaKH,
+                c.NgaythemvaoCD,
+                c.Ketquatiepcan,
+                c.RMtiepcan,
+                c.Ghichu,
+                d.MaKH,
+                d.TenKH,
+                d.SDT,
+                d.Email,
+                'Khách hàng tiềm năng' AS LoaiKH,
+                'KHTN' AS CodeLoaiKH
+            FROM cd_khtn c
+            INNER JOIN leads d   ON c.MaKHTN = d.MaKH
+            WHERE c.Machiendich = ?
+        ";
+
+        $customers = $this->db->query($sql, [$maCD, $maCD])->result_array();
+
+        return [
+            'campaign'  => $campaign,
+            'customers' => $customers
+        ];
+    }
+
+    public function update_contact_result(string $id, string $ketqua, string $ghichu = ''): bool
+    {
+        $data = [
+            'Ketquatiepcan' => $ketqua,              // giá trị ENUM tiếng Việt
+            'Ghichu'        => $ghichu,
+            'Tgiantiepcan'  => date('Y-m-d H:i:s')
+        ];
+
+        return $this->db
+            ->where('MatiepcanKHHH', $id)
+            ->update('cd_khhh', $data);
+    }
 }

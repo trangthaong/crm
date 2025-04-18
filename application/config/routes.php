@@ -55,3 +55,4 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;
 
 
+$route['projects/detail/(:any)'] = 'projects/detail/$1';
