@@ -203,203 +203,197 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Form tìm kiếm RM -->
-                    <div class="d-none">
-                        <?php if (check_permissions("users", "read")) { ?>
-                            <div class="card mt-4">
-                                <div class="card-body">
-                                    <!-- Mở Form tìm kiếm -->
-                                    <?= form_open('users/get_users_list', 'id="modal-part-search-client"', 'class="modal-part"'); ?>
-                                    <?php $context = 'assign_users'; ?>
-                                    <?php include('search-rm-form.php'); ?>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-
-                    <div class="d-none">
-                        <!-- Form tìm kiếm khách hàng -->
-                        <?php if (check_permissions("leads", "read")) { ?>
-                            <div class="card mt-4">
-                                <div class="card-body">
-                                    <!-- Mở Form tìm kiếm -->
-                                    <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
-                                    <?php $context = 'assign_leads'; ?>
-                                    <?php include('search-client-form.php'); ?>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
                 </div>
+            </section>
         </div>
+    </div>
 
-        <script>
-            window.clientFilter = {
-                rmQuanLy: "IS NULL"
-            }
+    <!-- Form tìm kiếm RM -->
+    <!-- Template ẩn, không chứa <form> -->
+    <div class="d-none">
+        <?php if (check_permissions('users', 'read')) { ?>
+            <div id="modal-part-search-client" class="modal-part">
+                <?php $context = 'assign_users'; ?>
+                <?php include 'search-rm-form.php';  // file này chỉ có input + bảng, không có <form> ?>
+            </div>
+        <?php } ?>
+    </div>
 
-            not_in_workspace_user = <?php echo json_encode(array_values($not_in_workspace_user)); ?>;
+    <div class="d-none">
+        <!-- Form tìm kiếm khách hàng -->
+        <?php if (check_permissions("leads", "read")) { ?>
+            <div id="modal-add-user-part" class="modal-part">
+                <?php $context = 'assign_leads'; ?>
+                <?php include 'search-client-form.php';  // file này chỉ có input + bảng, không có <form> ?>
+            </div>
+        <?php } ?>
+    </div>
 
-            function queryParams(p) {
-                return {
-                    "user_type": 3,
-                    limit: p.limit,
-                    sort: p.sort,
-                    order: p.order,
-                    offset: p.offset,
-                    search: p.search
-                };
-            }
-        </script>
-        <?php include('include-js.php'); ?>
-        <script>
-            function submitSelectedClients() {
-                // Tìm modal đang mở
-                const modal = $('.modal:visible');
+</div>
 
-                // Tìm bảng clients_list bên trong modal đó
-                const clientsTable = modal.find('#clients_list');
+<script>
+    not_in_workspace_user = <?php echo json_encode(array_values($not_in_workspace_user)); ?>;
 
-                // Lấy danh sách được chọn từ bảng đúng
-                const selectedClients = clientsTable.bootstrapTable('getSelections');
+    function queryParams(p) {
+        return {
+            "user_type": 3,
+            limit: p.limit,
+            sort: p.sort,
+            order: p.order,
+            offset: p.offset,
+            search: p.search
+        };
+    }
+</script>
+<?php include('include-js.php'); ?>
+<script>
+    function submitSelectedClients() {
+        // Tìm modal đang mở
+        const modal = $('.modal:visible');
 
-                if (selectedClients.length === 0) {
-                    alert('Vui lòng chọn ít nhất một khách hàng!');
-                    return;
+        // Tìm bảng clients_list bên trong modal đó
+        const clientsTable = modal.find('#clients_list');
+
+        // Lấy danh sách được chọn từ bảng đúng
+        const selectedClients = clientsTable.bootstrapTable('getSelections');
+
+        if (selectedClients.length === 0) {
+            alert('Vui lòng chọn ít nhất một khách hàng!');
+            return;
+        }
+
+        selectedClients.forEach(client => {
+            addClientToLeadsTable(client);
+        });
+    }
+
+    function addClientToLeadsTable(client) {
+        // Check trùng theo MaKH_raw
+        const exists = $('#leads_list').bootstrapTable('getData').some(row => row.MaKH_raw === client.MaKH_raw);
+        if (exists) return;
+
+        const currentData = $('#leads_list').bootstrapTable('getData');
+        const newIndex = currentData.length + 1;
+
+        $('#leads_list').bootstrapTable('append', {
+            stt: newIndex,
+            MaKH_raw: client.MaKH_raw, // dùng làm uniqueId
+            MaKH: client.MaKH,   // hiển thị link HTML nếu có
+            TenKH: client.TenKH,
+            SDT: client.SDT,
+            Email: client.Email,
+            CNquanly: client.CNquanly,
+            action: `<button class="btn btn-danger btn-sm" data-makh="${client.MaKH_raw}" onclick="removeClientFromLeadsTable(this)">Xóa</button>`
+        });
+        // ✅ Đánh lại STT
+        resetTableSTT();
+    }
+
+    function resetTableSTT() {
+        const data = $('#leads_list').bootstrapTable('getData');
+        data.forEach((row, index) => {
+            row.stt = index + 1;
+        });
+
+        $('#leads_list').bootstrapTable('load', data);
+    }
+
+    function removeClientFromLeadsTable(button) {
+        const maKH = $(button).data('makh');
+        console.log("%c 1 --> Line: 305||assign-leads-rm.php\n maKH: ", "color:#f0f;", maKH);
+
+        // Xóa dòng khỏi bảng chính
+        $('#leads_list').bootstrapTable('removeByUniqueId', maKH);
+
+        // ✅ Bỏ chọn checkbox trong bảng popup nếu tồn tại
+        $('#clients_list').bootstrapTable('uncheckBy', {
+            field: 'MaKH_raw',
+            values: [maKH]
+        });
+
+        // ✅ Đánh lại STT
+        resetTableSTT();
+    }
+
+    $('#search-form').on('submit', function (e) {
+        e.preventDefault();
+
+        // Validate trước
+        const rmId = $('#rm-id').val()?.trim();
+        const data = $('#leads_list').bootstrapTable('getData');
+        const maKHList = data.map(item => $('<div>').html(item.MaKH).text());
+
+        if (!rmId) {
+            alert('Vui lòng chọn RM trước khi phân giao!');
+            return;
+        }
+
+        if (maKHList.length === 0) {
+            alert('Vui lòng chọn ít nhất 1 khách hàng để phân giao!');
+            return;
+        }
+
+        // Dữ liệu gửi đi
+        const payload = {
+            rm_id: rmId,
+            assigned_clients: JSON.stringify(maKHList),
+            note: $('#additional-input').val()?.trim() || '',
+            [csrfName]: csrfHash
+        };
+
+        const url = $(this).attr('action');
+
+        $.ajax({
+            url,
+            type: 'POST',
+            data: payload,
+            dataType: 'json',
+            success: function (response) {
+                if (response.csrfName && response.csrfHash) {
+                    csrfName = response.csrfName;
+                    csrfHash = response.csrfHash;
                 }
 
-                selectedClients.forEach(client => {
-                    addClientToLeadsTable(client);
-                });
-            }
+                if (response.error === false) {
+                    iziToast.success({
+                        title: response['message'],
+                        message: '',
+                        position: 'topRight'
+                    });
+                    // ✅ Reset các input sau khi phân giao
+                    $('#rm-code').val('');
+                    $('#rm-id').val('');
+                    $('#additional-input').val('');
+                    $('#assigned-clients').val('');
 
-            function addClientToLeadsTable(client) {
-                // Check trùng theo MaKH_raw
-                const exists = $('#leads_list').bootstrapTable('getData').some(row => row.MaKH_raw === client.MaKH_raw);
-                if (exists) return;
+                    // ✅ Xóa toàn bộ dữ liệu KH đã chọn trong bảng
+                    $('#leads_list').bootstrapTable('removeAll');
 
-                const currentData = $('#leads_list').bootstrapTable('getData');
-                const newIndex = currentData.length + 1;
-
-                $('#leads_list').bootstrapTable('append', {
-                    stt: newIndex,
-                    MaKH_raw: client.MaKH_raw, // dùng làm uniqueId
-                    MaKH: client.MaKH,   // hiển thị link HTML nếu có
-                    TenKH: client.TenKH,
-                    SDT: client.SDT,
-                    Email: client.Email,
-                    CNquanly: client.CNquanly,
-                    action: `<button class="btn btn-danger btn-sm" data-makh="${client.MaKH_raw}" onclick="removeClientFromLeadsTable(this)">Xóa</button>`
-                });
-                // ✅ Đánh lại STT
-                resetTableSTT();
-            }
-
-            function resetTableSTT() {
-                const data = $('#leads_list').bootstrapTable('getData');
-                data.forEach((row, index) => {
-                    row.stt = index + 1;
-                });
-
-                $('#leads_list').bootstrapTable('load', data);
-            }
-
-            function removeClientFromLeadsTable(button) {
-                const maKH = $(button).data('makh');
-                console.log("%c 1 --> Line: 305||assign-leads-rm.php\n maKH: ","color:#f0f;", maKH);
-
-                // Xóa dòng khỏi bảng chính
-                $('#leads_list').bootstrapTable('removeByUniqueId', maKH);
-
-                // ✅ Bỏ chọn checkbox trong bảng popup nếu tồn tại
-                $('#clients_list').bootstrapTable('uncheckBy', {
-                    field: 'MaKH_raw',
-                    values: [maKH]
-                });
-
-                // ✅ Đánh lại STT
-                resetTableSTT();
-            }
-
-            $('#search-form').on('submit', function (e) {
-                e.preventDefault();
-
-                // Validate trước
-                const rmId = $('#rm-id').val()?.trim();
-                const data = $('#leads_list').bootstrapTable('getData');
-                const maKHList = data.map(item => $('<div>').html(item.MaKH).text());
-
-                if (!rmId) {
-                    alert('Vui lòng chọn RM trước khi phân giao!');
-                    return;
+                    // ✅ Làm mới bảng KH trong popup
+                    $('#clients_list').bootstrapTable('refresh');
+                    $('#rm_clients_list').bootstrapTable('refresh');
+                } else {
+                    iziToast.success({
+                        title: response['message'],
+                        message: '',
+                        position: 'topRight'
+                    });
                 }
-
-                if (maKHList.length === 0) {
-                    alert('Vui lòng chọn ít nhất 1 khách hàng để phân giao!');
-                    return;
-                }
-
-                // Dữ liệu gửi đi
-                const payload = {
-                    rm_id: rmId,
-                    assigned_clients: JSON.stringify(maKHList),
-                    note: $('#additional-input').val()?.trim() || '',
-                    [csrfName]: csrfHash
-                };
-
-                const url = $(this).attr('action');
-
-                $.ajax({
-                    url,
-                    type: 'POST',
-                    data: payload,
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.csrfName && response.csrfHash) {
-                            csrfName = response.csrfName;
-                            csrfHash = response.csrfHash;
-                        }
-
-                        if (response.error === false) {
-                            iziToast.success({
-                                title: response['message'],
-                                message: '',
-                                position: 'topRight'
-                            });
-                            // ✅ Reset các input sau khi phân giao
-                            $('#rm-code').val('');
-                            $('#rm-id').val('');
-                            $('#additional-input').val('');
-                            $('#assigned-clients').val('');
-
-                            // ✅ Xóa toàn bộ dữ liệu KH đã chọn trong bảng
-                            $('#leads_list').bootstrapTable('removeAll');
-
-                            // ✅ Làm mới bảng KH trong popup
-                            $('#clients_list').bootstrapTable('refresh');
-                            $('#rm_clients_list').bootstrapTable('refresh');
-                        } else {
-                            iziToast.success({
-                                title: response['message'],
-                                message: '',
-                                position: 'topRight'
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        iziToast.success({
-                            title: 'Đã có lỗi xảy ra khi phân giao.',
-                            message: '',
-                            position: 'topRight'
-                        });
-                    }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                iziToast.success({
+                    title: 'Đã có lỗi xảy ra khi phân giao.',
+                    message: '',
+                    position: 'topRight'
                 });
-            });
-        </script>
+            }
+        });
+    });
+</script>
 
-        <script src="assets/js/page/components-leads.js"></script>
+<script src="assets/js/page/components-leads.js"></script>
+<script src="/assets/js/page/components-assign-form-search.js"></script>
 
 </body>
 

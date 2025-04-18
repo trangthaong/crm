@@ -2,7 +2,8 @@
     <div class='col-md-12'>
         <div class="card">
             <div class="card-body">
-                <form id="search-form" method="GET" action="<?= base_url('auth/search_user') ?>">
+                <div id="rm-search-form">
+<!--                <form id="rm-search-form" method="GET" action="--><?php //= base_url('users/get_users_list') ?><!--">-->
                     <div class="row"
                          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px 30px; padding: 0 15px;">
                         <!-- Mã khách hàng -->
@@ -81,7 +82,8 @@
                         <div class="col-md-12 d-flex justify-content-between align-items-center">
                             <!-- Nút Tìm kiếm và Xóa -->
                             <div>
-                                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Tìm kiếm
+                                <button onclick="rmSearchForm()" class="btn btn-primary" style="margin-right: 10px;">
+                                    Tìm kiếm
                                 </button>
                                 <button type="reset" class="btn btn-secondary">Xóa</button>
                             </div>
@@ -105,13 +107,14 @@
 
                         </div>
                     </div>
-                </form>
+<!--                </form>-->
+                </div>
 
                 <!-- Bảng kết quả tìm kiếm -->
                 <div class="table-responsive mt-4">
                     <table class='table-striped' id='rm_clients_list'
                            data-toggle="table"
-                           data-url="<?= base_url('users/get_user_for_assign') ?>"
+                           data-url="<?= base_url('users/get_users_list') ?>"
                            data-side-pagination="server"
                            data-pagination="true"
                            data-page-list="[5, 10, 20, 50, 100, 200]"
@@ -124,7 +127,7 @@
                            data-show-export="true"
                            data-maintain-selected="true"
                            data-export-options='{"fileName": "clients-list","ignoreColumn": ["state"]}'
-                           data-query-params="queryParams"
+                           data-query-params="searchRmFormQueryParams"
                            data-click-to-select="true"
                            data-single-select="true"
                            data-unique-id="id"
@@ -136,32 +139,32 @@
                             <th data-field="full_name" data-sortable="true">Tên khách hàng</th>
                             <th data-field="email" data-sortable="true">Email</th>
                             <th data-field="phone_number" data-sortable="true">Số điện thoại</th>
-<!--                            <th data-field="MaKH"-->
-<!--                                data-sortable="true">--><?php //= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?><!--</th>-->
-<!---->
-<!--                            <th data-field="TenKH"-->
-<!--                                data-sortable="true">--><?php //= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?><!--</th>-->
-<!---->
-<!--                            <th data-field="Khoi"-->
-<!--                                data-sortable="true">--><?php //= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Khối'; ?><!--</th>-->
-<!---->
-<!--                            <th data-field="CASA" data-sortable="true">CASA hiện tại</th>-->
-<!---->
-<!--                            <th data-field="TK" data-sortable="false">Tiết kiệm hiện tại</th>-->
-<!--                            <th data-field="TD" data-sortable="false">Tín dụng hiện tại</th>-->
-<!--                            <th data-field="SDT" data-sortable="true">Số điện thoại</th>-->
-<!---->
-<!--                            <th data-field="CNquanly" data-sortable="false">Sector</th>-->
-<!--                            <th data-field="RMquanly" data-sortable="false">RM quản lý</th>-->
-<!--                            <th data-field="MaDV" data-sortable="false">Mã đơn vị mở code</th>-->
-<!--                            <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>-->
-<!--                            --><?php //if (check_permissions("clients", "delete")) { ?>
-<!--                                <th data-field="action"-->
-<!--                                    data-sortable="false">--><?php //= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?><!--</th>-->
-<!--                                --><?php ////}
-//                                ?>
-<!--                            --><?php //}
-//                            ?>
+                            <th data-field="MaKH"
+                                data-sortable="true"><?= !empty($this->lang->line('label_id')) ? $this->lang->line('label_id') : 'ID'; ?></th>
+
+                            <th data-field="TenKH"
+                                data-sortable="true"><?= !empty($this->lang->line('label_clients_name')) ? $this->lang->line('label_clients_name') : 'Tên khách hàng'; ?></th>
+
+                            <th data-field="Khoi"
+                                data-sortable="true"><?= !empty($this->lang->line('label_company')) ? $this->lang->line('label_company') : 'Khối'; ?></th>
+
+                            <th data-field="CASA" data-sortable="true">CASA hiện tại</th>
+
+                            <th data-field="TK" data-sortable="false">Tiết kiệm hiện tại</th>
+                            <th data-field="TD" data-sortable="false">Tín dụng hiện tại</th>
+                            <th data-field="SDT" data-sortable="true">Số điện thoại</th>
+
+                            <th data-field="CNquanly" data-sortable="false">Sector</th>
+                            <th data-field="RMquanly" data-sortable="false">RM quản lý</th>
+                            <th data-field="MaDV" data-sortable="false">Mã đơn vị mở code</th>
+                            <th data-field="TenDV" data-sortable="false">Tên đơn vị mở code</th>
+                            <?php if (check_permissions("clients", "delete")) { ?>
+                                <th data-field="action"
+                                    data-sortable="false"><?= !empty($this->lang->line('label_action')) ? $this->lang->line('label_action') : 'Action'; ?></th>
+                                <?php //}
+                                ?>
+                            <?php }
+                            ?>
                         </tr>
                         </thead>
                     </table>

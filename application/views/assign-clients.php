@@ -215,15 +215,12 @@ $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_de
     </div>
 
     <!-- Form tìm kiếm RM -->
+    <!-- Template ẩn, không chứa <form> -->
     <div class="d-none">
-        <?php if (check_permissions("users", "read")) { ?>
-            <div class="card mt-4">
-                <div class="card-body">
-                    <!-- Mở Form tìm kiếm -->
-                    <?= form_open('users/get_users_list', 'id="modal-part-search-client"', 'class="modal-part"'); ?>
-                    <?php $context = 'assign_users'; ?>
-                    <?php include('search-rm-form.php'); ?>
-                </div>
+        <?php if (check_permissions('users', 'read')) { ?>
+            <div id="modal-part-search-client" class="modal-part">
+                <?php $context = 'assign_users'; ?>
+                <?php include 'search-rm-form.php';  // file này chỉ có input + bảng, không có <form> ?>
             </div>
         <?php } ?>
     </div>
@@ -231,13 +228,9 @@ $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_de
     <div class="d-none">
         <!-- Form tìm kiếm khách hàng -->
         <?php if (check_permissions("leads", "read")) { ?>
-            <div class="card mt-4">
-                <div class="card-body">
-                    <!-- Mở Form tìm kiếm -->
-                    <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
-                    <?php $context = 'assign_leads'; ?>
-                    <?php include('search-client-form.php'); ?>
-                </div>
+            <div id="modal-add-user-part" class="modal-part">
+                <?php $context = 'assign_leads'; ?>
+                <?php include 'search-client-form.php';  // file này chỉ có input + bảng, không có <form> ?>
             </div>
         <?php } ?>
     </div>
@@ -408,6 +401,7 @@ $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_de
     });
 </script>
 <script src="assets/js/page/components-clients.js"></script>
+<script src="/assets/js/page/components-assign-form-search.js"></script>
 
 </body>
 

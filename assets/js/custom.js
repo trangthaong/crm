@@ -1153,109 +1153,60 @@ $("#modal-add-from-file").fireModal({
     }]
 });
 
-$("#modal-search-user").fireModal({
-    size: 'modal-lg',
-    title: 'Tìm kiếm RM phân giao',
-    body: $('#modal-part-search-client').html(),
+// Lấy node & GỠ nó khỏi DOM, tránh trùng id
+const template = $('#modal-part-search-client').detach().removeAttr('id');
+$('#modal-search-user').fireModal({
+    size       : 'modal-lg',
+    title      : 'Tìm kiếm RM phân giao',
+    body       : template,
     footerClass: 'bg-whitesmoke',
-    autoFocus: false,
-    onFormSubmit: function (modal, e, form) {
-        // Form Data
-        let form_data = $(e.target).serialize();
+    autoFocus  : false,
 
-        var formData = new FormData(this);
-        formData.append(csrfName, csrfHash);
-
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: "json",
-            success: function (result) {
-
-                csrfName = result['csrfName'];
-                csrfHash = result['csrfHash'];
-
-                if (result['error'] == false) {
-                    form.stopProgress();
-                    location.reload();
-                } else {
-                    form.stopProgress();
-                    modal.find('.modal-body').prepend('<div class="alert alert-danger">' + result['message'] + '</div>')
-                    modal.find('.alert-danger').delay(4000).fadeOut();
-                }
-
-            }
-        });
-
-        e.preventDefault();
-    },
     buttons: [{
-        text: "Submit",
-        submit: true,
-        class: 'btn btn-primary btn-shadow',
-        id: 'adduserbtn',
+        text   : 'Phân giao',
+        submit : false,                     // QUAN TRỌNG: không submit form
+        class  : 'btn btn-primary btn-shadow',
+        id     : 'adduserbtn',
         handler: function (modal) {
-            // Lấy bảng trong modal
-            const table = modal.find('#rm_clients_list');
-
-            // Lấy dòng đã chọn
+            const table    = modal.find('#rm_clients_list');
             const selected = table.bootstrapTable('getSelections');
+            if (!selected.length) { alert('Vui lòng chọn 1 RM!'); return; }
 
-            if (selected.length === 0) {
-                alert('Vui lòng chọn 1 RM!');
-                return;
-            }
-
-            const selectedRM = selected[0];
-
-            // Lọc text từ HTML nếu có <a>
-            const plainRM = $('<div>').html(selectedRM.rm_code).text();
-
-            // Gán vào input chính
-            $('#rm-code').val(plainRM);
-            // Gán id thật để submit
-            $('#rm-id').val(selectedRM.id);
+            const rm      = selected[0];
+            const rmCode  = $('<div>').html(rm.rm_code).text(); // bỏ thẻ <a> nếu có
+            $('#rm-code').val(rmCode);
+            $('#rm-id').val(rm.id);
 
             modal.modal('hide');
         }
-    }]
+    }],
 });
 
-$("#modal-search-client").fireModal({
+// Lấy node & GỠ nó khỏi DOM, tránh trùng id
+const modalAddUserPartTemplate = $('#modal-add-user-part').detach().removeAttr('id');
+$('#modal-search-client').fireModal({
     size: 'modal-lg',
     title: 'Tìm kiếm Khách hàng phân giao',
-    body: $("#modal-add-user-part"), // ✅ lấy nội dung HTML, không DOM node
+    body       : modalAddUserPartTemplate,
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
-    shown: function (modal, form) {
-        console.log("abc")
-        // ✅ Khởi tạo lại bảng trong popup sau khi modal hiển thị
-        $('#clients_list', modal).bootstrapTable('refreshOptions', {
-            search: true,
-            pagination: true
-        });
-    },
-    buttons: [
-        {
-            text: "Hủy",
-            class: 'btn btn-secondary',
-            handler: function (modal) {
-                modal.modal('hide');
-            }
-        },
-        {
-            text: "Xác nhận chọn",
-            class: 'btn btn-primary btn-shadow',
-            handler: function (modal) {
-                submitSelectedClients();
-                modal.modal('hide');
-            }
+
+    buttons: [{
+        text: "Hủy",
+        class: 'btn btn-secondary',
+        handler: function (modal) {
+            modal.modal('hide');
         }
-    ]
+    }, {
+        text: "Xác nhận chọn",
+        class: 'btn btn-primary btn-shadow',
+        submit : false,                     // QUAN TRỌNG: không submit form
+        id     : 'adduserbtn',
+        handler: function (modal) {
+            submitSelectedClients();
+            modal.modal('hide');
+        }
+    }],
 });
 
 $("#modal-edit-client").fireModal({

@@ -232,17 +232,12 @@
         </div>
     </div>
 
-
     <div class="d-none">
         <!-- Form tìm kiếm khách hàng -->
         <?php if (check_permissions("leads", "read")) { ?>
-            <div class="card mt-4">
-                <div class="card-body">
-                    <!-- Mở Form tìm kiếm -->
-                    <?= form_open('auth/search_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
-                    <?php $context = 'assign_leads'; ?>
-                    <?php include('search-client-form.php'); ?>
-                </div>
+            <div id="modal-add-user-part" class="modal-part">
+                <?php $context = 'assign_leads'; ?>
+                <?php include 'search-client-form.php';  // file này chỉ có input + bảng, không có <form> ?>
             </div>
         <?php } ?>
     </div>
@@ -451,6 +446,7 @@
 </script>
 
 <script src="assets/js/page/components-leads.js"></script>
+<script src="/assets/js/page/components-assign-form-search.js"></script>
 </body>
 
 </html>

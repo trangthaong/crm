@@ -2,7 +2,7 @@
     <div class='col-md-12'>
         <div class="card">
             <div class="card-body">
-                <form id="search-form" method="GET" action="<?= base_url('auth/search_user') ?>">
+                <div id="searchClientForm">
                     <div class="row"
                          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px 30px; padding: 0 15px;">
                         <!-- Mã khách hàng -->
@@ -95,7 +95,8 @@
                         <div class="col-md-12 d-flex justify-content-between align-items-center">
                             <!-- Nút Tìm kiếm và Xóa -->
                             <div>
-                                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Tìm kiếm
+                                <button onclick="searchClientForm()" class="btn btn-primary" style="margin-right: 10px;">
+                                    Tìm kiếm
                                 </button>
                                 <button type="reset" class="btn btn-secondary">Xóa</button>
                             </div>
@@ -118,7 +119,7 @@
 
                         </div>
                     </div>
-                </form>
+                </div>
 
 
                 <!-- Bảng kết quả tìm kiếm -->
@@ -142,7 +143,7 @@
                                 "fileName": "clients-list",
                                 "ignoreColumn": ["state"]
                            }'
-                           data-query-params="queryParamsScope"
+                           data-query-params="searchClientFormQueryParams"
                            data-click-to-select="true"
                     >
                         <thead>
@@ -190,21 +191,6 @@ $user_permissions = (!empty($modules[0]['member_permissions'])) ? json_decode($m
 $client_permissions_data = (!empty($modules[0]['client_permissions'])) ? json_decode($modules[0]['client_permissions'], 1) : [];
 
 ?>
-
-<script>
-    function queryParamsScope(params) {
-        if (!window.clientFilter) {
-            window.clientFilter = {};
-        }
-
-        console.log("Sending params to server:", params);
-
-        return {
-            ...queryParams(params),
-            ...window.clientFilter
-        };
-    }
-</script>
 
 <!--✅ 3. Kích hoạt reload bảng khi form được submit:-->
 <!--$('#search-form').on('submit', function (e) {-->
