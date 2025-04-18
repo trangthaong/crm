@@ -1265,7 +1265,7 @@ $("#modal-edit-client").fireModal({
 $("#modal-delete-client").fireModal({
     size: 'modal-lg',
     title: 'Xác nhận xóa',
-    body: $("#modal-add-user-part"),
+    body: $("#modal-delete-client-part"),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {
@@ -1379,7 +1379,7 @@ $("#modal-edit-user").fireModal({
 $("#modal-delete-user").fireModal({
     size: 'modal-lg',
     title: 'Xác nhận xóa',
-    body: $("#modal-add-user-part"),
+    body: $("#modal-delete-user-part"),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {

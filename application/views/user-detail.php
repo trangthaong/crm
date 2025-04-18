@@ -257,7 +257,7 @@ if (isset($path_parts[6])) {
                 <?php if (check_permissions("users", "update")) { ?>
                     <div class="card mt-4">
                         <div class="card-body">
-                        <?= form_open('auth/edit_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                        <?= form_open('auth/edit_user', 'id="modal-edit-user-part"', 'class="modal-part"'); ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div id="modal-title" class="d-none">Sửa thông tin RM</div>
@@ -372,7 +372,7 @@ if (isset($path_parts[6])) {
               <?php if (check_permissions("users", "delete")) { ?>
                   <div class="card mt-4">
                       <div class="card-body">
-                      <?= form_open('auth/edit_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                      <?= form_open('auth/edit_user', 'id="modal-delete-user-part"', 'class="modal-part"'); ?>
                       <p class="text-gray-700 mb-6">Bạn có chắc chắn muốn xóa thông tin RM này không?</p>
                       </form>
                       </div>

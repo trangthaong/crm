@@ -495,6 +495,7 @@ if (isset($path_parts[6])) {
                                 </div>
                             </div>
                             </div>
+                            </form>
                           </div>
                       </div>
                   </div>
@@ -504,8 +505,9 @@ if (isset($path_parts[6])) {
               <?php if (check_permissions("clients", "delete")) { ?>
                   <div class="card mt-4">
                       <div class="card-body">
-                      <?= form_open('auth/edit_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                          <?= form_open('auth/delete_user', ['id' => 'modal-delete-client-part', 'class' => 'modal-part']); ?>
                       <p class="text-gray-700 mb-6">Bạn có chắc chắn muốn xóa thông tin khách hàng này không?</p>
+                          </form>
                       </div>
                   </div>
               <?php } ?> 
