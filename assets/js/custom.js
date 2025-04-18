@@ -1326,7 +1326,7 @@ $("#modal-delete-client").fireModal({
 $("#modal-edit-user").fireModal({
     size: 'modal-lg',
     title: 'Sửa thông tin RM',
-    body: $("#modal-add-user-part"),
+    body: $("#modal-edit-user-part"),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {
