@@ -802,7 +802,7 @@ class Projects_model extends CI_Model
         ];
     }
 
-    public function update_contact_result(string $id, string $ketqua, string $ghichu = ''): bool
+    public function update_contact_result($id, $type, $ketqua, $ghichu = '')
     {
         $data = [
             'Ketquatiepcan' => $ketqua,              // giá trị ENUM tiếng Việt
@@ -810,8 +810,14 @@ class Projects_model extends CI_Model
             'Tgiantiepcan'  => date('Y-m-d H:i:s')
         ];
 
-        return $this->db
-            ->where('MatiepcanKHHH', $id)
-            ->update('cd_khhh', $data);
+        if ($type == 'KHHH') {
+            return $this->db
+                ->where('MatiepcanKHHH', $id)
+                ->update('cd_khhh', $data);
+        } else if ($type == 'KHTN') {
+            return $this->db
+                ->where('MatiepcanKHTN', $id)
+                ->update('cd_khtn', $data);
+        }
     }
 }

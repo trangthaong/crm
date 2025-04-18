@@ -61,13 +61,22 @@ class Projects extends CI_Controller
         $data['user_id'] = $user->id;
         $data['workspace_id'] = $workspace_ids[0];
 
-        $data['get_campaign_with_customers'] = $this->projects_model->get_campaign_with_customers(
-            $maCD,
-            $this->input->get()        // truyền luôn filter GET nếu muốn
-        );
+        $data['get_campaign_with_customers'] =
 
         // Tải view với dữ liệu chi tiết khách hàng và thông tin người dùng
         $this->load->view('project-detail', $data);
+    }
+
+    public function customers_json($maCD)
+    {
+        $data = $this->projects_model->get_campaign_with_customers(
+            $maCD,
+            $this->input->get()        // truyền luôn filter GET nếu muốn
+        );;
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($data));
     }
 
     public function index()
@@ -2772,17 +2781,18 @@ class Projects extends CI_Controller
     public function update_contact_result()
     {
         $id     = $this->input->post('id',     TRUE);
+        $type   = $this->input->post('type',   TRUE);
         $ketqua = $this->input->post('ketqua', TRUE);   // tiếng Việt
         $ghichu = $this->input->post('ghichu', TRUE);
 
-        if (!$id || !$ketqua) {
+        if (!$type || !$id || !$ketqua) {
             return $this->output->set_output(json_encode([
                 'error'   => true,
                 'message' => 'Thiếu tham số bắt buộc.'
             ]));
         }
 
-        $ok = $this->campaigns_model->update_contact_result($id, $ketqua, $ghichu);
+        $ok = $this->projects_model->update_contact_result($id, $type, $ketqua, $ghichu);
 
         return $this->output->set_output(json_encode([
             'csrfName' => $this->security->get_csrf_token_name(),

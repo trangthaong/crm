@@ -243,7 +243,7 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
 
                         </div>
 
-                        <div class="tab-pane fade show active" id="cus" role="tabpanel" aria-labelledby="cus-tab">
+                        <div class="tab-pane fade show" id="cus" role="tabpanel" aria-labelledby="cus-tab">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 style="margin-bottom: 40px;">Danh sách khách hàng mục tiêu</h5>
@@ -340,61 +340,40 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
 
                                     <!-- Customer Table -->
                                     <div class="table-responsive mt-4">
-                                        <table class="table-striped" data-toggle="table" data-side-pagination="server"
-                                               data-pagination="true" data-page-list="[5, 10, 20, 50, 100, 200]"
-                                               data-show-columns="true" data-show-refresh="true" data-sort-order="asc"
-                                               data-toolbar="" data-show-export="true" data-maintain-selected="true"
-                                               data-export-options='{
-                                            "fileName": "campaigns-list",
-                                            "ignoreColumn": ["state"] 
-                                        }' data-query-params="queryParams">
+                                        <table id="campaigns-table"
+                                               data-toggle="table"
+                                               data-url="<?= site_url('projects/customers_json/'.$maCD) ?>"
+                                               data-side-pagination="server"
+                                               data-pagination="true"
+                                               data-page-list="[5, 10, 20, 50, 100, 200]"
+                                               data-show-columns="true"
+                                               data-show-refresh="true"
+                                               data-sort-order="asc"
+                                               data-show-export="true"
+                                               data-maintain-selected="true"
+                                               data-query-params="queryParams"
+                                               data-response-handler="respHandler"
+                                        >
                                             <thead>
                                             <tr>
-                                                <th>STT</th>
-                                                <th>Mã KH</th>
-                                                <th>Tên khách hàng</th>
-                                                <th>Số điện thoại</th>
-                                                <th>Email</th>
-                                                <th>Loại KH</th>
-                                                <th>Thời gian tiếp cận</th>
-                                                <th>Kết quả tiếp cận</th>
-                                                <th>Ghi chú</th>
-                                                <th>RM quản lý</th>
-                                                <th>Chi nhánh quản lý</th>
-                                                <th>Action</th> <!-- Cột Action cho các hành động -->
+                                                <th data-field="Matiepcan" data-visible="false">Matiepcan</th>
+                                                <th data-field="CodeLoaiKH" data-visible="false">CodeLoaiKH</th>
+                                                <th data-field="stt">STT</th>
+                                                <th data-field="MaKH">Mã KH</th>
+                                                <th data-field="TenKH">Tên khách hàng</th>
+                                                <th data-field="SDT">Số điện thoại</th>
+                                                <th data-field="Email" data-align="right">Email</th>
+                                                <th data-field="LoaiKH">Loại KH</th>
+                                                <th data-field="Tgiantiepcan">Thời gian tiếp cận</th>
+                                                <th data-field="Ketquatiepcan">Kết quả tiếp cận</th>
+                                                <th data-field="Ghichu">Ghi chú</th>
+                                                <th data-field="RMtiepcan">RM quản lý</th>
+                                                <th data-field="ChiNhanh">Chi nhánh quản lý</th>
+                                                <th data-field="action" data-formatter="actionFmt" data-events="actionEvt">Action</th>
                                             </tr>
                                             </thead>
-                                            <tbody id="product-data">
-                                            <?php $stt = 1; ?>
-                                            <?php foreach ($cus_list as $customer): ?>
-                                                <?php
-                                                // Chuẩn bị JSON an toàn cho attribute
-                                                $json = htmlspecialchars(json_encode($customer), ENT_QUOTES, 'UTF-8');
-                                                ?>
-                                                <tr data-record="<?= $json ?>">
-                                                    <td><?= $stt++ ?></td>
-                                                    <td><?= htmlspecialchars($customer['MaKH']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['TenKH']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['SDT']) ?></td>
-                                                    <td class="text-right"><?= htmlspecialchars($customer['Email']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['LoaiKH']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['Tgiantiepcan']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['Ketquatiepcan']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['Ghichu']) ?></td>
-                                                    <td><?= htmlspecialchars($customer['RMtiepcan']) ?></td>
-                                                    <td></td>
-
-                                                    <!-- chỉ còn 1 class để JS bắt sự kiện -->
-                                                    <td>
-                                                        <button type="button"
-                                                                class="btn btn-primary btn-update-result">
-                                                            Cập nhật kết quả
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                            </tbody>
                                         </table>
+
                                     </div>
                                 </div>
                             </div>
@@ -818,6 +797,7 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
 
             <div class="modal-body">
                 <input type="hidden" name="id" id="record-id">
+                <input type="hidden" name="type" id="record-type">
 
                 <div class="form-group">
                     <label>Khách hàng</label>
@@ -1080,22 +1060,53 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
 </script>
 
 <script>
-    $(function () {
+    function respHandler(res) {
+        return {
+            total: res.customers.length,   // hoặc res.total nếu server trả
+            rows : res.customers
+        };
+    }
 
-        /* Mở modal */
-        $(document).on('click', '.btn-update-result', function () {
-            const record = $(this).closest('tr').data('record');  // record.* đã chứa Ketquatiepcan
-            console.log("%c 1 --> Line: 1088||project-detail.php\n record: ","color:#f0f;", record);
-
+    /* formatter tạo nút, nhét record JSON vào data-record */
+    function actionFmt(value, row) {
+        return '<button class="btn btn-primary btn-update-result">Cập nhật kết quả</button>';
+    }
+    /* delegated event – bootstrap‑table gọi sự kiện vào đây */
+    window.actionEvt = {
+        'click .btn-update-result': function (e, value, record) {   // record có sẵn!
             $('#record-id').val(record.Matiepcan);
+            $('#record-type').val(record.CodeLoaiKH);
             $('#record-name').val(record.TenKH);
-
-            // chọn đúng option
             $('#record-result').val(record.Ketquatiepcan || '').trigger('change');
-
             $('#record-note').val(record.Ghichu || '');
             $('#updateResultModal').modal('show');
-        });
+        }
+    };
+
+    /* Sau khi UPDATE thành công: */
+    $('#campaigns-table').bootstrapTable('refresh');   // tải lại JSON → bảng mới nhất
+
+    $(function () {
+
+        // /* Mở modal */
+        // $(document).on('click', '.btn-update-result', function () {
+        //     // 1) Lấy chỉ số dòng (Bootstrap‑Table tự thêm data-index cho <tr>)
+        //     const index  = $(this).closest('tr').data('index');
+        //
+        //     // 2) Lấy đúng object theo index
+        //     const record = $('#campaigns-table').bootstrapTable('getData')[index];
+        //
+        //     // 3) Sử dụng như cũ
+        //     $('#record-id').val(record.Matiepcan);
+        //     $('#record-type').val(record.CodeLoaiKH);
+        //     $('#record-name').val(record.TenKH);
+        //
+        //     $('#record-result').val(record.Ketquatiepcan || '')
+        //         .trigger('change');             // nếu dùng Select2
+        //     $('#record-note').val(record.Ghichu || '');
+        //
+        //     $('#updateResultModal').modal('show');
+        // });
 
         /* Submit */
         $('#updateResultForm').on('submit', function (e) {
@@ -1129,7 +1140,7 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
                     if (!res.error) {
                         iziToast.success({message: res.message});
                         $('#updateResultModal').modal('hide');
-                        $('#rm_clients_list').bootstrapTable('refresh');
+                        $('#campaigns-table').bootstrapTable('refresh');
                     } else {
                         iziToast.error({message: res.message});
                     }

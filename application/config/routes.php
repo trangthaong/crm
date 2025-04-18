@@ -56,3 +56,4 @@ $route['translate_uri_dashes'] = TRUE;
 
 
 $route['projects/detail/(:any)'] = 'projects/detail/$1';
+$route['projects/customers_json/(:any)'] = 'projects/customers_json/$1';
