@@ -1212,7 +1212,7 @@ $('#modal-search-client').fireModal({
 $("#modal-edit-client").fireModal({
     size: 'modal-lg',
     title: 'Sửa thông tin khách hàng',
-    body: $("#modal-add-user-part"),
+    body: $("#modal-edit-user-part"),
     footerClass: 'bg-whitesmoke',
     autoFocus: false,
     onFormSubmit: function (modal, e, form) {

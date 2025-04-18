@@ -335,7 +335,7 @@ if (isset($path_parts[6])) {
                 <?php if (check_permissions("clients", "update")) { ?>
                     <div class="card mt-4">
                         <div class="card-body">
-                        <?= form_open('auth/edit_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
+                        <?= form_open('auth/edit_user', 'id="modal-edit-user-part"', 'class="modal-part"'); ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div id="modal-title" class="d-none">Sửa thông tin khách hàng</div>
@@ -496,7 +496,6 @@ if (isset($path_parts[6])) {
                             </div>
                             </div>
                           </div>
-                        </form>
                       </div>
                   </div>
               <?php } ?>
@@ -507,7 +506,6 @@ if (isset($path_parts[6])) {
                       <div class="card-body">
                       <?= form_open('auth/edit_user', 'id="modal-add-user-part"', 'class="modal-part"'); ?>
                       <p class="text-gray-700 mb-6">Bạn có chắc chắn muốn xóa thông tin khách hàng này không?</p>
-                      </form>
                       </div>
                   </div>
               <?php } ?> 
