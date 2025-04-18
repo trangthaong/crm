@@ -160,85 +160,56 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="detail" role="tabpanel" aria-labelledby="detail-tab">
                             <div class="card">
-                                <div class="card-body">
+                                <div id="campaign-detail-box" class="card-body">
                                     <h5 style="margin-bottom: 40px;">Thông tin chi tiết chiến dịch</h5>
                                     <div class="row"
                                          style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px 30px; padding: 0 15px;">
-                                        <!-- Campaign Code -->
                                         <div class="form-group">
                                             <label>Mã chiến dịch</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Machiendich']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Machiendich" readonly>
                                         </div>
-                                        <!-- Campaign Name -->
                                         <div class="form-group">
                                             <label>Tên chiến dịch</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Tenchiendich']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Tenchiendich" readonly>
                                         </div>
-                                        <!-- Purpose -->
                                         <div class="form-group">
                                             <label>Mục đích</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Mucdich']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Mucdich" readonly>
                                         </div>
-                                        <!-- Status -->
                                         <div class="form-group">
                                             <label>Trạng thái</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Trangthai']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Trangthai" readonly>
                                         </div>
-                                        <!-- Start Date -->
                                         <div class="form-group">
                                             <label>Ngày bắt đầu</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Ngaybd']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Ngaybd" readonly>
                                         </div>
-                                        <!-- End Date -->
                                         <div class="form-group">
                                             <label>Ngày kết thúc</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Ngaykt']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Ngaykt" readonly>
                                         </div>
-                                        <!-- Hinh thuc -->
                                         <div class="form-group">
                                             <label>Hình thức</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Hinhthuc']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Hinhthuc" readonly>
                                         </div>
-                                        <!-- Kenh ban -->
                                         <div class="form-group">
                                             <label>Kênh bán</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['Kenhban']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="Kenhban" readonly>
                                         </div>
-                                        <!-- Sanpham-->
                                         <div class="form-group">
                                             <label>Loại sản phẩm</label>
-                                            <input type="text" class="form-control"
-                                                   value="<?= htmlspecialchars($campaign_details['LoaiSP']); ?>"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="LoaiSP" readonly>
                                         </div>
                                     </div>
                                     <div class="row"
                                          style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1px 30px; padding: 0 15px;">
-                                        <!-- Description -->
                                         <div class="form-group">
                                             <label>Mô tả chiến dịch</label>
-                                            <input type="text" class="form-control"
-                                                   value="Chiến dịch khuyến mại dành cho khách hàng mới với nhiều ưu đãi hấp dẫn"
-                                                   readonly>
+                                            <input type="text" class="form-control" id="MoTa" readonly>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
                         </div>
@@ -1060,11 +1031,40 @@ $cus_list = isset($get_campaign_with_customers) ? $get_campaign_with_customers["
 </script>
 
 <script>
+    let currentCampaign = null;
+
     function respHandler(res) {
+        // Lưu lại campaign
+        currentCampaign = res.campaign || {};
+
+        // Sau khi dữ liệu bảng được xử lý, cập nhật UI
+        updateCampaignDetail(currentCampaign);
+
         return {
-            total: res.customers.length,   // hoặc res.total nếu server trả
-            rows : res.customers
+            total: res.customers?.length || 0,
+            rows : res.customers || []
         };
+    }
+
+    function updateCampaignDetail(data) {
+        console.log("%c 1 --> Line: 1050||project-detail.php\n data: ","color:#f0f;", data);
+        if (!data || Object.keys(data).length === 0) {
+            $('#campaign-detail-box').hide();
+            return;
+        }
+
+        $('#campaign-detail-box').show(); // ensure hiển thị lại nếu có dữ liệu
+
+        $('#Machiendich').val(data.Machiendich || '');
+        $('#Tenchiendich').val(data.Tenchiendich || '');
+        $('#Mucdich').val(data.Mucdich || '');
+        $('#Trangthai').val(data.Trangthai || '');
+        $('#Ngaybd').val(data.Ngaybd || '');
+        $('#Ngaykt').val(data.Ngaykt || '');
+        $('#Hinhthuc').val(data.Hinhthuc || '');
+        $('#Kenhban').val(data.Kenhban || '');
+        $('#LoaiSP').val(data.LoaiSP || '');
+        $('#MoTa').val(data.ND || '');
     }
 
     /* formatter tạo nút, nhét record JSON vào data-record */
